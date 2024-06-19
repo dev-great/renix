@@ -1,0 +1,64 @@
+{% extends 'dashboard/base.html' %} {% load static %} {% block body %}
+<div class="content-wrapper">
+  <div class="page-header">
+    <h3 class="page-title">Settings</h3>
+  </div>
+  <!--vertical wizard-->
+  <div class="row">
+    <div class="col-12 grid-margin">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title"></h4>
+          <form id="example-vertical-wizard" action="#">
+            <div>
+              <h3>Change Password</h3>
+              <section>
+                <h4>Change Password</h4>
+                <div class="form-group">
+                  <label for="userName">Old password *</label>
+                  <input
+                    id="userName"
+                    name="userName"
+                    type="text"
+                    class="required form-control"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="password">New Password *</label>
+                  <input
+                    id="password"
+                    name="password"
+                    type="password"
+                    class="required form-control"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="confirm">Confirm Password *</label>
+                  <input
+                    id="confirm"
+                    name="confirm"
+                    type="password"
+                    class="required form-control"
+                  />
+                  <small>(*) Mandatory</small>
+                </div>
+              </section>
+
+              <h3>Finish</h3>
+              <section>
+                <h4>Finish</h4>
+                <div class="form-check">
+                  <label class="form-check-label">
+                    <input class="checkbox" type="checkbox" />
+                    I agree with the Terms and Conditions.
+                  </label>
+                </div>
+              </section>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{%endblock body %}
