@@ -1,0 +1,50 @@
+{% extends 'dashboard/base.html' %} {% load static %} {% block body %}
+
+<div class="content-wrapper">
+  <div class="page-header">
+    <h3 class="page-title">Enrolled Courses</h3>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Sample pages</a></li>
+        <li class="breadcrumb-item active" aria-current="page">News grid</li>
+      </ol>
+    </nav>
+  </div>
+  <div class="card-columns">
+    {% for category in quizzes %}
+
+    <div class="card">
+      <img
+        src="{{category.category.image.url}}"
+        class="card-img-top"
+        alt="..."
+      />
+      <div class="card-body">
+        <h5 class="card-title">{{category.category.name|title}}</h5>
+        <p class="card-text">
+          {{category.category.description|truncatechars:"150"}}
+        </p>
+      </div>
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">
+          {{category.category.total_questions}} Questions
+        </li>
+
+        <li class="list-group-item">
+          {{category.marks}} Marks / {{category.total_marks}} Marks
+        </li>
+      </ul>
+      <div class="card-body">
+        <a
+          href="{% url 'quiz_questions' category.uid %}"
+          class="card-link btn btn-primary"
+          >View Answers</a
+        >
+      </div>
+    </div>
+
+    {% endfor %}
+  </div>
+</div>
+
+{%endblock body %}

@@ -1,0 +1,33 @@
+{% extends 'dashboard/base.html' %} {% load static %} {% block body %}
+
+<div class="content-wrapper">
+  <div class="page-header">
+    <h3 class="page-title">Enrolled Courses</h3>
+  </div>
+  <div class="card-columns">
+    {% for category in categories %}
+    <form action="" class=" ">
+      <div class="card">
+        <img src="{{category.image.url}}" class="card-img-top" alt="..." />
+        <div class="card-body">
+          <h5 class="card-title">{{category.name|title}}</h5>
+          <p class="card-text">{{category.description|truncatechars:"150"}}</p>
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">
+            {{category.total_questions}} Questions
+          </li>
+
+          <li class="list-group-item">{{category.total_marks}} Marks</li>
+        </ul>
+        <div class="card-body">
+          <input type="hidden" name="category" value="{{category.name}}" />
+          <button class="card-link btn btn-primary">Start Quiz</button>
+        </div>
+      </div>
+    </form>
+    {% endfor %}
+  </div>
+</div>
+
+{%endblock body %}

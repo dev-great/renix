@@ -1,0 +1,46 @@
+{% extends 'dashboard/base.html' %} {% load static %} {% block body %}
+<div class="content-wrapper">
+  <div class="content-wrapper">
+    <div class="page-header">
+      <h3 class="page-title">
+        {{ quiz.category.name }} - Questions and Answers
+      </h3>
+    </div>
+  </div>
+  <div class="col-md-8 mx-auto">
+    <ul>
+      {% for item in questions %}
+      <div>
+        <br />
+        <br />
+        <p>
+          <strong>{{ forloop.counter }}. {{ item.question.question }}</strong>
+        </p>
+        <ul>
+          {% for answer in item.answers %}
+
+          <li
+            class="list-group-item list-group-item-action list-group-item-primary mt-3 answerList"
+            style="
+            {% if answer.uid == item.selected_answer.uid %}
+                {% if answer.is_correct %}
+                    background-color: lightgreen;
+                {% else %}
+                    background-color: yellow;
+                {% endif %}
+            {% elif answer.is_correct %}
+                background-color: lightgreen;
+            {% else %}
+                background-color: white;
+            {% endif %}"
+          >
+            {{ answer.answer }}
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+{% endblock %}
