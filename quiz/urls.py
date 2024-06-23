@@ -21,4 +21,7 @@ urlpatterns = [
     path('success_screen/', views.success_screen, name='success_screen'),
     path('quiz/<uuid:quiz_id>/questions/',
          views.quiz_questions, name='quiz_questions'),
+    path('course/', views.study_detail, name='study_detail'),
+    path('topics/', views.study_topics, name='study_topics'),
+    path('quiz_detail/', views.start_quiz, name='quiz_detail'),
 ]

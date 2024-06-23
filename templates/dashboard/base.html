@@ -57,16 +57,13 @@
         data-toggle="dropdown"
         id="profileDropdown"
       >
-        <img src="{% static 'images/faces/face5.jpg' %}" alt="profile" />
+        <img src="https://static.vecteezy.com/system/resources/previews/001/880/227/original/nurse-professional-avatar-character-icon-free-vector.jpg" alt="profile" />
       </a>
       <div
         class="dropdown-menu dropdown-menu-right navbar-dropdown"
         aria-labelledby="profileDropdown"
       >
-        <a class="dropdown-item">
-          <i class="fas fa-cog text-primary"></i>
-          Settings
-        </a>
+    
         <div class="dropdown-divider"></div>
         <a class="dropdown-item" href="{% url 'sign_up' %}">
           <i class="fas fa-power-off text-primary"></i>
@@ -89,17 +86,23 @@
 <div class="container-fluid page-body-wrapper">
 <nav class="sidebar sidebar-offcanvas" id="sidebar">
   <ul class="nav">
+    {% if user_info %}
+
     <li class="nav-item nav-profile">
       <div class="nav-link">
         <div class="profile-image">
-          <img src="{% static 'images/faces/face5.jpg' %}" alt="image" />
+          <img src="https://static.vecteezy.com/system/resources/previews/001/880/227/original/nurse-professional-avatar-character-icon-free-vector.jpg" alt="image" />
         </div>
         <div class="profile-name">
-          <p class="name">Welcome Jane</p>
-          <p class="designation">Super Admin</p>
+          <p class="name">{{user_info.user.username}}</p>
+          <p class="designation">{{user_info.user.email}}</p>
         </div>
       </div>
     </li>
+    {% else %}
+    <p>Welcome, Guest!</p>
+{% endif %}
+
     <li class="nav-item">
       <a class="nav-link" href="{% url 'index' %}">
         <i class="fa fa-th-large menu-icon"></i>
@@ -109,19 +112,19 @@
     <li class="nav-item">
       <a class="nav-link" href="{% url 'quizzes' %}">
         <i class="fa fa-puzzle-piece menu-icon"></i>
-        <span class="menu-title">Quizzzes</span>
+        <span class="menu-title">Question Bank</span>
       </a>
     </li>
     <li class="nav-item">
       <a class="nav-link" href="{% url 'quiz_attempts' %}">
         <i class="fa fa-cubes menu-icon"></i>
-        <span class="menu-title">My Quiz Attempts</span>
+        <span class="menu-title">Study Mode</span>
       </a>
     </li>
     <li class="nav-item">
       <a class="nav-link" href="{% url 'enrolled_courses' %}">
         <i class="fa fa-graduation-cap menu-icon"></i>
-        <span class="menu-title">Enrolled Courses</span>
+        <span class="menu-title">My Quiz Attempts</span>
       </a>
     </li>
     <li class="nav-item">
@@ -173,6 +176,6 @@
     <script src="{% static 'js/dashboard.js' %}"></script>
     <script src="{% static 'js/wizard.js' %}"></script>
     <script src="{% static 'js/quiz.js' %}"></script>
-
+    <script src="{% static 'js/avgrund.js' %}"></script>
   </body>
 </html>

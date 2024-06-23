@@ -1,14 +1,19 @@
 from django import forms
 from django.contrib.auth.models import User
-from .models import Profile
 
 
 class ProfileUpdateForm(forms.ModelForm):
-    full_name = forms.CharField(
-        label='Full Name',
+    first_name = forms.CharField(
+        label='First Name',
         max_length=100,
         widget=forms.TextInput(
-            attrs={'class': 'form-control', 'placeholder': 'Enter Full Name'})
+            attrs={'class': 'form-control', 'placeholder': 'Enter First Name'})
+    )
+    last_name = forms.CharField(
+        label='Last Name',
+        max_length=100,
+        widget=forms.TextInput(
+            attrs={'class': 'form-control', 'placeholder': 'Enter Last Name'})
     )
     email = forms.EmailField(
         label='Email Address',
@@ -17,19 +22,13 @@ class ProfileUpdateForm(forms.ModelForm):
     )
 
     class Meta:
-        model = Profile
-        fields = ['gender', 'address']
-        labels = {
-            'gender': 'Gender',
-            'address': 'Address',
-        }
-        widgets = {
-            'gender': forms.Select(attrs={'class': 'form-control'}),
-            'address': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Enter Address'}),
-        }
+        model = User  # Specify the model class
+        # Fields to include in the form
+        fields = ['first_name', 'last_name', 'email']
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user')
         super(ProfileUpdateForm, self).__init__(*args, **kwargs)
-        self.fields['full_name'].initial = user.get_full_name()
+        self.fields['first_name'].initial = user.first_name
+        self.fields['last_name'].initial = user.last_name
         self.fields['email'].initial = user.email

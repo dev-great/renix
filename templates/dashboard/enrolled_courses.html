@@ -2,27 +2,21 @@
 
 <div class="content-wrapper">
   <div class="page-header">
-    <h3 class="page-title">Enrolled Courses</h3>
-    <nav aria-label="breadcrumb">
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="#">Sample pages</a></li>
-        <li class="breadcrumb-item active" aria-current="page">News grid</li>
-      </ol>
-    </nav>
+    <h3 class="page-title">My Quiz Attempts</h3>
   </div>
   <div class="card-columns">
     {% for category in quizzes %}
 
     <div class="card">
       <img
-        src="{{category.category.image.url}}"
+        src="{{category.topic.category.image.url}}"
         class="card-img-top"
         alt="..."
       />
       <div class="card-body">
-        <h5 class="card-title">{{category.category.name|title}}</h5>
+        <h5 class="card-title">{{category.topic.category.name|title}}</h5>
         <p class="card-text">
-          {{category.category.description|truncatechars:"150"}}
+          {{category.topic.category.description|truncatechars:"150"}}
         </p>
       </div>
       <ul class="list-group list-group-flush">

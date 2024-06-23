@@ -1,3 +1,4 @@
+from ckeditor.fields import RichTextField
 from django.db import models
 from uuid import uuid4
 from random import shuffle
@@ -36,9 +37,28 @@ class Category(BaseModel):
         self.total_questions = len(questions)
 
 
+class StudyTopicModel(BaseModel):
+    category = models.ForeignKey(
+        Category, on_delete=models.CASCADE, related_name='category')
+    title = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.title
+
+
+class StudyModel(BaseModel):
+    topic = models.ForeignKey(
+        StudyTopicModel, on_delete=models.CASCADE, related_name='topics')
+    title = models.CharField(max_length=200)
+    content = RichTextField()
+
+    def __str__(self):
+        return self.title
+
+
 class Question(BaseModel):
     category = models.ForeignKey(
-        Category, on_delete=models.CASCADE, related_name='questions')
+        StudyTopicModel, on_delete=models.CASCADE, related_name='questions')
     question = models.TextField()
     mark = models.IntegerField(default=5)
 
@@ -87,8 +107,8 @@ class Quiz(BaseModel):
 
     )
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    category = models.ForeignKey(
-        Category, on_delete=models.CASCADE, related_name='quiz', default=None)
+    topic = models.ForeignKey(
+        StudyTopicModel, on_delete=models.CASCADE, related_name='topic', default=None)
     given_question = models.ManyToManyField(GivenQuizQuestions, blank=True)
     marks = models.IntegerField(default=0)
     total_marks = models.IntegerField(default=0)
@@ -100,11 +120,21 @@ class Quiz(BaseModel):
     def __str__(self):
         return f'{self.user.username} {str(self.total_marks)}'
 
+    def get_total_answered_questions_across_all_categories(self):
+        all_questions = Question.objects.all()
+        given_questions = GivenQuizQuestions.objects.filter(quiz=self)
+        answered_questions = given_questions.values_list('question', flat=True)
+        total_answered = all_questions.filter(
+            uid__in=answered_questions).count()
+        total_remaining = all_questions.count() - total_answered
 
-class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    gender = models.CharField(max_length=10)
-    address = models.CharField(max_length=255)
+        total_correct = given_questions.filter(answer__is_correct=True).count()
+        total_wrong = given_questions.filter(answer__is_correct=False).count()
 
-    def __str__(self):
-        return self.user.username
+        return {
+            'total_answered': total_answered,
+            'total_remaining': total_remaining,
+            'total_correct': total_correct,
+            'total_wrong': total_wrong,
+            'all_questions': all_questions.count()
+        }
