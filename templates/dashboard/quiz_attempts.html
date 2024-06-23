@@ -1,41 +1,48 @@
-{% extends 'dashboard/base.html' %} {% load static %} {% block body %}
-
+{% extends 'dashboard/base.html' %} {% load static %}{% load custom_filters %}
+{% block body %}
+<style>
+  .limited-width {
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+</style>
 <div class="content-wrapper">
   <div class="page-header">
-    <h3 class="page-title">Quiz History</h3>
+    <h3 class="page-title">Study Mode</h3>
   </div>
   <div class="card">
     <div class="card-body">
-      <h4 class="card-title">Attempted Quiz</h4>
+      <h4 class="card-title">Courses</h4>
       <div class="row">
         <div class="col-12">
           <div class="table-responsive">
             <table id="order-listing" class="table">
               <thead>
                 <tr>
-                  <th>Order #</th>
-                  <th>Question Bank</th>
-                  <th>Start Date</th>
-                  <th>End Date</th>
-                  <th>Score</th>
-                  <th>Status</th>
+                  <th>Index</th>
+                  <th>Course</th>
+                  <th>Summary</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
-                {% for category in quizzes %}
+                {% for context in data_context %}
                 <tr>
                   <td>{{ forloop.counter }}</td>
-                  <td>{{category.category.name|title}}</td>
+                  <td>{{context.name}}</td>
 
-                  <td>{{category.start_time}}</td>
-                  <td>{{category.end_time}}</td>
-                  <td>{{category.marks}}</td>
+                  <td class="limited-width">
+                    {{context.description|truncatechars_html:500}}
+                  </td>
                   <td>
-                    {% if category.status == 'yes' %}
-                    <label class="badge badge-success">Successful</label>
-                    {% else %}
-                    <label class="badge badge-danger">Failed</label>
-                    {% endif %}
+                    <a
+                      href="{% url 'study_topics' %}?id={{ context.uid }}"
+                      class="btn btn-success btn-block"
+                    >
+                      Select
+                    </a>
                   </td>
                 </tr>
                 {% endfor %}

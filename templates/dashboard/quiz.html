@@ -12,7 +12,7 @@
     >
       <h5>
         Marks :
-        <span id="marks">{{ quiz.marks }}</span>/{{ quiz.category.total_marks }}
+        <span id="marks">{{ quiz.marks }}</span>/{{ quiz.total_marks }}
       </h5>
     </div>
     {% for question in page_obj.object_list %}
@@ -57,7 +57,7 @@
         {% if page_obj.has_previous %}
         <a
           class="btn btn-outline-primary"
-          href="?page={{ page_obj.previous_page_number }}&category={{ category }}"
+          href="?page={{ page_obj.previous_page_number }}&category={{ category.uid }}"
           >Previous</a
         >
         {% endif %}
