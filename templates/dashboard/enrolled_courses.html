@@ -2,42 +2,162 @@
 
 <div class="content-wrapper">
   <div class="page-header">
-    <h3 class="page-title">My Quiz Attempts</h3>
+    <h3 class="page-title">Previous Tests</h3>
   </div>
-  <div class="card-columns">
-    {% for category in quizzes %}
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title">Orders</h4>
+          <div class="row grid-margin"></div>
+          <div class="row">
+            <div class="col-12">
+              <div class="table-responsive">
+                <table id="order-listing" class="table">
+                  <thead>
+                    <tr class="bg-primary text-white">
+                      <th>TEST ID #</th>
+                      <th>DATE</th>
+                      <th>MODE</th>
+                      <th>SUBJECT(S)</th>
+                      <th>SCORE</th>
+                      <th>ACTIONS</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>WD-61</td>
+                      <td>Jun 05, 2024</td>
+                      <td>Study Mode</td>
+                      <td>Multiple</td>
+                      <td>
+                        <label class="badge badge-danger">0/100</label>
+                      </td>
+                      <td class="text-right">
+                        <button class="btn btn-light">
+                          <i class="fa fa-eye text-primary"></i> View
+                        </button>
+                        <button class="btn btn-light">
+                          <i class="fa fa-play text-success"></i> Re-take
+                        </button>
+                        <a class="btn btn-light" href="{% url 'text_analitics' %}">
+                          <i class="fa fa-bolt text-primary"></i> Analytics
+                        </a>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>WD-62</td>
+                      <td>Jun 05, 2024</td>
+                      <td>Study Mode</td>
+                      <td>Multiple</td>
 
-    <div class="card">
-      <img
-        src="{{category.topic.category.image.url}}"
-        class="card-img-top"
-        alt="..."
-      />
-      <div class="card-body">
-        <h5 class="card-title">{{category.topic.category.name|title}}</h5>
-        <p class="card-text">
-          {{category.topic.category.description|truncatechars:"150"}}
-        </p>
-      </div>
-      <ul class="list-group list-group-flush">
-        <li class="list-group-item">
-          {{category.category.total_questions}} Questions
-        </li>
+                      <td>
+                        <label class="badge badge-danger">50/100</label>
+                      </td>
+                      <td class="text-right">
+                        <button class="btn btn-light">
+                          <i class="fa fa-eye text-primary"></i> View
+                        </button>
+                        <button class="btn btn-light">
+                          <i class="fa fa-play text-success"></i> Re-take
+                        </button>
+                        <a class="btn btn-light">
+                          <i class="fa fa-bolt text-primary"></i> Analytics
+                        </a>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>WD-63</td>
+                      <td>Jun 05, 2024</td>
+                      <td>Exam Mode</td>
+                      <td>Multiple</td>
 
-        <li class="list-group-item">
-          {{category.marks}} Marks / {{category.total_marks}} Marks
-        </li>
-      </ul>
-      <div class="card-body">
-        <a
-          href="{% url 'quiz_questions' category.uid %}"
-          class="card-link btn btn-primary"
-          >View Answers</a
-        >
+                      <td>
+                        <label class="badge badge-danger">38/100</label>
+                      </td>
+                      <td class="text-right">
+                        <button class="btn btn-light">
+                          <i class="fa fa-eye text-primary"></i> View
+                        </button>
+                        <button class="btn btn-light">
+                          <i class="fa fa-play text-success"></i> Re-take
+                        </button>
+                        <button class="btn btn-light">
+                          <i class="fa fa-bolt text-primary"></i> Analytics
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>WD-64</td>
+                      <td>Jun 05, 2024</td>
+                      <td>Exam Mode</td>
+                      <td>Child Health</td>
+                      <td>
+                        <label class="badge badge-success">100/100</label>
+                      </td>
+                      <td class="text-right">
+                        <button class="btn btn-light">
+                          <i class="fa fa-eye text-primary"></i> View
+                        </button>
+                        <button class="btn btn-light">
+                          <i class="fa fa-play text-success"></i> Re-take
+                        </button>
+                        <button class="btn btn-light">
+                          <i class="fa fa-bolt text-primary"></i> Analytics
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>WD-65</td>
+                      <td>Jun 05, 2024</td>
+                      <td>Study Mode</td>
+                      <td>Mental Health</td>
+
+                      <td>
+                        <label class="badge badge-success">85/100</label>
+                      </td>
+                      <td class="text-right">
+                        <button class="btn btn-light">
+                          <i class="fa fa-eye text-primary"></i> View
+                        </button>
+                        <button class="btn btn-light">
+                          <i class="fa fa-play text-success"></i> Re-take
+                        </button>
+                        <button class="btn btn-light">
+                          <i class="fa fa-bolt text-primary"></i> Analytics
+                        </button>
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td>WD-80</td>
+                      <td>Jun 05, 2024</td>
+                      <td>Study Mode</td>
+                      <td>Mental Health</td>
+
+                      <td>
+                        <label class="badge badge-success">90/100</label>
+                      </td>
+                      <td class="text-right">
+                        <button class="btn btn-light">
+                          <i class="fa fa-eye text-primary"></i> View
+                        </button>
+                        <button class="btn btn-light">
+                          <i class="fa fa-play text-success"></i> Re-take
+                        </button>
+                        <button class="btn btn-light">
+                          <i class="fa fa-bolt text-primary"></i> Analytics
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-
-    {% endfor %}
   </div>
 </div>
 

@@ -180,43 +180,43 @@ def success_screen(request):
     return render(request, 'dashboard/success_screen.html')
 
 
-def sign_up(request):
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        email = request.POST.get('email')
-        password = request.POST.get('password1')
+# def sign_up(request):
+#     if request.method == 'POST':
+#         username = request.POST.get('username')
+#         email = request.POST.get('email')
+#         password = request.POST.get('password1')
 
-        if not username or not email or not password:
-            messages.error(request, 'All fields are required.')
-            return render(request, 'signup.html', {'sign_up_active': True})
+#         if not username or not email or not password:
+#             messages.error(request, 'All fields are required.')
+#             return render(request, 'signup.html', {'sign_up_active': True})
 
-        if not User.objects.filter(username=username).exists():
-            user = User.objects.create_user(
-                username=username, email=email, password=password)
-            user.save()
-            messages.success(request, 'Signed up successfully.')
-            return redirect('sign_in')
+#         if not User.objects.filter(username=username).exists():
+#             user = User.objects.create_user(
+#                 username=username, email=email, password=password)
+#             user.save()
+#             messages.success(request, 'Signed up successfully.')
+#             return redirect('sign_in')
 
-        messages.error(
-            request, 'User already exists. Try with a different username.')
+#         messages.error(
+#             request, 'User already exists. Try with a different username.')
 
-    return render(request, 'signup.html', {'sign_up_active': True})
+#     return render(request, 'signup.html', {'sign_up_active': True})
 
 
 def sign_in(request):
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        user = authenticate(request, username=username, password=password)
-        if (user):
-            login(request, user)
-            messages.success(request, 'Signined Successfully.')
-            return redirect('index')
-        messages.error(request, 'Enter valid username or password.')
-    return render(request, 'signin.html', {'sign_in_active': True})
+    # if request.method == 'POST':
+    #     username = request.POST.get('username')
+    #     password = request.POST.get('password')
+    #     user = authenticate(request, username=username, password=password)
+    #     if (user):
+    #         login(request, user)
+    #         messages.success(request, 'Signined Successfully.')
+    #         return redirect('index')
+    #     messages.error(request, 'Enter valid username or password.')
+    return render(request, 'signin.html')
 
 
-def sign_out(request):
+def logout_view(request):
     logout(request)
     return redirect('/')
 
@@ -282,7 +282,7 @@ def myprofile(request):
 @login_required
 def quizAttempts(request):
     user = request.user
-    courses = Category.objects.all()
+    courses = StudyCategoryModel.objects.all()
 
     context = {
         'data_context': courses,
@@ -305,7 +305,7 @@ def study_topics(request):
     category_id = request.GET.get('id')
     if category_id is None:
         return render(request, 'error.html', {'error': 'No category ID provided.'})
-    category = get_object_or_404(Category, uid=category_id)
+    category = get_object_or_404(StudyCategoryModel, uid=category_id)
     topics = StudyTopicModel.objects.filter(category=category)
 
     context = {
@@ -394,3 +394,17 @@ def quizzes(request):
 def study_list(request):
     study = StudyModel.objects.all()
     return render(request, 'dashboard/enrolled_courses.html', {'context': study})
+
+
+@login_required
+def create_question(request):
+    return render(request, 'dashboard/create_question.html',)
+
+
+@login_required
+def help(request):
+    return render(request, 'dashboard/help.html',)
+
+
+def text_analitics(request):
+    return render(request, 'dashboard/text_analitics.html')
