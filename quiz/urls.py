@@ -7,9 +7,9 @@ urlpatterns = [
     path('checkAnswer/<uid>/<str:createObj>',
          views.check_answer, name='check_answer'),
     path('quizzes/quizzes/quiz/', views.quiz, name='quiz'),
-    path('signUp/', views.sign_up, name='sign_up'),
+    #     path('signUp/', views.sign_up, name='sign_up'),
     path('signIn/', views.sign_in, name='sign_in'),
-    path('signOut/', views.sign_out, name='sign_out'),
+    path('signOut/', views.logout_view, name='sign_out'),
     path('loadAttendedQuestionData/<uid>', views.loadAttendedQuestionData,
          name='load_attended_question_data'),
     path('myprofile/', views.myprofile, name='myprofile'),
@@ -24,4 +24,7 @@ urlpatterns = [
     path('course/', views.study_detail, name='study_detail'),
     path('topics/', views.study_topics, name='study_topics'),
     path('quiz_detail/', views.start_quiz, name='quiz_detail'),
+    path('help/', views.help, name='help'),
+    path('create-question/', views.create_question, name='create_question'),
+    path('text_analitics', views.text_analitics, name='text_analitics')
 ]

@@ -19,4 +19,4 @@ class StudyModelAdmin(admin.ModelAdmin):
 admin.site.register(StudyModel, StudyModelAdmin)
 admin.site.register(Question, QuestionAdmin)
 admin.site.register(
-    (Category, Answer, Quiz, GivenQuizQuestions, StudyTopicModel,))
+    (Category, Answer, Quiz, GivenQuizQuestions, StudyTopicModel, StudyCategoryModel,))

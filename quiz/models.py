@@ -37,9 +37,16 @@ class Category(BaseModel):
         self.total_questions = len(questions)
 
 
+class StudyCategoryModel(BaseModel):
+    name = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.name
+
+
 class StudyTopicModel(BaseModel):
     category = models.ForeignKey(
-        Category, on_delete=models.CASCADE, related_name='category')
+        StudyCategoryModel, on_delete=models.CASCADE, related_name='category')
     title = models.CharField(max_length=200)
 
     def __str__(self):
@@ -50,6 +57,8 @@ class StudyModel(BaseModel):
     topic = models.ForeignKey(
         StudyTopicModel, on_delete=models.CASCADE, related_name='topics')
     title = models.CharField(max_length=200)
+    is_video = models.BooleanField(default=False)
+    video_uri = models.CharField(max_length=200)
     content = RichTextField()
 
     def __str__(self):

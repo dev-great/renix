@@ -1,5 +1,4 @@
-{% extends 'dashboard/base.html' %} {% load static %}{% load custom_filters %}
-{% block body %}
+{% extends 'dashboard/base.html' %} {% load static %}{% load custom_filters %} {% block body %}
 <style>
   .limited-width {
     max-width: 300px;
@@ -10,7 +9,7 @@
 </style>
 <div class="content-wrapper">
   <div class="page-header">
-    <h3 class="page-title">Study Mode</h3>
+    <h3 class="page-title">Lecture</h3>
   </div>
   <div class="card">
     <div class="card-body">
@@ -23,7 +22,6 @@
                 <tr>
                   <th>Index</th>
                   <th>Course</th>
-                  <th>Summary</th>
                   <th></th>
                 </tr>
               </thead>
@@ -33,15 +31,13 @@
                   <td>{{ forloop.counter }}</td>
                   <td>{{context.name}}</td>
 
-                  <td class="limited-width">
-                    {{context.description|truncatechars_html:500}}
-                  </td>
+                  <td class=""></td>
                   <td>
                     <a
                       href="{% url 'study_topics' %}?id={{ context.uid }}"
                       class="btn btn-success btn-block"
                     >
-                      Select
+                      Start
                     </a>
                   </td>
                 </tr>

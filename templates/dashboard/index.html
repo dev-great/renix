@@ -6,6 +6,7 @@
   <div class="page-header">
     <h3 class="page-title">Dashboard</h3>
   </div>
+  {% comment %}
   <div class="row grid-margin">
     <div class="col-12">
       <div class="card card-statistics">
@@ -17,9 +18,7 @@
                 Enrolled Courses
               </p>
               <h2>{{enrolled_courses}}</h2>
-              <label class="badge badge-outline-success badge-pill"
-                >Free Plan</label
-              >
+              <label class="badge badge-outline-success badge-pill">12% increase</label>
             </div>
             <div class="statistics-item">
               <p>
@@ -27,6 +26,7 @@
                 Total Questions
               </p>
               <h2>{{total_questions}}</h2>
+              <label class="badge badge-outline-success badge-pill">12% increase</label>
             </div>
             <div class="statistics-item">
               <p>
@@ -34,170 +34,221 @@
                 Used Question
               </p>
               <h2>{{total_answered}}</h2>
+              <label class="badge badge-outline-success badge-pill">12% increase</label>
             </div>
             <div class="statistics-item">
-              <p>
-                <i class="icon-sm fa fa-graduation-cap mr-2"></i>
-                Total Courses
-              </p>
-              <h2>{{total_courses}}</h2>
+              <div class="statistics-item">
+                <p>
+                  <i class="icon-sm fa fa-graduation-cap mr-2"></i>
+                  Remaining Questions
+                </p>
+                <h2>{{total_remaining}}</h2>
+                <label class="badge badge-outline-success badge-pill">12% increase</label>
+              </div>
             </div>
-            <div class="statistics-item">
-              <p>
-                <i class="icon-sm fa fa-graduation-cap mr-2"></i>
-                Remaining Questions
-              </p>
-              <h2>{{total_remaining}}</h2>
+          </div>
+        </div>
+      </div>
+      {% endcomment %}
+      <div class="row">
+        <div class="col-lg-6 grid-margin stretch-card">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="card-title">Monitor Your Progress</h4>
+              <h6 class="text-muted">Overall Completion</h6>
+              <div class="row" style="padding-left: 10px">
+                <h4 class="card-title">10,023 1</h4>
+                <h4 class="card-title text-muted">/19,001</h4>
+              </div>
+              <div class="d-flex mb-3">
+                <div class="progress progress-md flex-grow">
+                  <div
+                    class="progress-bar bg-primary"
+                    role="progressbar"
+                    aria-valuenow="55"
+                    style="width: 55%"
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                  ></div>
+                </div>
+              </div>
+              <br />
+              <h6 class="text-muted">Study Plan Progress</h6>
+              <div class="row" style="padding-left: 10px">
+                <h6 class="card-title">5</h6>
+                <h6 class="card-title text-muted">/100</h6>
+              </div>
+              <div class="d-flex">
+                <div class="progress progress-md flex-grow">
+                  <div
+                    class="progress-bar bg-success"
+                    role="progressbar"
+                    aria-valuenow="75"
+                    style="width: 5%"
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                  ></div>
+                </div>
+              </div>
+              <br />
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6 grid-margin stretch-card">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="card-title">Performance Summary</h4>
+              <div class="row" style="padding-left: 10px">
+                <div class="col-sm-3 col-md-2 col-8 circle-progress-block">
+                  <div id="circleProgress1" class="progressbar-js-circle rounded p-3"></div>
+                </div>
+                <div class="col-9">
+                  <div class="template-demo">
+                    <table class="table mb-0">
+                      <thead>
+                        <tr>
+                          <th class="pl-0">Question Performance</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td class="pl-1">Correct</td>
+                          <td class="pr-0 text-right">
+                            <div class="badge badge-primary">7799</div>
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td class="pl-0">Incorrect</td>
+                          <td class="pr-0 text-right">
+                            <div class="badge badge-primary">6123</div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row" style="padding-left: 10px">
+                <div class="col-sm-3 col-md-2 col-8 circle-progress-block">
+                  <div id="circleProgress2" class="progressbar-js-circle rounded p-3"></div>
+                </div>
+                <div class="col-9">
+                  <div class="template-demo">
+                    <table class="table mb-0">
+                      <thead>
+                        <tr>
+                          <th class="pl-0">Points Scored</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td class="pl-1">Scored Points</td>
+                          <td class="pr-0 text-right">
+                            <div class="badge badge-primary">22678</div>
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <td class="pl-0">Max Points</td>
+                          <td class="pr-0 text-right">
+                            <div class="badge badge-primary">33645</div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-12 stretch-card">
+        <div class="card" style="justify-content: center; align-items: center; display: flex">
+          <div class="card-body" style="justify-content: center; align-items: center">
+            <a
+              class="navbar-brand brand-logo-mini"
+              href="#"
+              style="justify-content: center; align-items: center"
+            >
+              <img src="{% static 'images/plan.png' %}" height="150px" weight="50px" alt="logo"
+            /></a>
+            <h3 class="card-title" style="text-align: center">We’ll Keep You On Track!</h3>
+            <p class="card-description" style="text-align: center">
+              Setup your custom Study Plan so you can be exam day ready. Just answer a few questions
+              <br />and we’ll take care of the rest!
+            </p>
+            <div class="template-demo" style="text-align: center">
+              <a class="nav-link" href="#">
+                <span class="btn btn-primary">Set Up Your Study Plan</span>
+              </a>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-  <div class="row">
-    <div class="col-lg-6 grid-margin stretch-card">
-      <div class="card">
-        <div class="card-body">
-          <h4 class="card-title">Performance</h4>
-          <div class="flot-chart-container">
-            <div id="pie-chart" class="flot-chart"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-6 grid-margin stretch-card">
-      <div class="card">
-        <div class="card-body">
-          <h4 class="card-title">
-            <i class="far fa-futbol"></i>
-            Activity
-          </h4>
-          <ul class="solid-bullet-list">
-            <li>
-              <h5>
-                Your last login was on
-                <span class="float-right text-muted font-weight-normal small"
-                  >{{last_login_time}}</span
-                >
-              </h5>
-              <p class="text-muted">Welcome back! Let's get back to work</p>
-            </li>
-            <li>
-              <h5>
-                New Course Update {{latest_category.name}}
-                <span class="float-right text-muted font-weight-normal small"
-                  >{{latest_category.created_at}}</span
-                >
-              </h5>
-              <p class="text-muted">Try out this Course for your quiz.</p>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-    <div class="card">
-      <div class="card-body">
-        <h4 class="card-title">Attempted Quiz</h4>
-        <div class="row">
-          <div class="col-12">
-            <div class="table-responsive">
-              <table id="order-listing" class="table">
-                <thead>
-                  <tr>
-                    <th>Order #</th>
-                    <th>Question Bank</th>
-                    <th>Start Date</th>
-                    <th>End Date</th>
-                    <th>Score</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for category in attempted_quizzes %}
-                  <tr>
-                    <td>{{ forloop.counter }}</td>
-                    <td>{{category.category.name|title}}</td>
+    <!-- Include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Include Flot -->
+    <script src="https://cdn.jsdelivr.net/npm/flot@4.2.2/dist/es5/jquery.flot.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flot@4.2.2/dist/es5/jquery.flot.pie.js"></script>
 
-                    <td>{{category.start_time}}</td>
-                    <td>{{category.end_time}}</td>
-                    <td>{{category.marks}}</td>
-                    <td>
-                      {% if category.status == 'yes' %}
-                      <label class="badge badge-success">Successful</label>
-                      {% else %}
-                      <label class="badge badge-danger">Failed</label>
-                      {% endif %}
-                    </td>
-                  </tr>
-                  {% endfor %}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- Include jQuery -->
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <!-- Include Flot -->
-  <script src="https://cdn.jsdelivr.net/npm/flot@4.2.2/dist/es5/jquery.flot.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/flot@4.2.2/dist/es5/jquery.flot.pie.js"></script>
+    <script>
+      var data = [
+        {
+          data: {{total_remaining}},
+          color: "#FABA66",
+          label: "Unanswered",
+        },
+        {
+          data: {{total_wrong}},
+          color: "#F36368",
+          label: "Failed",
+        },
+        {
+          data: {{total_correct}},
+          color: "#63CF72",
+          label: "Successful",
+        },
+      ];
 
-  <script>
-    var data = [
-      {
-        data: {{total_remaining}},
-        color: "#FABA66",
-        label: "Unanswered",
-      },
-      {
-        data: {{total_wrong}},
-        color: "#F36368",
-        label: "Failed",
-      },
-      {
-        data: {{total_correct}},
-        color: "#63CF72",
-        label: "Successful",
-      },
-    ];
+      function labelFormatter(label, series) {
+        return (
+          "<div style='font-size:8pt; text-align:center; padding:2px; color:white;'>" +
+          label +
+          "<br/>" +
+          Math.round(series.percent) +
+          "%</div>"
+        );
+      }
 
-    function labelFormatter(label, series) {
-      return (
-        "<div style='font-size:8pt; text-align:center; padding:2px; color:white;'>" +
-        label +
-        "<br/>" +
-        Math.round(series.percent) +
-        "%</div>"
-      );
-    }
-
-    $(function () {
-      if ($("#pie-chart").length) {
-        $.plot("#pie-chart", data, {
-          series: {
-            pie: {
-              show: true,
-              radius: 1,
-              label: {
+      $(function () {
+        if ($("#pie-chart").length) {
+          $.plot("#pie-chart", data, {
+            series: {
+              pie: {
                 show: true,
-                radius: 3 / 4,
-                formatter: labelFormatter,
-                background: {
-                  opacity: 0.5,
+                radius: 1,
+                label: {
+                  show: true,
+                  radius: 3 / 4,
+                  formatter: labelFormatter,
+                  background: {
+                    opacity: 0.5,
+                  },
                 },
               },
             },
-          },
-          legend: {
-            show: false,
-          },
-        });
-      }
-    });
-  </script>
+            legend: {
+              show: false,
+            },
+          });
+        }
+      });
+    </script>
 
-  {% endblock body %}
+    {% endblock body %}
+  </div>
 </div>

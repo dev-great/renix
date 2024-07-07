@@ -7,10 +7,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = "django-insecure-c&dw_%j38vlhnkm%$aa9e942l%f@8lkjmkngdh%!&4jo1f0f3d"
 
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['wakawaka.pythonanywhere.com']
-
+ALLOWED_HOSTS = ['127.0.0.1']
+SITE_ID = 1
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -22,7 +22,30 @@ INSTALLED_APPS = [
     "quiz",
     'ckeditor',
     'ckeditor_uploader',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 ]
+
+SOCIALACCOUNT_PROVIDERS = {
+    "google": {
+        # 'APP': {
+        #     'client_id': '123',
+        #     'secret': '456',
+        #     'key': ''
+        # },
+        "SCOPE": [
+            "profile",
+            "email",
+        ],
+        "AUTH_PARAMS": {
+            "access_type": "online",
+        },
+        'OAUTH_PKCE_ENABLED': True,
+
+    }
+}
 
 # CKEditor settings
 CKEDITOR_UPLOAD_PATH = "uploads/"
@@ -45,6 +68,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    # Downloaded Middleware
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = "renix.urls"
@@ -138,5 +163,11 @@ MESSAGE_TAGS = {
 }
 
 LOGOUT_REDIRECT_URL = '/'
-LOGIN_REDIRECT_URL = '/signIn/'
+LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = '/signIn/'
+SOCIALACCOUNT_LOGIN_ON_GET = True
+
+AUTHENTICATION_BACKENDS = {
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend"
+}

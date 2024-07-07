@@ -31,7 +31,7 @@
 <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center">
   <a class="brand-logo navbar-brand">
     <img src="{% static 'images/logo.png' %}"  alt="logo"/></a>
-    <a class="navbar-brand brand-logo-mini" href="../../index-2.html"
+    <a class="navbar-brand brand-logo-mini" href="#"
     > <img src="{% static 'images/logo.png' %}" 
     height="40px" weight="150px" alt="logo"/></a>
 </div>
@@ -46,30 +46,44 @@
   <ul class="navbar-nav navbar-nav-right">
     <li class="nav-item d-none d-lg-flex">
       <a class="nav-link" href="{% url 'subscription' %}">
-        <span class="btn btn-primary">Subscribe now</span>
+        <span class="btn btn-primary">Subscribe</span>
       </a>
     </li>
-
+    <li class="nav-item dropdown d-none d-lg-flex">
+      <div class="nav-link">
+        <span
+          class="dropdown-toggle btn btn-outline-dark"
+          id="languageDropdown"
+          data-toggle="dropdown"
+          >Change course</span
+        >
+        <div
+          class="dropdown-menu navbar-dropdown"
+          aria-labelledby="languageDropdown"
+        >
+          <a class="dropdown-item font-weight-medium" href="#">
+            Psychiatric Nurse
+          </a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item font-weight-medium" href="#">
+            Registered Midwifery
+          </a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item font-weight-medium" href="#">
+            Registered Nurse
+          </a>
+         
+      </div>
+    </li>
     <li class="nav-item nav-profile dropdown">
       <a
-        class="nav-link dropdown-toggle"
-        href="#"
-        data-toggle="dropdown"
-        id="profileDropdown"
+        class="nav-link "
+        href="{% url 'sign_out' %}"
       >
-        <img src="https://static.vecteezy.com/system/resources/previews/001/880/227/original/nurse-professional-avatar-character-icon-free-vector.jpg" alt="profile" />
+      <i class="fas fa-power-off text-primary"></i>
+      Logout
       </a>
-      <div
-        class="dropdown-menu dropdown-menu-right navbar-dropdown"
-        aria-labelledby="profileDropdown"
-      >
-    
-        <div class="dropdown-divider"></div>
-        <a class="dropdown-item" href="{% url 'sign_up' %}">
-          <i class="fas fa-power-off text-primary"></i>
-          Logout
-        </a>
-      </div>
+     
     </li>
   </ul>
   <button
@@ -90,12 +104,13 @@
 
     <li class="nav-item nav-profile">
       <div class="nav-link">
-        <div class="profile-image">
-          <img src="https://static.vecteezy.com/system/resources/previews/001/880/227/original/nurse-professional-avatar-character-icon-free-vector.jpg" alt="image" />
-        </div>
+       
         <div class="profile-name">
-          <p class="name">{{user_info.user.username}}</p>
-          <p class="designation">{{user_info.user.email}}</p>
+          {% if user.is_authenticated%}
+          <p class="name">{{user.first_name}} {{user.last_name}}</p>
+          <p class="designation">{{user.email}}</p>
+
+          {% endif %}
         </div>
       </div>
     </li>
@@ -109,22 +124,44 @@
         <span class="menu-title">Dashboard</span>
       </a>
     </li>
+  
     <li class="nav-item">
-      <a class="nav-link" href="{% url 'quizzes' %}">
+      <a
+        class="nav-link"
+        data-toggle="collapse"
+        href="#ui-basic"
+        aria-expanded="true"
+        aria-controls="ui-basic"
+      >
         <i class="fa fa-puzzle-piece menu-icon"></i>
         <span class="menu-title">Question Bank</span>
+        <i class="menu-arrow"></i>
       </a>
+      <div class="collapse" id="ui-basic">
+        <ul class="nav flex-column sub-menu">
+          {% comment %} <li class="nav-item">
+            <a class="nav-link" href="{% url 'create_question' %}"><i class="fa fa-edit" style="padding-right:10px;"></i> Create Test</a>
+          </li> {% endcomment %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'create_question' %}"> <i class="fa fa-file" style="padding-right:10px;"></i>Study Mode</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'create_question' %}"> <i class="fa fa-file" style="padding-right:10px;"></i></i>Exam Mode</a>
+          </li>
+          </li>
+        </ul>
+      </div>
     </li>
     <li class="nav-item">
       <a class="nav-link" href="{% url 'quiz_attempts' %}">
         <i class="fa fa-cubes menu-icon"></i>
-        <span class="menu-title">Study Mode</span>
+        <span class="menu-title">Lecture</span>
       </a>
     </li>
     <li class="nav-item">
       <a class="nav-link" href="{% url 'enrolled_courses' %}">
         <i class="fa fa-graduation-cap menu-icon"></i>
-        <span class="menu-title">My Quiz Attempts</span>
+        <span class="menu-title">Previous Tests</span>
       </a>
     </li>
     <li class="nav-item">
@@ -139,6 +176,12 @@
       <a class="nav-link" href="{% url 'subscription' %}">
         <i class="fa fa-fire menu-icon"></i>
         <span class="menu-title">Subscription</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'help' %}">
+        <i class="fa fa-question-circle menu-icon"></i>
+        <span class="menu-title">Help</span>
       </a>
     </li>
     <li class="nav-item">
@@ -177,5 +220,6 @@
     <script src="{% static 'js/wizard.js' %}"></script>
     <script src="{% static 'js/quiz.js' %}"></script>
     <script src="{% static 'js/avgrund.js' %}"></script>
+    <script src="{% static 'js/progress-bar.js' %}"></script>
   </body>
 </html>

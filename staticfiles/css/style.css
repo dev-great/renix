@@ -28378,7 +28378,7 @@ input:focus {
   .navbar-brand-wrapper
   .navbar-brand.brand-logo-mini
   img {
-  width: 40px;
+  width: 2rem;
 }
 
 .navbar.horizontal-layout-navbar .navbar-menu-wrapper .navbar-nav {
@@ -48651,11 +48651,11 @@ div.tagsinput span.tag a {
 }
 
 .auth .brand-logo {
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
 .auth .brand-logo img {
-  width: 50px;
+  width: 70px;
   height: 70px;
 }
 
