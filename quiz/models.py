@@ -9,6 +9,30 @@ from datetime import timedelta
 
 # Base Class
 
+TOPIC_CHOICES = (
+    ('Management of Care', 'Management of Care'),
+    ('Safety and Infection Control', 'Safety and Infection Control'),
+    ('Health Promotion and Maintenance', 'Health Promotion and Maintenance'),
+    ('Psychosocial Integrity', 'Psychosocial Integrity'),
+    ('Basic Care and Comfort', 'Basic Care and Comfort'),
+    ('Pharmacological and Parenteral Therapies',
+     'Pharmacological and Parenteral Therapies'),
+    ('Reduction of Risk Potential', 'Reduction of Risk Potential'),
+    ('Physiological Adaptation', 'Physiological Adaptation'),
+    ('Adult Health', 'Adult Health'),
+    ('Child Health', 'Child Health'),
+    ('Critical Care', 'Critical Care'),
+    ('Fundamentals', 'Fundamentals'),
+    ('Leadership & Management', 'Leadership & Management'),
+    ('Maternal & Newborn Health', 'Maternal & Newborn Health'),
+    ('Mental Health', 'Mental Health'),
+    ('Pharmacology', 'Pharmacology'),
+    ('Postpartum', 'Postpartum'),
+    ('Prioritization', 'Prioritization'),
+    ('Newborn', 'Newborn'),
+    ('Assignment/Delegation', 'Assignment/Delegation'),
+)
+
 
 class BaseModel(models.Model):
     uid = models.UUIDField(primary_key=True, default=uuid4, editable=False)
@@ -68,6 +92,7 @@ class StudyModel(BaseModel):
 class Question(BaseModel):
     category = models.ForeignKey(
         StudyTopicModel, on_delete=models.CASCADE, related_name='questions')
+    topic = models.CharField(max_length=100, choices=TOPIC_CHOICES)
     question = models.TextField()
     mark = models.IntegerField(default=5)
 
@@ -99,8 +124,11 @@ class Answer(BaseModel):
 
 
 class GivenQuizQuestions(BaseModel):
+    quiz = models.ForeignKey(
+        "Quiz", on_delete=models.CASCADE, related_name='given_questions')
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    answer = models.ForeignKey(Answer, on_delete=models.CASCADE)
+    answer = models.ForeignKey(
+        Answer, on_delete=models.CASCADE, null=True, blank=True)
     time_taken = models.IntegerField(default=0)
     points = models.IntegerField(default=0)
 
@@ -116,15 +144,18 @@ class Quiz(BaseModel):
 
     )
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    topic = models.ForeignKey(
-        StudyTopicModel, on_delete=models.CASCADE, related_name='topic', default=None)
-    given_question = models.ManyToManyField(GivenQuizQuestions, blank=True)
+    # topic = models.ForeignKey(
+    #     StudyTopicModel, on_delete=models.CASCADE, related_name='topic', default=None)
+    given_question = models.ManyToManyField(
+        GivenQuizQuestions, blank=True, related_name='quizzes')
     marks = models.IntegerField(default=0)
     total_marks = models.IntegerField(default=0)
     status = models.CharField(
         max_length=10, blank=True, default='no', null=True)
     start_time = models.DateTimeField(auto_now_add=True)
     end_time = models.DateTimeField(blank=True, null=True)
+    exam_mode = models.BooleanField(default=False)
+    duration = models.IntegerField(default=30)  # duration in minutes
 
     def __str__(self):
         return f'{self.user.username} {str(self.total_marks)}'

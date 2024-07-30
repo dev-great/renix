@@ -1,82 +1,51 @@
-{% extends 'dashboard/base.html' %} {% load static %} {% block body %}
+{% extends 'dashboard/base.html' %} 
+{% load static %} 
+{% load custom_filters %}
+{% block body %}
 
 <!-- partial -->
 
-<div class="content-wrapper">
+<div class="content-wrapper" >
+  <div class="col-12">
   <div class="page-header">
     <h3 class="page-title">Dashboard</h3>
   </div>
-  {% comment %}
-  <div class="row grid-margin">
-    <div class="col-12">
-      <div class="card card-statistics">
-        <div class="card-body">
-          <div class="d-flex flex-column flex-md-row align-items-start">
-            <div class="statistics-item">
-              <p>
-                <i class="icon-sm fa fa-graduation-cap mr-2"></i>
-                Enrolled Courses
-              </p>
-              <h2>{{enrolled_courses}}</h2>
-              <label class="badge badge-outline-success badge-pill">12% increase</label>
-            </div>
-            <div class="statistics-item">
-              <p>
-                <i class="icon-sm fa fa-graduation-cap mr-2"></i>
-                Total Questions
-              </p>
-              <h2>{{total_questions}}</h2>
-              <label class="badge badge-outline-success badge-pill">12% increase</label>
-            </div>
-            <div class="statistics-item">
-              <p>
-                <i class="icon-sm fa fa-graduation-cap mr-2"></i>
-                Used Question
-              </p>
-              <h2>{{total_answered}}</h2>
-              <label class="badge badge-outline-success badge-pill">12% increase</label>
-            </div>
-            <div class="statistics-item">
-              <div class="statistics-item">
-                <p>
-                  <i class="icon-sm fa fa-graduation-cap mr-2"></i>
-                  Remaining Questions
-                </p>
-                <h2>{{total_remaining}}</h2>
-                <label class="badge badge-outline-success badge-pill">12% increase</label>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      {% endcomment %}
+
+
       <div class="row">
         <div class="col-lg-6 grid-margin stretch-card">
           <div class="card">
             <div class="card-body">
               <h4 class="card-title">Monitor Your Progress</h4>
-              <h6 class="text-muted">Overall Completion</h6>
+              <h6 class="text-muted">Progress Statistics</h6>
               <div class="row" style="padding-left: 10px">
-                <h4 class="card-title">10,023 1</h4>
-                <h4 class="card-title text-muted">/19,001</h4>
+                <h4 class="card-title">{{total_answered}}</h4>
+                <h4 class="card-title text-muted">/{{total_questions}}</h4>
               </div>
               <div class="d-flex mb-3">
                 <div class="progress progress-md flex-grow">
-                  <div
-                    class="progress-bar bg-primary"
-                    role="progressbar"
-                    aria-valuenow="55"
-                    style="width: 55%"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                  ></div>
+                  {% if total_questions >= 0 %} 
+                    {% with percentage_completed=total_answered|floatdiv:total_questions|floatmul:100 %}
+                    <div
+                      class="progress-bar bg-primary"
+                      role="progressbar"
+                      aria-valuenow="{{ percentage_completed }}"
+                      style="width: {{ percentage_completed }} %"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                    >
+                    </div>
+                  </div>
                 </div>
-              </div>
+            
+                {% endwith %} 
+              {% endif %}
+            
               <br />
               <h6 class="text-muted">Study Plan Progress</h6>
               <div class="row" style="padding-left: 10px">
-                <h6 class="card-title">5</h6>
-                <h6 class="card-title text-muted">/100</h6>
+                <h6 class="card-title">1</h6>
+                <h6 class="card-title text-muted">/0</h6>
               </div>
               <div class="d-flex">
                 <div class="progress progress-md flex-grow">
@@ -97,7 +66,7 @@
         <div class="col-lg-6 grid-margin stretch-card">
           <div class="card">
             <div class="card-body">
-              <h4 class="card-title">Performance Summary</h4>
+              <h4 class="card-title">Performance Overview</h4>
               <div class="row" style="padding-left: 10px">
                 <div class="col-sm-3 col-md-2 col-8 circle-progress-block">
                   <div id="circleProgress1" class="progressbar-js-circle rounded p-3"></div>
@@ -114,14 +83,14 @@
                         <tr>
                           <td class="pl-1">Correct</td>
                           <td class="pr-0 text-right">
-                            <div class="badge badge-primary">7799</div>
+                            <div class="badge badge-primary">{{total_correct}}</div>
                           </td>
                         </tr>
 
                         <tr>
                           <td class="pl-0">Incorrect</td>
                           <td class="pr-0 text-right">
-                            <div class="badge badge-primary">6123</div>
+                            <div class="badge badge-primary">{{total_wrong}}</div>
                           </td>
                         </tr>
                       </tbody>
@@ -146,14 +115,14 @@
                         <tr>
                           <td class="pl-1">Scored Points</td>
                           <td class="pr-0 text-right">
-                            <div class="badge badge-primary">22678</div>
+                            <div class="badge badge-primary">{{enrolled_courses}}</div>
                           </td>
                         </tr>
 
                         <tr>
                           <td class="pl-0">Max Points</td>
                           <td class="pr-0 text-right">
-                            <div class="badge badge-primary">33645</div>
+                            <div class="badge badge-primary">{{total_remaining}}</div>
                           </td>
                         </tr>
                       </tbody>
@@ -181,14 +150,14 @@
               <br />and we’ll take care of the rest!
             </p>
             <div class="template-demo" style="text-align: center">
-              <a class="nav-link" href="#">
-                <span class="btn btn-primary">Set Up Your Study Plan</span>
+              <a class="nav-link" href="{% url 'quiz:enrolled_courses' %}">
+                <span class="btn btn-primary">Previous test</span>
               </a>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    
     <!-- Include jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Include Flot -->

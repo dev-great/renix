@@ -33,13 +33,13 @@
                   <td>{{ forloop.counter }}</td>
                   <td>{{context.category.name}}</td>
 
-                  <td class="limited-width">{{context.title}}</td>
+                  <td class="limited-width">{{context.title}}</td> 
                   <td>
                     <a
-                      href="{% url 'study_detail' %}?id={{ context.uid }}"
+                      href="{% url 'quiz:study_detail' %}?id={{context.uid}}"
                       class="btn btn-success btn-block"
                     >
-                      Take class
+                      Study
                     </a>
                   </td>
                 </tr>

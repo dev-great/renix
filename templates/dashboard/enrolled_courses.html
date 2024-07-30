@@ -1,4 +1,4 @@
-{% extends 'dashboard/base.html' %} {% load static %} {% block body %}
+{% extends 'dashboard/base.html' %} {% load static %}  {% block body %}
 
 <div class="content-wrapper">
   <div class="page-header">
@@ -25,131 +25,44 @@
                     </tr>
                   </thead>
                   <tbody>
+                    {% for quiz in quizzes %}
                     <tr>
-                      <td>WD-61</td>
-                      <td>Jun 05, 2024</td>
-                      <td>Study Mode</td>
-                      <td>Multiple</td>
+                      <td>WD-{{ quiz.uid|truncatechars:8 }}</td>
+                      <td>{{quiz.created_at}}</td>
+                      <td>{% if quiz.exam_mode %}
+                        Exam Mode
+                    {% else %}
+                        Study Mode
+                    {% endif %}
+                  </td>
                       <td>
-                        <label class="badge badge-danger">0/100</label>
+                        {% if quiz.given_question. %}
+                          Single
+                        {% else %}
+                        Multiple
+                        {% endif %}
+                        </td>
+                      <td>
+                        <label class="badge ">{{ quiz.marks }}/{{ quiz.total_marks }}</label>
                       </td>
                       <td class="text-right">
-                        <button class="btn btn-light">
+                        <a
+                        href="{% url 'quiz:quiz_questions' %}?quiz_id={{ quiz.uid }}" class="btn btn-light">
                           <i class="fa fa-eye text-primary"></i> View
-                        </button>
-                        <button class="btn btn-light">
+                      </a>
+                        <a href="{% url 'quiz:retake_quiz' %}?quiz_id={{ quiz.uid }}" class="btn btn-light">
                           <i class="fa fa-play text-success"></i> Re-take
-                        </button>
-                        <a class="btn btn-light" href="{% url 'text_analitics' %}">
-                          <i class="fa fa-bolt text-primary"></i> Analytics
                         </a>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>WD-62</td>
-                      <td>Jun 05, 2024</td>
-                      <td>Study Mode</td>
-                      <td>Multiple</td>
-
-                      <td>
-                        <label class="badge badge-danger">50/100</label>
-                      </td>
-                      <td class="text-right">
-                        <button class="btn btn-light">
-                          <i class="fa fa-eye text-primary"></i> View
-                        </button>
-                        <button class="btn btn-light">
-                          <i class="fa fa-play text-success"></i> Re-take
-                        </button>
-                        <a class="btn btn-light">
+                        <!-- <a class="btn btn-light" href="">
                           <i class="fa fa-bolt text-primary"></i> Analytics
-                        </a>
+                        </a> -->
                       </td>
                     </tr>
+                    {% empty %}
                     <tr>
-                      <td>WD-63</td>
-                      <td>Jun 05, 2024</td>
-                      <td>Exam Mode</td>
-                      <td>Multiple</td>
-
-                      <td>
-                        <label class="badge badge-danger">38/100</label>
-                      </td>
-                      <td class="text-right">
-                        <button class="btn btn-light">
-                          <i class="fa fa-eye text-primary"></i> View
-                        </button>
-                        <button class="btn btn-light">
-                          <i class="fa fa-play text-success"></i> Re-take
-                        </button>
-                        <button class="btn btn-light">
-                          <i class="fa fa-bolt text-primary"></i> Analytics
-                        </button>
-                      </td>
+                        <td colspan="6">No enrolled courses found.</td>
                     </tr>
-                    <tr>
-                      <td>WD-64</td>
-                      <td>Jun 05, 2024</td>
-                      <td>Exam Mode</td>
-                      <td>Child Health</td>
-                      <td>
-                        <label class="badge badge-success">100/100</label>
-                      </td>
-                      <td class="text-right">
-                        <button class="btn btn-light">
-                          <i class="fa fa-eye text-primary"></i> View
-                        </button>
-                        <button class="btn btn-light">
-                          <i class="fa fa-play text-success"></i> Re-take
-                        </button>
-                        <button class="btn btn-light">
-                          <i class="fa fa-bolt text-primary"></i> Analytics
-                        </button>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>WD-65</td>
-                      <td>Jun 05, 2024</td>
-                      <td>Study Mode</td>
-                      <td>Mental Health</td>
-
-                      <td>
-                        <label class="badge badge-success">85/100</label>
-                      </td>
-                      <td class="text-right">
-                        <button class="btn btn-light">
-                          <i class="fa fa-eye text-primary"></i> View
-                        </button>
-                        <button class="btn btn-light">
-                          <i class="fa fa-play text-success"></i> Re-take
-                        </button>
-                        <button class="btn btn-light">
-                          <i class="fa fa-bolt text-primary"></i> Analytics
-                        </button>
-                      </td>
-                    </tr>
-
-                    <tr>
-                      <td>WD-80</td>
-                      <td>Jun 05, 2024</td>
-                      <td>Study Mode</td>
-                      <td>Mental Health</td>
-
-                      <td>
-                        <label class="badge badge-success">90/100</label>
-                      </td>
-                      <td class="text-right">
-                        <button class="btn btn-light">
-                          <i class="fa fa-eye text-primary"></i> View
-                        </button>
-                        <button class="btn btn-light">
-                          <i class="fa fa-play text-success"></i> Re-take
-                        </button>
-                        <button class="btn btn-light">
-                          <i class="fa fa-bolt text-primary"></i> Analytics
-                        </button>
-                      </td>
-                    </tr>
+                    {% endfor %}
                   </tbody>
                 </table>
               </div>

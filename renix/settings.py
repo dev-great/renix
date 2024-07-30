@@ -5,7 +5,7 @@ from django.contrib.messages import constants as messages
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = "django-insecure-c&dw_%j38vlhnkm%$aa9e942l%f@8lkjmkngdh%!&4jo1f0f3d"
+SECRET_KEY = "django-insecure-c&dw_%j38vlhnkm%$aa9e942l%f@  "
 
 DEBUG = False
 
