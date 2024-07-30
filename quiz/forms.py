@@ -32,3 +32,34 @@ class ProfileUpdateForm(forms.ModelForm):
         self.fields['first_name'].initial = user.first_name
         self.fields['last_name'].initial = user.last_name
         self.fields['email'].initial = user.email
+
+
+class QuizForm(forms.Form):
+    EXAM_MODE_CHOICES = [
+        ("Study Mode", "Study Mode"),
+        ("Exam Mode", "Exam Mode"),
+    ]
+
+    ALL_TOPICS_OPTION = 'ALL'
+
+    topics = forms.MultipleChoiceField(
+        widget=forms.CheckboxSelectMultiple,
+        choices=[],  # This will be populated dynamically in the view
+    )
+    quiz_mode = forms.ChoiceField(
+        choices=EXAM_MODE_CHOICES,
+        initial="Study Mode",
+        widget=forms.Select(attrs={'class': 'form-select'})
+    )
+    num_questions = forms.IntegerField(min_value=1, max_value=10000)
+
+    def __init__(self, *args, **kwargs):
+        topics_choices = kwargs.pop('topics_choices', [])
+        super().__init__(*args, **kwargs)
+        # Add 'Select All' option to the choices
+        self.fields['topics'].choices = [
+            (self.ALL_TOPICS_OPTION, 'Select All')] + topics_choices
+        self.fields['num_questions'].widget.attrs.update(
+            {'class': 'form-control'}
+        )
+        # self.fields['quiz_mode'].widget.attrs.update({'class': 'form-select'})

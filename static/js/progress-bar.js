@@ -37,7 +37,7 @@
     });
 
     bar.text.style.fontSize = "1rem";
-    bar.animate(0.34); // Number from 0.0 to 1.0
+    bar.animate(0.01); // Number from 0.0 to 1.0
   }
 
   if ($("#circleProgress2").length) {
@@ -75,7 +75,7 @@
     });
 
     bar.text.style.fontSize = "1rem";
-    bar.animate(0.54); // Number from 0.0 to 1.0
+    bar.animate(0.0); // Number from 0.0 to 1.0
   }
 
   if ($("#circleProgress3").length) {

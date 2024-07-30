@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404, render, HttpResponse, redirect
-
-from quiz.forms import ProfileUpdateForm
+from django.urls import reverse
+from quiz.forms import ProfileUpdateForm, QuizForm
 from . models import *
 from django.http import JsonResponse
 from django.core.paginator import Paginator
@@ -10,11 +10,12 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Q
-
+from urllib.parse import quote
 from django.contrib.auth.forms import UserChangeForm
-
+import uuid
 
 # Create your views here.
+
 
 @login_required
 def index(request):
@@ -22,25 +23,25 @@ def index(request):
 
     # List of attempted quizzes
     attempted_quizzes = Quiz.objects.filter(
-        user=user, given_question__isnull=False).distinct().order_by('-end_time')[:5]
+        user=user, given_question__isnull=False).distinct().order_by('-end_time')[:5] or None
 
     # Top 5 activities
     last_login_time = User.objects.filter(
-        pk=request.user.pk).values_list('last_login', flat=True).first()
+        pk=request.user.pk).values_list('last_login', flat=True).first() or None
 
     # Get the latest course in Quiz
     latest_course = Quiz.objects.filter(
-        user=request.user).order_by('-end_time').first()
+        user=request.user).order_by('-end_time').first() or None
 
     # Get the latest Category added
-    latest_category = Category.objects.order_by('-created_at').first()
+    latest_category = Category.objects.order_by('-created_at').first() or None
 
     # Number of courses, enrolled courses, and completed courses
-    total_courses = Category.objects.count()
-    enrolled_courses = Quiz.objects.filter(user=user).count()
+    total_courses = Category.objects.count() or 0
+    enrolled_courses = Quiz.objects.filter(user=user).count() or 0
     completed_courses = Quiz.objects.filter(
-        user=user, end_time__isnull=False).count()
-    quizzes = Quiz.objects.filter(user=request.user)
+        user=user, end_time__isnull=False).count() or 0
+    quizzes = Quiz.objects.filter(user=request.user) or []
 
     # Initialize totals
     total_questions = 0
@@ -50,10 +51,10 @@ def index(request):
 
     for quiz in quizzes:
         data = quiz.get_total_answered_questions_across_all_categories()
-        total_questions += data['all_questions']
-        total_answered += data['total_answered']
-        total_correct += data['total_correct']
-        total_wrong += data['total_wrong']
+        total_questions += data.get('all_questions', 0)
+        total_answered += data.get('total_answered', 0)
+        total_correct += data.get('total_correct', 0)
+        total_wrong += data.get('total_wrong', 0)
 
     total_remaining = total_questions - total_answered
 
@@ -111,108 +112,265 @@ def check_answer(request, uid, createObj):
 
 
 def calculate_marks(quiz):
-    marks = 0
+    # Implement the logic to calculate the total marks
+    # For example:
+    total_marks = 0
     for given_question in quiz.given_question.all():
         if given_question.answer.is_correct:
-            marks += given_question.question.mark
-    return marks
+            total_marks += given_question.question.mark
+    return total_marks
 
 
-def quiz(request):
-    category = request.GET.get('category')
-    if category:
-        category = StudyTopicModel.objects.get(uid=category)
-        quiz, created = Quiz.objects.get_or_create(
-            user=request.user, topic=category
-        )
+# def quiz(request):
+#     if request.method == 'POST':
+#         form = QuizForm(request.POST, topics_choices=[
+#             (topic, topic) for topic in Question.objects.values_list('topic', flat=True).distinct()
+#         ])
+#         if form.is_valid():
+#             selected_topics = form.cleaned_data['topics']
+#             question_limit = form.cleaned_data['num_questions']
+#             quiz_mode = form.cleaned_data['quiz_mode']
 
-        questions = Question.objects.filter(category__title=category)
-        paginator = Paginator(questions, 1)
-        page_number = request.GET.get('page')
+#             if selected_topics:
+#                 questions = Question.objects.filter(
+#                     topic__in=selected_topics
+#                 ).distinct()[:question_limit]
 
+#                 if not questions.exists():
+#                     return HttpResponse("No questions found for selected topics.")
+
+#                 quiz, created = Quiz.objects.get_or_create(
+#                     user=request.user, defaults={'total_marks': 0, 'marks': 0}
+#                 )
+#                 paginator = Paginator(questions, 1)
+#                 page_number = request.GET.get('page')
+
+#                 try:
+#                     page_obj = paginator.page(page_number)
+#                 except PageNotAnInteger:
+#                     page_obj = paginator.page(1)
+#                 except EmptyPage:
+#                     page_obj = paginator.page(paginator.num_pages)
+
+#                 # Handling answer submission
+#                 if 'submit' in request.POST:
+#                     question = page_obj.object_list[0]
+#                     answer_id = request.POST.get(
+#                         f'answer_{page_obj.object_list[0].uid}')
+#                     print("This is the selected answers {answer_id}")
+#                     print("This is the selected question {question}")
+#                     if answer_id:
+#                         answer = get_object_or_404(Answer, uid=answer_id)
+#                         print("This answer would be {answer}")
+#                         given_question, created = GivenQuizQuestions.objects.get_or_create(
+#                             quiz=quiz, question=question, defaults={
+#                                 'answer': answer}
+#                         )
+#                         print("This is the selected answers {given_question}")
+
+#                         if not created:
+#                             given_question.answer = answer
+#                             given_question.save()
+
+#                         quiz.given_question.add(given_question)
+#                         quiz.save()
+
+#                         print("This is the selected answers {given_question}")
+
+#                     # Move to the next page if available
+#                     next_page_number = page_obj.next_page_number() if page_obj.has_next() else None
+#                     if next_page_number is not None:
+#                         return redirect(f'/quizzes/quizzes/quiz/?page={next_page_number}')
+#                     else:
+#                         return render(request, 'dashboard/success.html')
+
+#                 quiz.marks = calculate_marks(quiz)
+#                 quiz.total_marks = sum(question.mark for question in questions)
+#                 quiz.save()
+
+#                 context = {'page_obj': page_obj,
+#                            'quiz': quiz, 'quiz_mode': quiz_mode, }
+#                 return render(request, 'dashboard/quiz.html', context)
+
+#     else:
+#         form = QuizForm(topics_choices=[
+#             (topic, topic) for topic in Question.objects.values_list('topic', flat=True).distinct()
+#         ])
+
+#     return render(request, 'dashboard/create_question.html', {'form': form})
+
+def quiz_create(request):
+    if request.method == 'POST':
+        form = QuizForm(request.POST, topics_choices=sorted(set([
+            (topic, topic) for topic in Question.objects.values_list('topic', flat=True).distinct()
+        ])))
+        if form.is_valid():
+            selected_topics = form.cleaned_data['topics']
+            question_limit = form.cleaned_data['num_questions']
+            quiz_mode = form.cleaned_data['quiz_mode']
+
+            # Check if 'Select All' option is selected
+            if QuizForm.ALL_TOPICS_OPTION in selected_topics:
+                selected_topics = [
+                    topic for topic, _ in form.fields['topics'].choices if topic != QuizForm.ALL_TOPICS_OPTION]
+
+            if selected_topics:
+                questions = Question.objects.filter(
+                    topic__in=selected_topics
+                ).distinct()[:question_limit]
+
+                if not questions.exists():
+                    return HttpResponse("No questions found for selected topics.")
+
+                total_marks = sum(question.mark for question in questions)
+
+                exam_mode = True if quiz_mode == "Exam Mode" else False
+
+                quiz = Quiz.objects.create(
+                    user=request.user,
+                    total_marks=total_marks, marks=0, exam_mode=exam_mode,
+                )
+                question_ids = [str(q.uid)
+                                for q in questions]
+
+                request.session['quiz_id'] = str(quiz.uid)
+                request.session['quiz_mode'] = quiz_mode
+                request.session['question_ids'] = ','.join(question_ids)
+
+                return redirect('quiz:quiz_start')
+
+    else:
+        form = QuizForm(topics_choices=sorted(set([
+            (topic, topic) for topic in Question.objects.values_list('topic', flat=True).distinct()
+        ])))
+
+    return render(request, 'dashboard/create_question.html', {'form': form})
+
+
+def quiz_start(request):
+    quiz_id = request.session.get('quiz_id')
+    print(quiz_id)
+    quiz_mode = request.session.get('quiz_mode')
+    print(quiz_mode)
+    question_ids = request.session.get('question_ids')
+    print(question_ids)
+    # Default to 1 hour if not provided
+    time_left = request.POST.get('time_left', 3600)
+    request.session['time_left'] = time_left
+
+    if not all([quiz_id, quiz_mode, question_ids]):
+        return redirect('quiz:quiz_create')
+
+    # Convert question_ids from session data
+    question_ids_list = question_ids.split(',')
+    valid_uuids = []
+
+    for qid in question_ids_list:
         try:
-            page_obj = paginator.page(page_number)
-        except PageNotAnInteger:
-            page_obj = paginator.page(1)
-        except EmptyPage:
-            page_obj = paginator.page(paginator.num_pages)
+            valid_uuid = uuid.UUID(qid)
+            valid_uuids.append(valid_uuid)
+        except ValueError:
+            continue  # Skip invalid UUIDs
 
-        if request.method == 'POST':
-            answer_uid = request.POST.get(
-                f'answer_{page_obj.object_list[0].uid}')
-            if answer_uid:
-                answer = get_object_or_404(Answer, uid=answer_uid)
-                question = get_object_or_404(
-                    Question, uid=page_obj.object_list[0].uid)
+    if not valid_uuids:
+        return HttpResponse("No valid questions found for this quiz.")
 
-                # Check if a GivenQuizQuestion already exists for this quiz and question
-                given_question, created = GivenQuizQuestions.objects.get_or_create(
-                    quiz=quiz, question=question, defaults={'answer': answer})
+    # Get the Quiz object
+    quiz = Quiz.objects.get(uid=quiz_id)
+    questions = Question.objects.filter(uid__in=question_ids_list)
 
-                # If it exists, update the answer
-                if not created:
-                    given_question.answer = answer
-                    given_question.save()
+    # Set up pagination
+    paginator = Paginator(questions, 1)  # Show one question per page
+    page_number = request.GET.get('page', 1)
 
-                quiz.given_question.add(given_question)
+    try:
+        page_obj = paginator.page(page_number)
+    except PageNotAnInteger:
+        page_obj = paginator.page(1)
+    except EmptyPage:
+        page_obj = paginator.page(paginator.num_pages)
+
+    if request.method == 'POST':
+        question = page_obj.object_list[0]
+        print(page_obj.object_list[0].uid)
+        answer_id = request.POST.get(f'answer_{question.uid}')
+        print(answer_id)
+
+        if answer_id:
+            answer = get_object_or_404(Answer, uid=answer_id)
+            print("this is the answer {answer}")
+            given_question, created = GivenQuizQuestions.objects.get_or_create(
+                quiz=quiz,
+                question=question, defaults={'answer': answer}
+            )
+            if not created:
+                given_question.answer = answer
+                given_question.save()
+
+            # Update the quiz marks if the answer is correct
+            if answer.is_correct:
+                quiz.marks += question.mark
                 quiz.save()
 
-                # Move to the next page if available
-                next_page_number = page_obj.next_page_number() if page_obj.has_next() else None
-                if next_page_number is not None:
-                    return redirect(f'/quizzes/quizzes/quiz/?page={next_page_number}&category={category.uid}')
-                else:
-                    return render(request, 'dashboard/success.html')
+            quiz.given_question.add(given_question)
+            quiz.save()
 
-        # Calculate marks before rendering the page
-        quiz.marks = calculate_marks(quiz)
-        quiz.total_marks = sum(question.mark for question in questions)
-        quiz.save()
+        # Redirect to the next question
+        next_page_number = page_obj.next_page_number() if page_obj.has_next() else None
+        if next_page_number:
+            return redirect(f'/quiz/start/?page={next_page_number}')
+        else:
+            return render(request, 'dashboard/success.html', {'clear_storage': True, 'total_score': quiz.marks, "total_points": quiz.total_marks})
 
-        context = {'page_obj': page_obj,
-                   'category': category, 'quiz': quiz}
-        return render(request, 'dashboard/quiz.html', context)
+    context = {
+        'page_obj': page_obj,
+        'quiz': quiz,
+        'quiz_mode': quiz_mode,
+        'question_ids': ','.join(question_ids),
+        'time_left': request.session.get('time_left', 3600),
+    }
+    return render(request, 'dashboard/quiz.html', context)
 
-    return redirect('index')
+
+@login_required
+def retake_quiz(request):
+    quiz_id = request.GET.get('quiz_id')
+    original_quiz = get_object_or_404(Quiz, uid=quiz_id, user=request.user)
+
+    # Create a new quiz instance
+    new_quiz = Quiz.objects.create(
+        user=request.user,
+        total_marks=original_quiz.total_marks,
+        marks=0,
+        exam_mode=original_quiz.exam_mode,
+    )
+
+    # Copy questions from the original quiz
+    for given_question in original_quiz.given_question.all():
+        new_given_question = GivenQuizQuestions.objects.create(
+            question=given_question.question,
+            quiz=new_quiz
+        )
+
+        # Add the new given question to the quiz
+        new_quiz.given_question.add(new_given_question)
+
+    new_quiz.save()
+
+    request.session['quiz_id'] = str(new_quiz.uid)
+    request.session['quiz_mode'] = "Study Mode" if new_quiz.exam_mode == False else "Exam Mode"
+    question_ids = [str(gq.question.uid)
+                    for gq in new_quiz.given_question.all()]
+    request.session['question_ids'] = ','.join(question_ids)
+
+    return redirect('quiz:quiz_start')
 
 
 def success_screen(request):
     return render(request, 'dashboard/success_screen.html')
 
 
-# def sign_up(request):
-#     if request.method == 'POST':
-#         username = request.POST.get('username')
-#         email = request.POST.get('email')
-#         password = request.POST.get('password1')
-
-#         if not username or not email or not password:
-#             messages.error(request, 'All fields are required.')
-#             return render(request, 'signup.html', {'sign_up_active': True})
-
-#         if not User.objects.filter(username=username).exists():
-#             user = User.objects.create_user(
-#                 username=username, email=email, password=password)
-#             user.save()
-#             messages.success(request, 'Signed up successfully.')
-#             return redirect('sign_in')
-
-#         messages.error(
-#             request, 'User already exists. Try with a different username.')
-
-#     return render(request, 'signup.html', {'sign_up_active': True})
-
-
 def sign_in(request):
-    # if request.method == 'POST':
-    #     username = request.POST.get('username')
-    #     password = request.POST.get('password')
-    #     user = authenticate(request, username=username, password=password)
-    #     if (user):
-    #         login(request, user)
-    #         messages.success(request, 'Signined Successfully.')
-    #         return redirect('index')
-    #     messages.error(request, 'Enter valid username or password.')
     return render(request, 'signin.html')
 
 
@@ -292,8 +450,13 @@ def quizAttempts(request):
 
 def study_detail(request):
     id = request.GET.get('id')
+    print(f"Received ID: {id}")
+
     topic = get_object_or_404(StudyTopicModel, uid=id)
-    post = get_object_or_404(StudyModel, topic=topic)
+    try:
+        post = StudyModel.objects.get(topic=topic)
+    except StudyModel.DoesNotExist:
+        return render(request, '404.html',)
     context = {
         'post': post,
     }
@@ -336,7 +499,8 @@ def enrolled_courses(request):
 
 
 @login_required
-def quiz_questions(request, quiz_id):
+def quiz_questions(request):
+    quiz_id = request.GET.get('quiz_id')
     quiz = get_object_or_404(Quiz, uid=quiz_id, user=request.user)
     given_questions = quiz.given_question.all()
     questions = [
@@ -394,11 +558,6 @@ def quizzes(request):
 def study_list(request):
     study = StudyModel.objects.all()
     return render(request, 'dashboard/enrolled_courses.html', {'context': study})
-
-
-@login_required
-def create_question(request):
-    return render(request, 'dashboard/create_question.html',)
 
 
 @login_required

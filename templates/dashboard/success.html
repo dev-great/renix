@@ -12,6 +12,7 @@
           <p class="card-description">
             You have successfully completed the quiz.
           </p>
+          <h4 class="card-title">Score: {{total_score}} / {{total_points}}</h4>
           <div class="card card-inverse-warning" id="context-menu-open">
             <div class="card-body">
               <p class="card-text">
@@ -24,4 +25,10 @@
     </div>
   </div>
 </div>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    localStorage.removeItem('timeLeft');
+    localStorage.removeItem('timeElapsed');
+  });
+</script>
 {% endblock %}

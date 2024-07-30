@@ -45,7 +45,7 @@
 </button>
   <ul class="navbar-nav navbar-nav-right">
     <li class="nav-item d-none d-lg-flex">
-      <a class="nav-link" href="{% url 'subscription' %}">
+      <a class="nav-link" href="{% url 'quiz:subscription' %}">
         <span class="btn btn-primary">Subscribe</span>
       </a>
     </li>
@@ -78,7 +78,7 @@
     <li class="nav-item nav-profile dropdown">
       <a
         class="nav-link "
-        href="{% url 'sign_out' %}"
+        href="{% url 'quiz:sign_out' %}"
       >
       <i class="fas fa-power-off text-primary"></i>
       Logout
@@ -119,53 +119,34 @@
 {% endif %}
 
     <li class="nav-item">
-      <a class="nav-link" href="{% url 'index' %}">
+      <a class="nav-link" href="{% url 'quiz:index' %}">
         <i class="fa fa-th-large menu-icon"></i>
         <span class="menu-title">Dashboard</span>
       </a>
     </li>
-  
+
+
     <li class="nav-item">
-      <a
-        class="nav-link"
-        data-toggle="collapse"
-        href="#ui-basic"
-        aria-expanded="true"
-        aria-controls="ui-basic"
-      >
+      <a class="nav-link" href="{% url 'quiz:quiz_create' %}">
         <i class="fa fa-puzzle-piece menu-icon"></i>
         <span class="menu-title">Question Bank</span>
-        <i class="menu-arrow"></i>
-      </a>
-      <div class="collapse" id="ui-basic">
-        <ul class="nav flex-column sub-menu">
-          {% comment %} <li class="nav-item">
-            <a class="nav-link" href="{% url 'create_question' %}"><i class="fa fa-edit" style="padding-right:10px;"></i> Create Test</a>
-          </li> {% endcomment %}
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'create_question' %}"> <i class="fa fa-file" style="padding-right:10px;"></i>Study Mode</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'create_question' %}"> <i class="fa fa-file" style="padding-right:10px;"></i></i>Exam Mode</a>
-          </li>
-          </li>
-        </ul>
-      </div>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" href="{% url 'quiz_attempts' %}">
-        <i class="fa fa-cubes menu-icon"></i>
-        <span class="menu-title">Lecture</span>
       </a>
     </li>
+
     <li class="nav-item">
-      <a class="nav-link" href="{% url 'enrolled_courses' %}">
+      <a class="nav-link" href="{% url 'quiz:enrolled_courses' %}">
         <i class="fa fa-graduation-cap menu-icon"></i>
         <span class="menu-title">Previous Tests</span>
       </a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="{% url 'myprofile' %}">
+      <a class="nav-link" href="{% url 'quiz:quiz_attempts' %}">
+        <i class="fa fa-cubes menu-icon"></i>
+        <span class="menu-title">Lecture</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'quiz:myprofile' %}">
         <i class="far fa-user-circle menu-icon"></i>
         <span class="menu-title">My Profile</span>
       </a>
@@ -173,19 +154,20 @@
   
 
     <li class="nav-item">
-      <a class="nav-link" href="{% url 'subscription' %}">
+      <a class="nav-link" href="{% url 'quiz:subscription' %}">
         <i class="fa fa-fire menu-icon"></i>
-        <span class="menu-title">Subscription</span>
+        <span class="menu-title">Course listed</span>
       </a>
     </li>
+ 
     <li class="nav-item">
-      <a class="nav-link" href="{% url 'help' %}">
+      <a class="nav-link" href="{% url 'quiz:help' %}">
         <i class="fa fa-question-circle menu-icon"></i>
         <span class="menu-title">Help</span>
       </a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="{% url 'settings' %}">
+      <a class="nav-link" href="{% url 'quiz:settings' %}">
         <i class="fa fa-cog menu-icon"></i>
         <span class="menu-title">Settings</span>
       </a>
@@ -209,6 +191,19 @@
       </footer>
   </div>
 </div>
+<!--Start of Tawk.to Script-->
+<script type="text/javascript">
+  var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+  (function(){
+  var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+  s1.async=true;
+  s1.src='https://embed.tawk.to/621abf5c1ffac05b1d7c0d68/1fss7n120';
+  s1.charset='UTF-8';
+  s1.setAttribute('crossorigin','*');
+  s0.parentNode.insertBefore(s1,s0);
+  })();
+  </script>
+  <!--End of Tawk.to Script-->
     <script src="{% static 'vendors/js/vendor.bundle.base.js' %}"></script>
     <script src="{% static 'vendors/js/vendor.bundle.addons.js' %}"></script>
     <script src="{% static 'js/off-canvas.js' %}"></script>

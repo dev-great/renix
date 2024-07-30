@@ -1,8 +1,20 @@
-{% extends 'dashboard/base.html' %} {% load static %} {% block body %}
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block body %}
 <div class="content-wrapper">
   <div class="content-wrapper">
     <div class="page-header">
       <h3 class="page-title">Quiz On {{ category|title }}</h3>
+
+    <div class="timer">
+      {% if quiz_mode == "Exam Mode" %}
+  <div>Time Left: <span id="countdown"></span></div>
+  {% elif quiz_mode == "Study Mode" %}
+  <div>Time Elapsed: <span id="countup"></span></div>
+  {% endif %}
+    </div>
+    
+
     </div>
   </div>
 
@@ -15,56 +27,85 @@
         <span id="marks">{{ quiz.marks }}</span>/{{ quiz.total_marks }}
       </h5>
     </div>
-    {% for question in page_obj.object_list %}
     <form
-      action=""
       method="post"
       class="mt-4 p-4 text-capitalize form-control box_shadow"
     >
       {% csrf_token %}
-      <div class="fw-bold text-center fs-5 d-flex justify-content-between p-2">
-        <span id="{{ question.uid }}" class="questionP"
-          >{{ page_obj.number }}. {{ question.question }}?</span
-        >
-        <span>{{ question.mark }} Marks</span>
-      </div>
+      {% if page_obj %}
+      {% for question in page_obj.object_list %}
+            <div class="fw-bold text-center fs-5 d-flex justify-content-between p-2">
+              <span id="{{ page_obj.number }}" class="questionP"
+                >{{ page_obj.number }}. {{ question.question }}</span
+              >
+              <span>{{ question.mark }} Marks</span>
+            </div>
 
-      <div class="form-check">
-        {% for answer in question.answers.all %}
-        <ul class="list-group">
-          <li
-            class="list-group-item list-group-item-action list-group-item-primary mt-3 answerList"
-            style="padding-left: 2rem"
-          >
-            <input
-              class="form-check-input me-1 answerInput"
-              value="{{ answer.uid }}"
-              type="radio"
-              id="{{ answer.uid }}"
-              name="answer_{{ question.uid }}"
-            />
-            <label
-              class="form-check-label d-block fw-semibold"
-              for="{{ answer.uid }}"
-              >{{ answer.answer }}</label
-            >
-          </li>
-        </ul>
-        {% endfor %}
-      </div>
+            <div class="form-check">
+              {% for answer in question.answers.all %}
+              <ul class="list-group">
+                <li
+                  class="list-group-item list-group-item-action list-group-item-primary mt-3 answerList"
+                  style="padding-left: 2rem"
+                >
+                  <input
+                    class="form-check-input me-1 answerInput"
+                    type="radio" id="answer_{{ answer.uid }}" name="answer_{{page_obj.object_list.0.uid }}" value="{{ answer.uid }}"
+                  />
+                  <label
+                    class="form-check-label d-block fw-semibold"
+                    for="answer_{{ answer.uid }}">{{ answer.answer }}</label
+                  >
+                </li>
+              </ul>
+              {% endfor %}
+            </div>
+            {% endfor %}
+            {% endif %}
 
       <div class="mt-2 p-3 d-flex justify-content-between">
-        {% if page_obj.has_previous %}
-        <a
-          class="btn btn-outline-primary"
-          href="?page={{ page_obj.previous_page_number }}&category={{ category.uid }}"
-          >Previous</a
-        >
-        {% endif %}
-        <button type="submit" class="btn btn-primary">Next</button>
+        <button type="submit" name="submit" class="btn btn-primary">Next</button>
       </div>
     </form>
-    {% endfor %}
   </div>
 </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    {% if quiz_mode == "Exam Mode" %}
+    var countdownElement = document.getElementById('countdown');
+    var savedTimeLeft = localStorage.getItem('timeLeft');
+    var timeLeft = savedTimeLeft ? parseInt(savedTimeLeft, 10) : 3600; // 10 minutes for example
+  
+    var countdownTimer = setInterval(function() {
+      var minutes = Math.floor(timeLeft / 60);
+      var seconds = timeLeft % 60;
+      countdownElement.textContent = minutes + ":" + (seconds < 10 ? "0" + seconds : seconds);
+      timeLeft--;
+      localStorage.setItem('timeLeft', timeLeft); // Save the remaining time
+  
+      if (timeLeft < 0) {
+        clearInterval(countdownTimer);
+        localStorage.removeItem('timeLeft'); // Clear the saved time
+        alert('Time is up!');
+        document.forms[0].submit(); // auto-submit form when time is up
+      }
+    }, 1000);
+  
+    {% elif quiz_mode == "Study Mode" %}
+    var countupElement = document.getElementById('countup');
+    var savedTimeElapsed = localStorage.getItem('timeElapsed');
+    var timeElapsed = savedTimeElapsed ? parseInt(savedTimeElapsed, 10) : 0;
+  
+    var countupTimer = setInterval(function() {
+      var minutes = Math.floor(timeElapsed / 60);
+      var seconds = timeElapsed % 60;
+      countupElement.textContent = minutes + ":" + (seconds < 10 ? "0" + seconds : seconds);
+      timeElapsed++;
+      localStorage.setItem('timeElapsed', timeElapsed); // Save the elapsed time
+    }, 1000);
+  
+    {% endif %}
+  });
+</script>
 {% endblock body %}
