@@ -70,7 +70,13 @@
                                   {% endif %}
                               {% endif %} {% endif %} list-group-item-action list-group-item-primary mt-3 answerList" style="padding-left: 2rem;">
                               <input class="form-check-input me-1" type="radio" name="answer_{{ question.uid }}" value="{{ answer.uid }}"
-                                     {% if answer.uid == selected_answer.uid or answer.uid == correct_answer.uid and selected_answer and study_mode %} disabled {% endif %} />
+                              {% if study_mode %}
+                              {% if answer.uid == selected_answer.uid %}
+                                  disabled
+                              {% elif answer.uid == correct_answer.uid and selected_answer %}
+                                  disabled
+                              {% endif %}
+                              {% endif %} />
                               {{ answer.answer }}
                           </li>
                       </ul>

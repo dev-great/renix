@@ -202,6 +202,8 @@ def calculate_marks(quiz):
 #     return render(request, 'dashboard/create_question.html', {'form': form})
 
 def quiz_create(request):
+    request.session.pop('correct_answer', None)
+    request.session.pop('selected_answer', None)
     if request.method == 'POST':
         form = QuizForm(request.POST, topics_choices=sorted(set([
             (topic, topic) for topic in Question.objects.values_list('topic', flat=True).distinct()
@@ -406,9 +408,12 @@ def quiz_start(request):
                     'question_ids': ','.join(question_ids),
                     'time_left': request.session.get('time_left', 3600),
                     'correct_answer': correct_answer,
+                    'selected_answer': answer,
                     'answer_acknowledged': True,
+                    'study_mode': quiz_mode == "Study Mode"
                 })
             else:
+                request.session.pop('selected_answer', None)
                 # Redirect to the next question
                 next_page_number = page_obj.next_page_number() if page_obj.has_next() else None
                 if next_page_number:
@@ -419,6 +424,7 @@ def quiz_start(request):
             # Clear previous question session variables
             request.session.pop('current_question_uid', None)
             request.session.pop('correct_answer', None)
+            request.session.pop('selected_answer', None)
             request.session.pop('answer_acknowledged', None)
 
             return redirect(f'/quiz/start/?page={next_page_number}')
@@ -470,16 +476,19 @@ def quiz_start(request):
 
     current_question_uid = request.session.get('current_question_uid')
     correct_answer_uid = request.session.pop('correct_answer', None)
+    request.session.pop('selected_answer', None)
     correct_answer = Answer.objects.filter(
         uid=correct_answer_uid).first() if correct_answer_uid else None
     answer_acknowledged = request.session.pop('answer_acknowledged', False)
-
+    selected_answer_uid = None
     if quiz_mode == "Study Mode" and current_question_uid:
         if str(page_obj.object_list[0].uid) != current_question_uid:
             request.session.pop('current_question_uid', None)
             request.session.pop('correct_answer', None)
+            request.session.pop('selected_answer', None)
             request.session.pop('answer_acknowledged', None)
         elif answer_acknowledged:
+            request.session.pop('selected_answer', None)
             next_page_number = page_obj.next_page_number() if page_obj.has_next() else None
             if next_page_number:
                 return redirect(f'/quiz/start/?page={next_page_number}')
@@ -538,12 +547,16 @@ def quiz_start(request):
         'correct_answer': correct_answer,
         'answered_question': current_question_uid,
         'answer_acknowledged': answer_acknowledged,
+        'selected_answer_uid': selected_answer_uid,
+        'study_mode': quiz_mode == "Study Mode"
     }
 
     return render(request, 'dashboard/quiz.html', context)
 
 
 def readiness_quiz_start(request):
+    request.session.pop('correct_answer', None)
+    request.session.pop('selected_answer', None)
     if request.method == 'POST':
         # Creating the quiz and shuffling questions
         questions = Question.objects.all()
