@@ -1,3 +1,5 @@
+
+{% load custom_filters %}
 <!DOCTYPE html>
 <html lang="en">
   {% load static %}
@@ -61,16 +63,17 @@
           class="dropdown-menu navbar-dropdown"
           aria-labelledby="languageDropdown"
         >
-          <a class="dropdown-item font-weight-medium" href="#">
-            Psychiatric Nurse
-          </a>
-          <div class="dropdown-divider"></div>
+          
           <a class="dropdown-item font-weight-medium" href="#">
             Registered Midwifery
           </a>
           <div class="dropdown-divider"></div>
           <a class="dropdown-item font-weight-medium" href="#">
             Registered Nurse
+          </a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item font-weight-medium" href="#">
+            Entrance Exam
           </a>
          
       </div>
@@ -133,6 +136,16 @@
       </a>
     </li>
 
+    <li class="nav-item">
+      <a class="nav-link" href="#">
+        <i class="fa fa-clock menu-icon"></i>
+        <form method="POST" action="{% url 'quiz:quiz_readiness' %}">
+          {% csrf_token %}
+          <button type="submit"  style="padding-left: 0;" class="btn btn-link menu-title">Readiness assessment </button> 
+        </form>
+      </a>
+    </li>
+    
     <li class="nav-item">
       <a class="nav-link" href="{% url 'quiz:enrolled_courses' %}">
         <i class="fa fa-graduation-cap menu-icon"></i>

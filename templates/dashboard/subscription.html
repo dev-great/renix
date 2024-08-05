@@ -1,4 +1,6 @@
-{% extends 'dashboard/base.html' %} {% load static %} {% block body %}
+{% extends 'dashboard/base.html' %}
+{% load static %}
+{% block body %}
 <div class="content-wrapper">
   <div class="page-header">
     <h3 class="page-title">Course listed</h3>
@@ -25,9 +27,7 @@
                   </div>
                   <ul class="list-unstyled plan-features"></ul>
                   <div class="wrapper">
-                    <a href="#" class="btn btn-outline-primary btn-block"
-                      >Current Plan</a
-                    >
+                    <a href="#" class="btn btn-outline-primary btn-block">Current Plan</a>
                   </div>
                   <p class="mt-3 mb-0 plan-cost text-gray">Free</p>
                 </div>
@@ -41,10 +41,8 @@
                   </div>
                   <ul class="list-unstyled plan-features"></ul>
                   <div class="wrapper">
-                    <a id="show" class="btn btn-success btn-block"> Pay </a>
-                    <p class="mt-3 mb-0 plan-cost text-success">
-                      or purchase now
-                    </p>
+                    <button class="common_btn btn btn-success btn-block" onclick="payWithPaystack(30); return false;">Pay</button>
+                    <p class="mt-3 mb-0 plan-cost text-success">or purchase now</p>
                   </div>
                 </div>
               </div>
@@ -57,10 +55,8 @@
                   </div>
                   <ul class="list-unstyled plan-features"></ul>
                   <div class="wrapper">
-                    <a id="show" class="btn btn-success btn-block"> Pay </a>
-                    <p class="mt-3 mb-0 plan-cost text-success">
-                      or purchase now
-                    </p>
+                    <button class="common_btn btn btn-success btn-block" onclick="payWithPaystack(30); return false;">Pay</button>
+                    <p class="mt-3 mb-0 plan-cost text-success">or purchase now</p>
                   </div>
                 </div>
               </div>
@@ -73,10 +69,8 @@
                   </div>
                   <ul class="list-unstyled plan-features"></ul>
                   <div class="wrapper">
-                    <a id="show" class="btn btn-success btn-block"> Pay </a>
-                    <p class="mt-3 mb-0 plan-cost text-success">
-                      or purchase now
-                    </p>
+                    <button class="common_btn btn btn-success btn-block" onclick="payWithPaystack(30); return false;">Pay</button>
+                    <p class="mt-3 mb-0 plan-cost text-success">or purchase now</p>
                   </div>
                 </div>
               </div>
@@ -88,4 +82,37 @@
   </div>
 </div>
 <script src="https://js.paystack.co/v1/inline.js"></script>
-; {%endblock body %}
+<script>
+  function payWithPaystack(days) {
+    var firstName = "{{ user.first_name }}";
+    var lastName = "{{ user.last_name }}";
+    var email = "{{ user.email }}";
+
+    var amount = days === 30 ? "100000" : "1200000"; 
+
+    const paystack = new PaystackPop();
+    paystack.newTransaction({
+    
+      key: 'pk_live_fa8abc05ebf50e6c88e081387d75de2abc9b4749',
+      email: email,
+      amount: amount,
+     
+      onSuccess: (transaction) => { 
+        console.log('Paystack response:', transaction);
+      
+        if (response.status === "success") {
+          console.log('Payment successful. Redirecting...');
+          var subscriptionUrl = "{% url 'quiz:create_subscription' days='30' %}".replace('30', days); // Replace '30' with dynamic days if needed
+          window.location.href = subscriptionUrl;
+        } else {
+          window.location.href = "{{ failure_url }}";
+        }
+      },
+      onCancel: () => {
+        window.location.href = "{{ failure_url }}";
+      }
+    });
+    handler.openIframe();
+  }
+</script>
+{% endblock body %}

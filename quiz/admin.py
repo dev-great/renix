@@ -20,3 +20,5 @@ admin.site.register(StudyModel, StudyModelAdmin)
 admin.site.register(Question, QuestionAdmin)
 admin.site.register(
     (Category, Answer, Quiz, GivenQuizQuestions, StudyTopicModel, StudyCategoryModel,))
+
+admin.site.register(UserSubscription)

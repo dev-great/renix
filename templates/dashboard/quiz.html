@@ -1,6 +1,19 @@
 {% extends 'dashboard/base.html' %}
 {% load static %}
 {% block body %}
+{% if correct_answer %}
+    <style>
+        .answer.correct {
+            background-color: lightgreen;
+        }
+        .answer.incorrect {
+            background-color: lightcoral;
+        }
+        .answer.selected {
+            background-color: lightyellow;
+        }
+    </style>
+{% endif %}
 <div class="content-wrapper">
   <div class="content-wrapper">
     <div class="page-header">
@@ -27,46 +40,48 @@
         <span id="marks">{{ quiz.marks }}</span>/{{ quiz.total_marks }}
       </h5>
     </div>
-    <form
-      method="post"
-      class="mt-4 p-4 text-capitalize form-control box_shadow"
-    >
+    <form method="post" class="mt-4 p-4 text-capitalize form-control box_shadow">
       {% csrf_token %}
       {% if page_obj %}
-      {% for question in page_obj.object_list %}
-            <div class="fw-bold text-center fs-5 d-flex justify-content-between p-2">
-              <span id="{{ page_obj.number }}" class="questionP"
-                >{{ page_obj.number }}. {{ question.question }}</span
-              >
-              <span>{{ question.mark }} Marks</span>
-            </div>
-
-            <div class="form-check">
-              {% for answer in question.answers.all %}
-              <ul class="list-group">
-                <li
-                  class="list-group-item list-group-item-action list-group-item-primary mt-3 answerList"
-                  style="padding-left: 2rem"
-                >
-                  <input
-                    class="form-check-input me-1 answerInput"
-                    type="radio" id="answer_{{ answer.uid }}" name="answer_{{page_obj.object_list.0.uid }}" value="{{ answer.uid }}"
-                  />
-                  <label
-                    class="form-check-label d-block fw-semibold"
-                    for="answer_{{ answer.uid }}">{{ answer.answer }}</label
-                  >
-                </li>
-              </ul>
-              {% endfor %}
-            </div>
-            {% endfor %}
-            {% endif %}
-
-      <div class="mt-2 p-3 d-flex justify-content-between">
-        <button type="submit" name="submit" class="btn btn-primary">Next</button>
-      </div>
-    </form>
+          {% for question in page_obj.object_list %}
+              <div class="fw-bold text-center fs-5 d-flex justify-content-between p-2">
+                  <span id="{{ page_obj.number }}" class="questionP">{{ page_obj.number }}. {{ question.question }}</span>
+                  <span>{{ question.mark }} Marks</span>
+              </div>
+  
+              <div class="form-check">
+                  {% for answer in question.answers.all %}
+                      <ul class="list-group">
+                          <li class="list-group-item answer
+                           {% if study_mode %}
+                              {% if answer.uid == selected_answer.uid and selected_answer %}
+                                  {% if not selected_answer.is_correct %}
+                                      incorrect
+                                  {% else %}
+                                      selected correct
+                                  {% endif %}
+                              {% elif answer.uid == correct_answer.uid %}
+                                  correct
+                              {% else %}
+                                  {% if answer.is_correct %}
+                                      correct
+                                  {% else %}
+                                      white
+                                  {% endif %}
+                              {% endif %} {% endif %} list-group-item-action list-group-item-primary mt-3 answerList" style="padding-left: 2rem;">
+                              <input class="form-check-input me-1" type="radio" name="answer_{{ question.uid }}" value="{{ answer.uid }}"
+                                     {% if answer.uid == selected_answer.uid or answer.uid == correct_answer.uid and selected_answer and study_mode %} disabled {% endif %} />
+                              {{ answer.answer }}
+                          </li>
+                      </ul>
+                  {% endfor %}
+              </div>
+          {% endfor %}
+          <button type="submit" class="btn btn-outline-primary mt-3">Submit</button>
+      {% else %}
+          <p>No questions found for this quiz.</p>
+      {% endif %}
+  </form>
   </div>
 </div>
 
@@ -107,5 +122,7 @@
   
     {% endif %}
   });
+
+  
 </script>
 {% endblock body %}

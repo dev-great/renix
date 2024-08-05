@@ -20,6 +20,29 @@
               </p>
             </div>
           </div>
+          <h4 class="card-title"></h4>
+          <h4 class="card-title"> <img height="20px" width="30px" src="https://t4.ftcdn.net/jpg/05/93/91/27/360_F_593912714_6pEIEP3YlFQkbwknHEYxQzbne5ZN6BlE.jpg" alt="Trophy"> Leaderboard:</h4>
+          <table class="table">
+            <thead>
+              <tr class="bg-success">
+                <th scope="col">#</th>
+                <th scope="col">Username</th>
+                <th scope="col">Scores</th>
+                <th scope="col">Attempts</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for user in leaderboard %}
+              <tr {% if user.is_current_user %}class="bg-warning"{% endif %}>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>{{ user.username }}</td>
+                <td>{{ user.total_score }}</td>
+                <td>{{ user.attempts }}</td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+          
         </div>
       </div>
     </div>
