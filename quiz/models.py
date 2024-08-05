@@ -5,8 +5,8 @@ from random import shuffle
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.utils import timezone
 from datetime import timedelta
-
 # Base Class
 
 TOPIC_CHOICES = (
@@ -41,6 +41,32 @@ class BaseModel(models.Model):
 
     class Meta:
         abstract = True
+
+
+class UserSubscription(models.Model):
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, related_name='subscription')
+    subscription_start_date = models.DateTimeField(default=timezone.now)
+    subscription_end_date = models.DateTimeField()
+    is_active = models.BooleanField(default=True)
+
+    def is_expired(self):
+        return timezone.now() > self.subscription_end_date
+
+    def remaining_days(self):
+        if self.is_expired():
+            return 0
+        return (self.subscription_end_date - timezone.now()).days
+
+    def __str__(self):
+        return f'{self.user.username} Subscription'
+
+
+@receiver(post_save, sender=UserSubscription)
+def check_subscription_expiry(sender, instance, **kwargs):
+    if instance.is_expired():
+        instance.is_active = False
+        instance.save()
 
 
 class Category(BaseModel):
