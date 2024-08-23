@@ -122,85 +122,6 @@ def calculate_marks(quiz):
             total_marks += given_question.question.mark
     return total_marks
 
-
-# def quiz(request):
-#     if request.method == 'POST':
-#         form = QuizForm(request.POST, topics_choices=[
-#             (topic, topic) for topic in Question.objects.values_list('topic', flat=True).distinct()
-#         ])
-#         if form.is_valid():
-#             selected_topics = form.cleaned_data['topics']
-#             question_limit = form.cleaned_data['num_questions']
-#             quiz_mode = form.cleaned_data['quiz_mode']
-
-#             if selected_topics:
-#                 questions = Question.objects.filter(
-#                     topic__in=selected_topics
-#                 ).distinct()[:question_limit]
-
-#                 if not questions.exists():
-#                     return HttpResponse("No questions found for selected topics.")
-
-#                 quiz, created = Quiz.objects.get_or_create(
-#                     user=request.user, defaults={'total_marks': 0, 'marks': 0}
-#                 )
-#                 paginator = Paginator(questions, 1)
-#                 page_number = request.GET.get('page')
-
-#                 try:
-#                     page_obj = paginator.page(page_number)
-#                 except PageNotAnInteger:
-#                     page_obj = paginator.page(1)
-#                 except EmptyPage:
-#                     page_obj = paginator.page(paginator.num_pages)
-
-#                 # Handling answer submission
-#                 if 'submit' in request.POST:
-#                     question = page_obj.object_list[0]
-#                     answer_id = request.POST.get(
-#                         f'answer_{page_obj.object_list[0].uid}')
-#                     print("This is the selected answers {answer_id}")
-#                     print("This is the selected question {question}")
-#                     if answer_id:
-#                         answer = get_object_or_404(Answer, uid=answer_id)
-#                         print("This answer would be {answer}")
-#                         given_question, created = GivenQuizQuestions.objects.get_or_create(
-#                             quiz=quiz, question=question, defaults={
-#                                 'answer': answer}
-#                         )
-#                         print("This is the selected answers {given_question}")
-
-#                         if not created:
-#                             given_question.answer = answer
-#                             given_question.save()
-
-#                         quiz.given_question.add(given_question)
-#                         quiz.save()
-
-#                         print("This is the selected answers {given_question}")
-
-#                     # Move to the next page if available
-#                     next_page_number = page_obj.next_page_number() if page_obj.has_next() else None
-#                     if next_page_number is not None:
-#                         return redirect(f'/quizzes/quizzes/quiz/?page={next_page_number}')
-#                     else:
-#                         return render(request, 'dashboard/success.html')
-
-#                 quiz.marks = calculate_marks(quiz)
-#                 quiz.total_marks = sum(question.mark for question in questions)
-#                 quiz.save()
-
-#                 context = {'page_obj': page_obj,
-#                            'quiz': quiz, 'quiz_mode': quiz_mode, }
-#                 return render(request, 'dashboard/quiz.html', context)
-
-#     else:
-#         form = QuizForm(topics_choices=[
-#             (topic, topic) for topic in Question.objects.values_list('topic', flat=True).distinct()
-#         ])
-
-#     return render(request, 'dashboard/create_question.html', {'form': form})
-
 def quiz_create(request):
     request.session.pop('correct_answer', None)
     request.session.pop('selected_answer', None)
@@ -251,89 +172,6 @@ def quiz_create(request):
     return render(request, 'dashboard/create_question.html', {'form': form})
 
 
-# def quiz_start(request):
-#     quiz_id = request.session.get('quiz_id')
-#     print(quiz_id)
-#     quiz_mode = request.session.get('quiz_mode')
-#     print(quiz_mode)
-#     question_ids = request.session.get('question_ids')
-#     print(question_ids)
-#     # Default to 1 hour if not provided
-#     time_left = request.POST.get('time_left', 3600)
-#     request.session['time_left'] = time_left
-
-#     if not all([quiz_id, quiz_mode, question_ids]):
-#         return redirect('quiz:quiz_create')
-
-#     # Convert question_ids from session data
-#     question_ids_list = question_ids.split(',')
-#     valid_uuids = []
-
-#     for qid in question_ids_list:
-#         try:
-#             valid_uuid = uuid.UUID(qid)
-#             valid_uuids.append(valid_uuid)
-#         except ValueError:
-#             continue  # Skip invalid UUIDs
-
-#     if not valid_uuids:
-#         return HttpResponse("No valid questions found for this quiz.")
-
-#     # Get the Quiz object
-#     quiz = Quiz.objects.get(uid=quiz_id)
-#     questions = Question.objects.filter(uid__in=question_ids_list)
-
-#     # Set up pagination
-#     paginator = Paginator(questions, 1)  # Show one question per page
-#     page_number = request.GET.get('page', 1)
-
-#     try:
-#         page_obj = paginator.page(page_number)
-#     except PageNotAnInteger:
-#         page_obj = paginator.page(1)
-#     except EmptyPage:
-#         page_obj = paginator.page(paginator.num_pages)
-
-#     if request.method == 'POST':
-#         question = page_obj.object_list[0]
-#         print(page_obj.object_list[0].uid)
-#         answer_id = request.POST.get(f'answer_{question.uid}')
-#         print(answer_id)
-
-#         if answer_id:
-#             answer = get_object_or_404(Answer, uid=answer_id)
-#             print("this is the answer {answer}")
-#             given_question, created = GivenQuizQuestions.objects.get_or_create(
-#                 quiz=quiz,
-#                 question=question, defaults={'answer': answer}
-#             )
-#             if not created:
-#                 given_question.answer = answer
-#                 given_question.save()
-
-#             # Update the quiz marks if the answer is correct
-#             if answer.is_correct:
-#                 quiz.marks += question.mark
-#                 quiz.save()
-
-#             quiz.given_question.add(given_question)
-#             quiz.save()
-
-#         # Redirect to the next question
-#         next_page_number = page_obj.next_page_number() if page_obj.has_next() else None
-#         if next_page_number:
-#             return redirect(f'/quiz/start/?page={next_page_number}')
-#         else:
-#             return render(request, 'dashboard/success.html', {'clear_storage': True, 'total_score': quiz.marks, "total_points": quiz.total_marks})
-
-#     context = {
-#         'page_obj': page_obj,
-#         'quiz': quiz,
-#         'quiz_mode': quiz_mode,
-#         'question_ids': ','.join(question_ids),
-#         'time_left': request.session.get('time_left', 3600),
-#     }
-#     return render(request, 'dashboard/quiz.html', context)
 def quiz_start(request):
     quiz_id = request.session.get('quiz_id')
     print(quiz_id)
@@ -824,7 +662,7 @@ def myprofile(request):
 @login_required
 def quizAttempts(request):
     user = request.user
-    courses = StudyCategoryModel.objects.all()
+    courses = StudyCategoryModel.objects.all().order_by('-created_at')
 
     context = {
         'data_context': courses,
@@ -867,18 +705,20 @@ def subscription(request):
 
 
 @login_required
-def creat_subscription(request, days):
+def creat_subscription(request, days, plan):
     # Example subscription period: 1 month
     end_date = timezone.now() + timedelta(days=days)
     subscription, created = UserSubscription.objects.get_or_create(
         user=request.user,
+        plan = plan,
         defaults={'subscription_end_date': end_date}
     )
     if not created:
         # Update subscription end date if it already exists
         subscription.subscription_end_date = end_date
+        subscription.plan = plan
         subscription.save()
-    return render(request, 'dashboard/index.html',)
+    return render(request, 'dashboard/myprofile.html',)
 
 
 @login_required

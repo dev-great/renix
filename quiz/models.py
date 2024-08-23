@@ -46,6 +46,7 @@ class BaseModel(models.Model):
 class UserSubscription(models.Model):
     user = models.OneToOneField(
         User, on_delete=models.CASCADE, related_name='subscription')
+    plan = models.CharField(max_length=200)
     subscription_start_date = models.DateTimeField(default=timezone.now)
     subscription_end_date = models.DateTimeField()
     is_active = models.BooleanField(default=True)
