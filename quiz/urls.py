@@ -26,7 +26,7 @@ urlpatterns = [
     path('quiz/create/', views.quiz_create, name='quiz_create'),
     path('quiz/start/', views.quiz_start, name='quiz_start'),
     path('quiz/retake/', views.retake_quiz, name='retake_quiz'),
-    path('create-subscription/<int:days>/',
+    path('create-subscription/<int:days>/<str:plan>',
          views.creat_subscription, name='create_subscription'),
 
     path('signIn/', views.sign_in, name='sign_in'),

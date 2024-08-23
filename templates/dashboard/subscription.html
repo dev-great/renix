@@ -18,21 +18,8 @@
             </p>
 
             <div class="row pricing-table">
-              <div class="col-md-3 grid-margin stretch-card pricing-card">
-                <div class="card border-primary border pricing-card-body">
-                  <div class="text-center pricing-card-head">
-                    <h3>Free</h3>
-                    <p>Basic plan</p>
-                    <h1 class="font-weight-normal mb-4">$0.00</h1>
-                  </div>
-                  <ul class="list-unstyled plan-features"></ul>
-                  <div class="wrapper">
-                    <a href="#" class="btn btn-outline-primary btn-block">Current Plan</a>
-                  </div>
-                  <p class="mt-3 mb-0 plan-cost text-gray">Free</p>
-                </div>
-              </div>
-              <div class="col-md-3 grid-margin stretch-card pricing-card">
+             
+              <div class="col-md-4 grid-margin stretch-card pricing-card">
                 <div class="card border border-success pricing-card-body">
                   <div class="text-center pricing-card-head">
                     <h3 class="text-success">Registered Nurse</h3>
@@ -41,12 +28,12 @@
                   </div>
                   <ul class="list-unstyled plan-features"></ul>
                   <div class="wrapper">
-                    <button class="common_btn btn btn-success btn-block" onclick="payWithPaystack(30); return false;">Pay</button>
+                    <button class="common_btn btn btn-success btn-block" onclick="payWithPaystack(30,'Registered Nurse'); return false;">Pay</button>
                     <p class="mt-3 mb-0 plan-cost text-success">or purchase now</p>
                   </div>
                 </div>
               </div>
-              <div class="col-md-3 grid-margin stretch-card pricing-card">
+              <div class="col-md-4 grid-margin stretch-card pricing-card">
                 <div class="card border border-success pricing-card-body">
                   <div class="text-center pricing-card-head">
                     <h3 class="text-success">Registered Midwifery</h3>
@@ -55,21 +42,21 @@
                   </div>
                   <ul class="list-unstyled plan-features"></ul>
                   <div class="wrapper">
-                    <button class="common_btn btn btn-success btn-block" onclick="payWithPaystack(30); return false;">Pay</button>
+                    <button class="common_btn btn btn-success btn-block" onclick="payWithPaystack(30,'Registered Midwifery'); return false;">Pay</button>
                     <p class="mt-3 mb-0 plan-cost text-success">or purchase now</p>
                   </div>
                 </div>
               </div>
-              <div class="col-md-3 grid-margin stretch-card pricing-card">
+              <div class="col-md-4 grid-margin stretch-card pricing-card">
                 <div class="card border border-success pricing-card-body">
                   <div class="text-center pricing-card-head">
-                    <h3 class="text-success">Psychiatric Nurse</h3>
+                    <h3 class="text-success">Entrance Exam</h3>
                     <p>Paid plan</p>
                     <h1 class="font-weight-normal mb-4">₦1,000</h1>
                   </div>
                   <ul class="list-unstyled plan-features"></ul>
                   <div class="wrapper">
-                    <button class="common_btn btn btn-success btn-block" onclick="payWithPaystack(30); return false;">Pay</button>
+                    <button class="common_btn btn btn-success btn-block" onclick="payWithPaystack(30,'Entrance Exam' ); return false;">Pay</button>
                     <p class="mt-3 mb-0 plan-cost text-success">or purchase now</p>
                   </div>
                 </div>
@@ -83,30 +70,29 @@
 </div>
 <script src="https://js.paystack.co/v1/inline.js"></script>
 <script>
-  function payWithPaystack(days) {
+  function payWithPaystack(days, plan) {
     var firstName = "{{ user.first_name }}";
     var lastName = "{{ user.last_name }}";
     var email = "{{ user.email }}";
+    var plan = "{{plan}}"
 
     var amount = days === 30 ? "100000" : "1200000"; 
 
     const paystack = new PaystackPop();
     paystack.newTransaction({
     
-      key: 'pk_live_fa8abc05ebf50e6c88e081387d75de2abc9b4749',
+      key: 'pk_test_91130c972c5af7ec4b37e1a4a9428eb128d41f68',
       email: email,
       amount: amount,
+      currency: "NGN",
      
       onSuccess: (transaction) => { 
         console.log('Paystack response:', transaction);
       
-        if (response.status === "success") {
-          console.log('Payment successful. Redirecting...');
-          var subscriptionUrl = "{% url 'quiz:create_subscription' days='30' %}".replace('30', days); // Replace '30' with dynamic days if needed
+          var subscriptionUrl = "{% url 'quiz:create_subscription' days='30' plan='plan_placeholder'  %}".replace('30', days)
+          .replace('plan_placeholder', plan); 
           window.location.href = subscriptionUrl;
-        } else {
-          window.location.href = "{{ failure_url }}";
-        }
+     
       },
       onCancel: () => {
         window.location.href = "{{ failure_url }}";
