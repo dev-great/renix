@@ -96,6 +96,8 @@ class StudyCategoryModel(BaseModel):
 
 
 class StudyTopicModel(BaseModel):
+    plan = models.ForeignKey(
+        Category, on_delete=models.CASCADE, related_name='plan')
     category = models.ForeignKey(
         StudyCategoryModel, on_delete=models.CASCADE, related_name='category')
     title = models.CharField(max_length=200)
@@ -109,7 +111,7 @@ class StudyModel(BaseModel):
         StudyTopicModel, on_delete=models.CASCADE, related_name='topics')
     title = models.CharField(max_length=200)
     is_video = models.BooleanField(default=False)
-    video_uri = models.CharField(max_length=200)
+    video_uri = models.CharField(max_length=200,null=True, blank=True)
     content = RichTextField()
 
     def __str__(self):

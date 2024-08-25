@@ -28,7 +28,7 @@
                   </div>
                   <ul class="list-unstyled plan-features"></ul>
                   <div class="wrapper">
-                    <button class="common_btn btn btn-success btn-block" onclick="payWithPaystack(30,'Registered Nurse'); return false;">Pay</button>
+                    <button class="common_btn btn btn-success btn-block" onclick="payWithPaystack(30, 'Registered Nurse'); return false;">Pay</button>
                     <p class="mt-3 mb-0 plan-cost text-success">or purchase now</p>
                   </div>
                 </div>
@@ -74,7 +74,12 @@
     var firstName = "{{ user.first_name }}";
     var lastName = "{{ user.last_name }}";
     var email = "{{ user.email }}";
-    var plan = "{{plan}}"
+    var plan = plan
+
+    if (!plan) {
+      console.error('Plan is not set');
+      return;
+  }
 
     var amount = days === 30 ? "100000" : "1200000"; 
 
@@ -89,10 +94,9 @@
       onSuccess: (transaction) => { 
         console.log('Paystack response:', transaction);
       
-          var subscriptionUrl = "{% url 'quiz:create_subscription' days='30' plan='plan_placeholder'  %}".replace('30', days)
-          .replace('plan_placeholder', plan); 
+          var subscriptionUrl = "{% url 'quiz:create_subscription' days='30' plan='plan_placeholder'  %}".replace('30', days).replace('plan_placeholder', plan); 
           window.location.href = subscriptionUrl;
-     
+          window.location.reload();
       },
       onCancel: () => {
         window.location.href = "{{ failure_url }}";

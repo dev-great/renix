@@ -9,7 +9,7 @@
 </style>
 <div class="content-wrapper">
   <div class="page-header">
-    <h3 class="page-title">Lecture</h3>
+    <h3 class="page-title">Lecture Topics</h3>
   </div>
   <div class="card">
     <div class="card-body">
@@ -22,6 +22,7 @@
                 <tr>
                   <th>Index</th>
                   <th>Course</th>
+                  <th>Topic</th>
                   <th></th>
                 </tr>
               </thead>
@@ -29,15 +30,15 @@
                 {% for context in data_context %}
                 <tr>
                   <td>{{ forloop.counter }}</td>
-                  <td>{{context.name}}</td>
+                  <td>{{context.category.name}}</td>
 
-                  <td class=""></td>
+                  <td class="limited-width">{{context.title}}</td> 
                   <td>
                     <a
-                      href="{% url 'quiz:study_topics' %}?id={{ context.uid }}"
+                      href="{% url 'quiz:study_detail' %}?id={{context.uid}}"
                       class="btn btn-success btn-block"
                     >
-                      Start
+                      Study
                     </a>
                   </td>
                 </tr>

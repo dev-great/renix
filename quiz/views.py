@@ -125,10 +125,21 @@ def calculate_marks(quiz):
 def quiz_create(request):
     request.session.pop('correct_answer', None)
     request.session.pop('selected_answer', None)
+    
+
+    
     if request.method == 'POST':
-        form = QuizForm(request.POST, topics_choices=sorted(set([
-            (topic, topic) for topic in Question.objects.values_list('topic', flat=True).distinct()
-        ])))
+        user_subscription = UserSubscription.objects.filter(user=request.user).first()
+        topics_choices = []
+
+        if user_subscription:
+            topics_choices = sorted(
+                (topic.title, topic.title) 
+                for topic in StudyTopicModel.objects.filter(plan__name=user_subscription.plan)
+            )
+
+        form = QuizForm(request.POST, topics_choices=topics_choices)
+
         if form.is_valid():
             selected_topics = form.cleaned_data['topics']
             question_limit = form.cleaned_data['num_questions']
@@ -165,9 +176,16 @@ def quiz_create(request):
                 return redirect('quiz:quiz_start')
 
     else:
-        form = QuizForm(topics_choices=sorted(set([
-            (topic, topic) for topic in Question.objects.values_list('topic', flat=True).distinct()
-        ])))
+        user_subscription = UserSubscription.objects.filter(user=request.user).first()
+        topics_choices = []
+
+        if user_subscription:
+            topics_choices = sorted(
+                (topic.title, topic.title) 
+                for topic in StudyTopicModel.objects.filter(plan__name=user_subscription.plan)
+            )
+
+        form = QuizForm(topics_choices=topics_choices)
 
     return render(request, 'dashboard/create_question.html', {'form': form})
 
@@ -396,15 +414,18 @@ def readiness_quiz_start(request):
     request.session.pop('correct_answer', None)
     request.session.pop('selected_answer', None)
     if request.method == 'POST':
-        # Creating the quiz and shuffling questions
-        questions = Question.objects.all()
 
-        if not questions.exists():
-            return HttpResponse("No questions available.")
+        user_subscription = UserSubscription.objects.filter(user=request.user).first()
+        questions = []
 
-        # Shuffle questions
-        questions = list(questions)
-        random.shuffle(questions)
+        if user_subscription:
+            plan_name = user_subscription.plan
+            topics = StudyTopicModel.objects.filter(plan__name=plan_name)
+            questions = Question.objects.filter(category__in=topics)
+
+            # Shuffle questions
+            questions = list(questions)
+            random.shuffle(questions)
 
         # Creating a quiz
         try:
@@ -661,8 +682,10 @@ def myprofile(request):
 
 @login_required
 def quizAttempts(request):
-    user = request.user
-    courses = StudyCategoryModel.objects.all().order_by('-created_at')
+    user_subscription = UserSubscription.objects.filter(user=request.user).first()
+    if user_subscription:
+        plan_name = user_subscription.plan
+        courses = StudyTopicModel.objects.filter(plan__name=plan_name).order_by('-created_at')
 
     context = {
         'data_context': courses,
@@ -675,10 +698,11 @@ def study_detail(request):
     print(f"Received ID: {id}")
 
     topic = get_object_or_404(StudyTopicModel, uid=id)
-    try:
-        post = StudyModel.objects.get(topic=topic)
-    except StudyModel.DoesNotExist:
-        return render(request, '404.html',)
+
+    post = StudyModel.objects.filter(topic=topic).first()
+    if not post:
+        return render(request, '404.html')
+
     context = {
         'post': post,
     }
@@ -705,7 +729,7 @@ def subscription(request):
 
 
 @login_required
-def creat_subscription(request, days, plan):
+def create_subscription(request, days, plan):
     # Example subscription period: 1 month
     end_date = timezone.now() + timedelta(days=days)
     subscription, created = UserSubscription.objects.get_or_create(
@@ -714,7 +738,6 @@ def creat_subscription(request, days, plan):
         defaults={'subscription_end_date': end_date}
     )
     if not created:
-        # Update subscription end date if it already exists
         subscription.subscription_end_date = end_date
         subscription.plan = plan
         subscription.save()
