@@ -69,6 +69,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     # Downloaded Middleware
+    'quiz.middleware.SubscriptionMiddleware',
     'allauth.account.middleware.AccountMiddleware',
 ]
 
