@@ -2,31 +2,91 @@
 
 <div class="content-wrapper">
   <div class="page-header">
-    <h3 class="page-title">Question Bank</h3>
+    <h3 class="page-title">READINESS ASSESSMENT</h3>
+
+   
   </div>
+  <p> <strong>Noted:  this assessment the questions will come randomly from the entire questions we have and it should be 250 questions, students will only click start and the stuff will begin</strong>
+  </p>
+ 
+    <ul>
+      <li>Total questions in each assessment are 250 and it will last 180 minutes.</li>
+      <li>Once you start you cannot pause the assessment</li>
+      <li>You will need to have your own calculator to work on the calculations.</li>
+      <li>The algorithm will analysis your results and give you the probability of you passing this exam with your level of preparedness</li>
+      <li>You can decide to end the practice halfway and the system will rank your performance with respect to total questions</li>
+      <li>At the end of the assessment your results will be ranked according to how you perform compared to other candidate who have taken this assessment</li>
+      <li>Do not take pictures/records these questions</li>
+    </ul>
+     
+   
+   
   <div class="card-columns">
-    {% for category in categories %}
     <form action="" class=" ">
       <div class="card">
-        <img src="{{category.image.url}}" class="card-img-top" alt="..." />
+       
         <div class="card-body">
-          <h5 class="card-title">{{category.name|title}}</h5>
-          <p class="card-text">{{category.description|truncatechars:"150"}}</p>
+          <h5 class="card-title">{{context.plan}} Readiness <br>Assessment 1</h5>
+         
         </div>
         <ul class="list-group list-group-flush">
           <li class="list-group-item">
-            {{category.total_questions}} Questions
+            250 Questions
           </li>
 
-          <li class="list-group-item">{{category.total_marks}} Marks</li>
+          <li class="list-group-item">180 Minites</li>
         </ul>
         <div class="card-body">
-          <input type="hidden" name="category" value="{{category.name}}" />
-          <button class="card-link btn btn-primary">Start Quiz</button>
+          <a href="{% url 'quiz:quiz_readiness' %}"
+          class="btn btn-primary btn-block">
+          Take Quiz 
+        </a>
+         
+        </div>
+      </div>
+
+      <div class="card">
+       
+        <div class="card-body">
+          <h5 class="card-title">{{context.plan}} Readiness <br>Assessment 2</h5>
+         
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">
+            250 Questions
+          </li>
+
+          <li class="list-group-item">180 Minites</li>
+        </ul>
+        <div class="card-body">
+          <a href="{% url 'quiz:quiz_readiness' %}"
+          class="btn btn-primary btn-block">
+          Take Quiz 
+        </a>
+        </div>
+      </div>
+
+      <div class="card">
+       
+        <div class="card-body">
+          <h5 class="card-title">{{context.plan}} Readiness <br>Assessment 3</h5>
+         
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">
+            250 Questions
+          </li>
+
+          <li class="list-group-item">180 Minites</li>
+        </ul>
+        <div class="card-body">
+          <a href="{% url 'quiz:quiz_readiness' %}"
+          class="btn btn-primary btn-block">
+          Take Quiz 
+        </a>
         </div>
       </div>
     </form>
-    {% endfor %}
   </div>
 </div>
 

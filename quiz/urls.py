@@ -26,8 +26,8 @@ urlpatterns = [
     path('quiz/create/', views.quiz_create, name='quiz_create'),
     path('quiz/start/', views.quiz_start, name='quiz_start'),
     path('quiz/retake/', views.retake_quiz, name='retake_quiz'),
-    path('create-subscription/<int:days>/<str:plan>/', 
-         views.create_subscription, 
+    path('create-subscription/<int:days>/<str:plan>/',
+         views.create_subscription,
          name='create_subscription'),
 
     path('signIn/', views.sign_in, name='sign_in'),
@@ -36,7 +36,7 @@ urlpatterns = [
          name='load_attended_question_data'),
     path('myprofile/', views.myprofile, name='myprofile'),
     path('quiz_attempts/', views.quizAttempts, name='quiz_attempts'),
-    path('quizzes/', views.quizzes, name='quizzes'),
+    path('lecture_topics/', views.quizTopics, name='lecture_topics'),
     path('subscription/', views.subscription, name='subscription'),
     path('settings/', views.settings, name='settings'),
     path('enrolled_courses/', views.enrolled_courses, name='enrolled_courses'),
@@ -47,5 +47,6 @@ urlpatterns = [
     path('topics/', views.study_topics, name='study_topics'),
     path('quiz_detail/', views.start_quiz, name='quiz_detail'),
     path('help/', views.help, name='help'),
+    path('quizzes/', views.quizzes, name='quizzes'),
     path('text_analitics', views.text_analitics, name='text_analitics')
 ]

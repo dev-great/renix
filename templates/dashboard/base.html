@@ -115,7 +115,7 @@
     <li class="nav-item">
       <a class="nav-link" href="#">
         <i class="fa fa-clock menu-icon"></i>
-        <form method="POST" action="{% url 'quiz:quiz_readiness' %}">
+        <form method="POST" action="{% url 'quiz:quizzes' %}">
           {% csrf_token %}
           <button type="submit"  style="padding-left: 0;" class="btn btn-link menu-title">Readiness assessment </button> 
         </form>
@@ -134,13 +134,6 @@
         <span class="menu-title">Lecture</span>
       </a>
     </li>
-    <li class="nav-item">
-      <a class="nav-link" href="{% url 'quiz:myprofile' %}">
-        <i class="far fa-user-circle menu-icon"></i>
-        <span class="menu-title">My Profile</span>
-      </a>
-    </li>
-
     <li class="nav-item">
       <a class="nav-link" href="{% url 'quiz:myprofile' %}">
         <i class="far fa-user-circle menu-icon"></i>

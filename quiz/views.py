@@ -122,19 +122,19 @@ def calculate_marks(quiz):
             total_marks += given_question.question.mark
     return total_marks
 
+
 def quiz_create(request):
     request.session.pop('correct_answer', None)
     request.session.pop('selected_answer', None)
-    
 
-    
     if request.method == 'POST':
-        user_subscription = UserSubscription.objects.filter(user=request.user).first()
+        user_subscription = UserSubscription.objects.filter(
+            user=request.user).first()
         topics_choices = []
 
         if user_subscription:
             topics_choices = sorted(
-                (topic.title, topic.title) 
+                (topic.title, topic.title)
                 for topic in StudyTopicModel.objects.filter(plan__name=user_subscription.plan)
             )
 
@@ -176,12 +176,13 @@ def quiz_create(request):
                 return redirect('quiz:quiz_start')
 
     else:
-        user_subscription = UserSubscription.objects.filter(user=request.user).first()
+        user_subscription = UserSubscription.objects.filter(
+            user=request.user).first()
         topics_choices = []
 
         if user_subscription:
             topics_choices = sorted(
-                (topic.title, topic.title) 
+                (topic.title, topic.title)
                 for topic in StudyTopicModel.objects.filter(plan__name=user_subscription.plan)
             )
 
@@ -415,13 +416,15 @@ def readiness_quiz_start(request):
     request.session.pop('selected_answer', None)
     if request.method == 'POST':
 
-        user_subscription = UserSubscription.objects.filter(user=request.user).first()
+        user_subscription = UserSubscription.objects.filter(
+            user=request.user).first()
         questions = []
 
         if user_subscription:
             plan_name = user_subscription.plan
             topics = StudyTopicModel.objects.filter(plan__name=plan_name)
-            questions = Question.objects.filter(category__in=topics)
+            questions = Question.objects.filter(
+                category__in=topics).order_by('?')[:250]
 
             # Shuffle questions
             questions = list(questions)
@@ -682,15 +685,36 @@ def myprofile(request):
 
 @login_required
 def quizAttempts(request):
-    user_subscription = UserSubscription.objects.filter(user=request.user).first()
+    user_subscription = UserSubscription.objects.filter(
+        user=request.user).first()
     if user_subscription:
         plan_name = user_subscription.plan
-        courses = StudyTopicModel.objects.filter(plan__name=plan_name).order_by('-created_at')
+        courses = StudyTopicModel.objects.filter(
+            plan__name=plan_name).order_by('-created_at')
 
     context = {
         'data_context': courses,
     }
     return render(request, 'dashboard/quiz_attempts.html', context)
+
+
+@login_required
+def quizTopics(request):
+    category_text = request.GET.get('category')
+    user_subscription = UserSubscription.objects.filter(
+        user=request.user).first()
+    if user_subscription:
+        print(category_text)
+        category = Category.objects.get(name=category_text)
+        print(category)
+        topics = StudyTopicModel.objects.filter(
+            plan=category).order_by('-created_at')
+        print(topics)
+
+    context = {
+        'data_context': topics,
+    }
+    return render(request, 'dashboard/quiz_topics.html', context)
 
 
 def study_detail(request):
@@ -734,7 +758,7 @@ def create_subscription(request, days, plan):
     end_date = timezone.now() + timedelta(days=days)
     subscription, created = UserSubscription.objects.get_or_create(
         user=request.user,
-        plan = plan,
+        plan=plan,
         defaults={'subscription_end_date': end_date}
     )
     if not created:
@@ -800,8 +824,9 @@ def start_quiz(request):
 
 @login_required
 def quizzes(request):
-    categories = Category.objects.all()
-    context = {'categories': categories, 'homeactive': True}
+    user_subscription = UserSubscription.objects.filter(
+        user=request.user).first()
+    context = {'context': user_subscription, 'homeactive': True}
 
     category_text = request.GET.get('category')
     if category_text:

@@ -36,10 +36,10 @@
                   <td class="limited-width">{{context.title}}</td>
                   <td>
                     <a
-                      href="{% url 'quiz' %}?category={{ context.uid }}"
+                      href="{% url 'quiz:study_detail' %}?id={{ context.uid }}"
                       class="btn btn-success btn-block"
                     >
-                      Take Quiz
+                      Take Quiz 
                     </a>
                   </td>
                 </tr>
