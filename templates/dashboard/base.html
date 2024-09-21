@@ -34,7 +34,7 @@
   <a class="brand-logo navbar-brand">
     <img src="{% static 'images/logo.png' %}"  alt="logo"/></a>
     <a class="navbar-brand brand-logo-mini" href="#"
-    > <img src="{% static 'images/logo.png' %}" 
+    > <img src="{% static 'images/logo.png' %}"
     height="40px" weight="150px" alt="logo"/></a>
 </div>
 <div class="navbar-menu-wrapper d-flex align-items-stretch" >
@@ -53,7 +53,7 @@
       </a>
     </li>
   {% endif %}
-   
+
     <li class="nav-item nav-profile dropdown">
       <a
         class="nav-link "
@@ -62,7 +62,7 @@
       <i class="fas fa-power-off text-primary"></i>
       Logout
       </a>
-     
+
     </li>
   </ul>
   <button
@@ -83,7 +83,7 @@
 
     <li class="nav-item nav-profile">
       <div class="nav-link">
-       
+
         <div class="profile-name">
           {% if user.is_authenticated%}
           <p class="name">{{user.first_name}} {{user.last_name}}</p>
@@ -117,11 +117,11 @@
         <i class="fa fa-clock menu-icon"></i>
         <form method="POST" action="{% url 'quiz:quizzes' %}">
           {% csrf_token %}
-          <button type="submit"  style="padding-left: 0;" class="btn btn-link menu-title">Readiness assessment </button> 
+          <button type="submit"  style="padding-left: 0;" class="btn btn-link menu-title">Readiness assessment </button>
         </form>
       </a>
     </li>
-    
+
     <li class="nav-item">
       <a class="nav-link" href="{% url 'quiz:enrolled_courses' %}">
         <i class="fa fa-graduation-cap menu-icon"></i>
@@ -140,6 +140,12 @@
         <span class="menu-title">My Profile</span>
       </a>
     </li>
+    <li class="nav-item">
+                <a class="nav-link" href="{% url 'quiz:subscription' %}">
+                  <i class="fa fa-fire menu-icon"></i>
+                  <span class="menu-title">Subscribe</span>
+                </a>
+              </li>
 <li class="nav-item">
 <a class="nav-link" href="{% url 'quiz:help' %}">
 <i class="fa fa-question-circle menu-icon"></i>
@@ -161,7 +167,7 @@
                   <span class="menu-title">Subscribe</span>
                 </a>
               </li>
-          
+
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'quiz:myprofile' %}">
                   <i class="far fa-user-circle menu-icon"></i>
