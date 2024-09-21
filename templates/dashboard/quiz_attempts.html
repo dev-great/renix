@@ -22,7 +22,7 @@
                 <tr>
                   <th>Index</th>
                   <th>Course</th>
-                  
+
                   <th></th>
                 </tr>
               </thead>
@@ -30,12 +30,12 @@
                 {% for context in data_context %}
                 <tr>
                   <td>{{ forloop.counter }}</td>
-                  <td>{{context.category.name}}</td>
+                  <td>{{context.name}}</td>
 
-                 
+
                   <td>
                     <a
-                      href="{% url 'quiz:lecture_topics' %}?category={{context.plan}}"
+                      href="{% url 'quiz:lecture_topics' %}?category={{context.name}}"
                       class="btn btn-success btn-block"
                     >
                       Study

@@ -689,8 +689,8 @@ def quizAttempts(request):
         user=request.user).first()
     if user_subscription:
         plan_name = user_subscription.plan
-        courses = StudyTopicModel.objects.filter(
-            plan__name=plan_name).order_by('-created_at')
+        courses = StudyCategoryModel.objects.filter(
+            plan_group__name=plan_name).order_by('-created_at')
 
     context = {
         'data_context': courses,
@@ -704,11 +704,8 @@ def quizTopics(request):
     user_subscription = UserSubscription.objects.filter(
         user=request.user).first()
     if user_subscription:
-        print(category_text)
-        category = Category.objects.get(name=category_text)
-        print(category)
         topics = StudyTopicModel.objects.filter(
-            plan=category).order_by('-created_at')
+            category__name=category_text).order_by('-created_at')
         print(topics)
 
     context = {
@@ -749,7 +746,15 @@ def study_topics(request):
 
 @login_required
 def subscription(request):
-    return render(request, 'dashboard/subscription.html',)
+
+    user_subscription = UserSubscription.objects.filter(
+        user=request.user, is_active =True).first()
+
+    context = {
+        'data_context': user_subscription,
+        'current_plan': user_subscription.plan if user_subscription else None
+    }
+    return render(request, 'dashboard/subscription.html', context)
 
 
 @login_required
@@ -765,6 +770,7 @@ def create_subscription(request, days, plan):
         subscription.subscription_end_date = end_date
         subscription.plan = plan
         subscription.save()
+    request.has_active_subscription = True
     return render(request, 'dashboard/myprofile.html',)
 
 

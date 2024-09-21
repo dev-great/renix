@@ -90,6 +90,8 @@ class Category(BaseModel):
 
 class StudyCategoryModel(BaseModel):
     name = models.CharField(max_length=200)
+    plan_group = models.ForeignKey(
+        Category, on_delete=models.CASCADE, related_name='study_categories' , null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -97,7 +99,7 @@ class StudyCategoryModel(BaseModel):
 
 class StudyTopicModel(BaseModel):
     plan = models.ForeignKey(
-        Category, on_delete=models.CASCADE, related_name='plan')
+        Category, on_delete=models.CASCADE, related_name='study_topics')
     category = models.ForeignKey(
         StudyCategoryModel, on_delete=models.CASCADE, related_name='category')
     title = models.CharField(max_length=200)
