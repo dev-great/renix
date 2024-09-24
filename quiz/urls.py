@@ -22,7 +22,8 @@ urlpatterns = [
     path('checkAnswer/<uid>/<str:createObj>',
          views.check_answer, name='check_answer'),
 
-    path('quiz/readiness/', views.readiness_quiz_start, name='quiz_readiness'),
+    path('quizzes/quiz/readiness/',
+         views.readiness_quiz_start, name='quiz_readiness'),
     path('quiz/create/', views.quiz_create, name='quiz_create'),
     path('quiz/start/', views.quiz_start, name='quiz_start'),
     path('quiz/retake/', views.retake_quiz, name='retake_quiz'),

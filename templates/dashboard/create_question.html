@@ -33,7 +33,7 @@
     </div>
   </div>
 </div>
-
+ 
 <script>
   // JavaScript function to handle form submission with selected checkboxes
   function submitForm() {
@@ -65,6 +65,21 @@
     // Submit the form
     document.getElementById('questionForm').submit();
   }
+
+  // "Select All" functionality
+  document.addEventListener("DOMContentLoaded", function() {
+    const selectAllCheckbox = document.querySelector('input[value="ALL"]'); // Assuming 'ALL' is the value of the "Select All" checkbox
+    const topicCheckboxes = document.querySelectorAll('input[name="topics"]'); // Assuming 'topics' is the name for the checkboxes
+
+    // When "Select All" is checked or unchecked, toggle all checkboxes
+    selectAllCheckbox.addEventListener('change', function() {
+      const isChecked = selectAllCheckbox.checked;
+      topicCheckboxes.forEach(function(checkbox) {
+        checkbox.checked = isChecked;
+      });
+    });
+  });
+
 </script>
 
 

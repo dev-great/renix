@@ -9,7 +9,7 @@ SECRET_KEY = "django-insecure-c&dw_%j38vlhnkm%$aa9e942l%f@  "
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['www.renixacademy.online', 'renixacademy.online']
+ALLOWED_HOSTS = ['www.renixacademy.online', 'renixacademy.online', '127.0.0.1']
 SITE_ID = 1
 INSTALLED_APPS = [
     "django.contrib.admin",

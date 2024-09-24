@@ -4,7 +4,7 @@ from django.urls import reverse
 from quiz.forms import ProfileUpdateForm, QuizForm
 from django.db.models import Count, Sum
 from . models import *
-from django.http import JsonResponse
+from django.http import Http404, JsonResponse
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -145,15 +145,16 @@ def quiz_create(request):
             question_limit = form.cleaned_data['num_questions']
             quiz_mode = form.cleaned_data['quiz_mode']
 
+            print(selected_topics)
             # Check if 'Select All' option is selected
             if QuizForm.ALL_TOPICS_OPTION in selected_topics:
                 selected_topics = [
                     topic for topic, _ in form.fields['topics'].choices if topic != QuizForm.ALL_TOPICS_OPTION]
 
             if selected_topics:
-                questions = Question.objects.filter(
-                    topic__in=selected_topics
-                ).distinct()[:question_limit]
+                questions = Question.objects.filter(isReadiness=False,
+                                                    category__title__in=selected_topics
+                                                    ).distinct()[:question_limit]
 
                 if not questions.exists():
                     return HttpResponse("No questions found for selected topics.")
@@ -414,167 +415,174 @@ def quiz_start(request):
 def readiness_quiz_start(request):
     request.session.pop('correct_answer', None)
     request.session.pop('selected_answer', None)
-    if request.method == 'POST':
+    user_subscription = UserSubscription.objects.filter(
+        user=request.user).first()
 
-        user_subscription = UserSubscription.objects.filter(
-            user=request.user).first()
-        questions = []
+    print(user_subscription)
+    questions = []
 
-        if user_subscription:
-            plan_name = user_subscription.plan
-            topics = StudyTopicModel.objects.filter(plan__name=plan_name)
-            questions = Question.objects.filter(
-                category__in=topics).order_by('?')[:250]
+    if user_subscription:
+        plan_name = user_subscription.plan
+        topics = StudyTopicModel.objects.filter(plan__name=plan_name)
 
-            # Shuffle questions
-            questions = list(questions)
-            random.shuffle(questions)
+        # Extract the titles of the topics
+        topic_titles = topics.values_list('title', flat=True)
+        questions = Question.objects.filter(isReadiness=True,
+                                            category__title__in=topic_titles).order_by('?')[:250]
+        print(topics)
+        print(questions)
+        # Shuffle questions
+        questions = list(questions)
+        random.shuffle(questions)
 
-        # Creating a quiz
-        try:
-            quiz = Quiz.objects.create(
-                user=request.user,
-                exam_mode=False,
-                total_marks=sum(question.mark for question in questions),
-                marks=0,  # Starting marks
-            )
-        except Exception as e:
-            return HttpResponse(f"Error creating quiz: {e}")
+    # Creating a quiz
+    try:
+        quiz = Quiz.objects.create(
+            user=request.user,
+            exam_mode=False,
+            total_marks=sum(question.mark for question in questions),
+            marks=0,  # Starting marks
+        )
+    except Exception as e:
+        return HttpResponse(f"Error creating quiz: {e}")
 
-        question_ids = [str(q.uid) for q in questions]
+    question_ids = [str(q.uid) for q in questions]
 
-        request.session['quiz_id'] = str(quiz.uid)
-        request.session['quiz_mode'] = "Study Mode"
-        request.session['question_ids'] = ','.join(question_ids)
+    print(question_ids)
 
-        # Redirect to the same view to display the quiz
-        return redirect('quiz:quiz_start')
-    else:
-        # Handling the initial load or quiz display
-        quiz_id = request.session.get('quiz_id')
-        question_ids = request.session.get('question_ids')
+    request.session['quiz_id'] = str(quiz.uid)
+    request.session['quiz_mode'] = "Study Mode"
+    request.session['question_ids'] = ','.join(question_ids)
 
-        if not all([quiz_id, question_ids]):
-            return HttpResponse("No quiz session found. Please start a new quiz.")
+    # Redirect to the same view to display the quiz
+    return redirect('quiz:quiz_start')
+    # else:
+    #     # Handling the initial load or quiz display
+    #     quiz_id = request.session.get('quiz_id')
+    #     question_ids = request.session.get('question_ids')
+    #     print(quiz_id)
+    #     print(question_ids)
+    #     if not all([quiz_id, question_ids]):
+    #         raise Http404("No quiz session found. Please start a new quiz.")
 
-        # Convert question_ids from session data
-        question_ids_list = question_ids.split(',')
-        valid_uuids = []
+    #     # Convert question_ids from session data
+    #     question_ids_list = question_ids.split(',')
+    #     valid_uuids = []
 
-        for qid in question_ids_list:
-            try:
-                valid_uuid = uuid.UUID(qid)
-                valid_uuids.append(valid_uuid)
-            except ValueError:
-                continue  # Skip invalid UUIDs
+    #     for qid in question_ids_list:
+    #         try:
+    #             valid_uuid = uuid.UUID(qid)
+    #             valid_uuids.append(valid_uuid)
+    #         except ValueError:
+    #             continue  # Skip invalid UUIDs
 
-        if not valid_uuids:
-            return HttpResponse("No valid questions found for this quiz.")
+    #     if not valid_uuids:
+    #         return HttpResponse("No valid questions found for this quiz.")
 
-        # Get the Quiz object
-        try:
-            quiz = Quiz.objects.get(uid=quiz_id)
-        except Quiz.DoesNotExist:
-            return HttpResponse("Quiz not found.")
+    #     # Get the Quiz object
+    #     try:
+    #         quiz = Quiz.objects.get(uid=quiz_id)
+    #     except Quiz.DoesNotExist:
+    #         return HttpResponse("Quiz not found.")
 
-        questions = Question.objects.filter(uid__in=question_ids_list)
+    #     questions = Question.objects.filter(uid__in=question_ids_list)
 
-        # Set up pagination
-        paginator = Paginator(questions, 1)  # Show one question per page
-        page_number = request.GET.get('page', 1)
+    #     # Set up pagination
+    #     paginator = Paginator(questions, 1)  # Show one question per page
+    #     page_number = request.GET.get('page', 1)
 
-        try:
-            page_obj = paginator.page(page_number)
-        except PageNotAnInteger:
-            page_obj = paginator.page(1)
-        except EmptyPage:
-            page_obj = paginator.page(paginator.num_pages)
+    #     try:
+    #         page_obj = paginator.page(page_number)
+    #     except PageNotAnInteger:
+    #         page_obj = paginator.page(1)
+    #     except EmptyPage:
+    #         page_obj = paginator.page(paginator.num_pages)
 
-        if request.method == 'POST':
-            question = page_obj.object_list[0]
-            answer_id = request.POST.get(f'answer_{question.uid}')
+    #     if request.method == 'POST':
+    #         question = page_obj.object_list[0]
+    #         answer_id = request.POST.get(f'answer_{question.uid}')
 
-            if answer_id:
-                try:
-                    answer = get_object_or_404(Answer, uid=answer_id)
-                except Answer.DoesNotExist:
-                    return HttpResponse("Answer not found.")
+    #         if answer_id:
+    #             try:
+    #                 answer = get_object_or_404(Answer, uid=answer_id)
+    #             except Answer.DoesNotExist:
+    #                 return HttpResponse("Answer not found.")
 
-                # Update the quiz marks if the answer is correct
-                if answer.is_correct:
-                    quiz.marks += question.mark
-                    quiz.save()
+    #             # Update the quiz marks if the answer is correct
+    #             if answer.is_correct:
+    #                 quiz.marks += question.mark
+    #                 quiz.save()
 
-            # Redirect to the next question
-            next_page_number = page_obj.next_page_number() if page_obj.has_next() else None
-            if next_page_number:
-                return redirect(f'/quiz/view/?page={next_page_number}')
-            else:
+    #         # Redirect to the next question
+    #         next_page_number = page_obj.next_page_number() if page_obj.has_next() else None
+    #         if next_page_number:
+    #             return redirect(f'/quiz/view/?page={next_page_number}')
+    #         else:
 
-                current_user = request.user
+    #             current_user = request.user
 
-                # Ensure user is logged in
-                if not current_user.is_authenticated:
-                    return redirect('login')
+    #             # Ensure user is logged in
+    #             if not current_user.is_authenticated:
+    #                 return redirect('login')
 
-                # Retrieve all quizzes associated with the current user
-                user_quizzes = Quiz.objects.filter(user=current_user)
+    #             # Retrieve all quizzes associated with the current user
+    #             user_quizzes = Quiz.objects.filter(user=current_user)
 
-                # Calculate total score and attempts
-                current_user_attempts = user_quizzes.count()
-                current_user_total_score = user_quizzes.aggregate(
-                    total_score=Sum('marks'))['total_score'] or 0
+    #             # Calculate total score and attempts
+    #             current_user_attempts = user_quizzes.count()
+    #             current_user_total_score = user_quizzes.aggregate(
+    #                 total_score=Sum('marks'))['total_score'] or 0
 
-                # Retrieve the top 5 users based on total quiz attempts and scores
-                top_users = User.objects.annotate(
-                    attempts=Count('quiz'),
-                    total_score=Sum('quiz__marks')
-                ).order_by('-total_score', '-attempts')[:5]
+    #             # Retrieve the top 5 users based on total quiz attempts and scores
+    #             top_users = User.objects.annotate(
+    #                 attempts=Count('quiz'),
+    #                 total_score=Sum('quiz__marks')
+    #             ).order_by('-total_score', '-attempts')[:5]
 
-                # Prepare leaderboard and include current user
-                leaderboard = list(top_users.values(
-                    'username', 'total_score', 'attempts'))
+    #             # Prepare leaderboard and include current user
+    #             leaderboard = list(top_users.values(
+    #                 'username', 'total_score', 'attempts'))
 
-                current_user_dict = {
-                    'username': current_user.username,
-                    'total_score': current_user_total_score,
-                    'attempts': current_user_attempts,
-                    'is_current_user': True
-                }
+    #             current_user_dict = {
+    #                 'username': current_user.username,
+    #                 'total_score': current_user_total_score,
+    #                 'attempts': current_user_attempts,
+    #                 'is_current_user': True
+    #             }
 
-                # Check if current user is already in the top_users
-                if current_user_dict['username'] not in [user['username'] for user in leaderboard]:
-                    # Add current user to leaderboard
-                    leaderboard.append(current_user_dict)
+    #             # Check if current user is already in the top_users
+    #             if current_user_dict['username'] not in [user['username'] for user in leaderboard]:
+    #                 # Add current user to leaderboard
+    #                 leaderboard.append(current_user_dict)
 
-                # Handle None values by replacing them with default values
-                for user in leaderboard:
-                    user['total_score'] = user.get('total_score', 0) or 0
-                    user['attempts'] = user.get('attempts', 0) or 0
+    #             # Handle None values by replacing them with default values
+    #             for user in leaderboard:
+    #                 user['total_score'] = user.get('total_score', 0) or 0
+    #                 user['attempts'] = user.get('attempts', 0) or 0
 
-                # Sort leaderboard to ensure correct order
-                leaderboard = sorted(
-                    leaderboard, key=lambda x: (-x['total_score'], -x['attempts']))
+    #             # Sort leaderboard to ensure correct order
+    #             leaderboard = sorted(
+    #                 leaderboard, key=lambda x: (-x['total_score'], -x['attempts']))
 
-                # Ensure leaderboard shows only top 5 users and the current user if they are not in the top 5
-                if len(leaderboard) > 5:
-                    leaderboard = leaderboard[:5]
+    #             # Ensure leaderboard shows only top 5 users and the current user if they are not in the top 5
+    #             if len(leaderboard) > 5:
+    #                 leaderboard = leaderboard[:5]
 
-                # Render success page with leaderboard
-                return render(request, 'dashboard/success.html', {
-                    'leaderboard': leaderboard,
-                    'current_user': current_user,
-                    'clear_storage': True,
-                    'total_score': quiz.marks,
-                    'total_points': quiz.total_marks
-                })
+    #             # Render success page with leaderboard
+    #             return render(request, 'dashboard/success.html', {
+    #                 'leaderboard': leaderboard,
+    #                 'current_user': current_user,
+    #                 'clear_storage': True,
+    #                 'total_score': quiz.marks,
+    #                 'total_points': quiz.total_marks
+    #             })
 
-        context = {
-            'page_obj': page_obj,
-            'quiz': quiz,
-            'question_ids': ','.join(question_ids),
-        }
-        return render(request, 'dashboard/quiz.html', context)
+    #     context = {
+    #         'page_obj': page_obj,
+    #         'quiz': quiz,
+    #         'question_ids': ','.join(question_ids),
+    #     }
+    #     return render(request, 'dashboard/quiz.html', context)
 
 
 @login_required
@@ -748,7 +756,7 @@ def study_topics(request):
 def subscription(request):
 
     user_subscription = UserSubscription.objects.filter(
-        user=request.user, is_active =True).first()
+        user=request.user, is_active=True).first()
 
     context = {
         'data_context': user_subscription,
@@ -761,17 +769,37 @@ def subscription(request):
 def create_subscription(request, days, plan):
     # Example subscription period: 1 month
     end_date = timezone.now() + timedelta(days=days)
-    subscription, created = UserSubscription.objects.get_or_create(
-        user=request.user,
-        plan=plan,
-        defaults={'subscription_end_date': end_date}
-    )
-    if not created:
-        subscription.subscription_end_date = end_date
-        subscription.plan = plan
-        subscription.save()
-    request.has_active_subscription = True
-    return render(request, 'dashboard/myprofile.html',)
+
+    try:
+        # Check if the user already has a subscription
+        subscription = UserSubscription.objects.filter(
+            user=request.user).first()
+
+        # If a subscription exists and the plans do not match, delete the old subscription
+        if subscription and subscription.plan != plan:
+            subscription.delete()
+            subscription = None  # We'll create a new one below
+
+        # If no subscription exists or it was deleted, create a new one
+        if not subscription:
+            subscription = UserSubscription.objects.create(
+                user=request.user,
+                plan=plan,
+                subscription_end_date=end_date
+            )
+        else:
+            # Update the existing subscription if the plans match
+            subscription.subscription_end_date = end_date
+            subscription.save()
+
+        # Mark the user as having an active subscription
+        request.has_active_subscription = True
+
+    except Exception as e:
+        # Handle any exceptions and render an error page if needed
+        return render(request, 'dashboard/error.html', {'error': str(e)})
+
+    return render(request, 'dashboard/myprofile.html')
 
 
 @login_required
@@ -830,6 +858,15 @@ def start_quiz(request):
 
 @login_required
 def quizzes(request):
+    # request.session.flush()
+    # request.session.pop('quiz_id', None)
+    # request.session.pop('quiz_mode', None)
+    # request.session.pop('question_ids', None)
+    # request.session.pop('current_question_uid', None)
+    # request.session.pop('correct_answer', None)
+    # request.session.pop('answer_acknowledged', None)
+    # request.session.pop('selected_answer', None)
+
     user_subscription = UserSubscription.objects.filter(
         user=request.user).first()
     context = {'context': user_subscription, 'homeactive': True}
