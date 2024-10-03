@@ -146,6 +146,7 @@ class Answer(BaseModel):
     question = models.ForeignKey(
         Question, on_delete=models.CASCADE, related_name='answers')
     answer = models.TextField()
+    reason = models.TextField(null=True, blank=True)
     is_correct = models.BooleanField(default=False)
 
     def __str__(self) -> str:

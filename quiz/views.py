@@ -451,7 +451,7 @@ def readiness_quiz_start(request):
     print(question_ids)
 
     request.session['quiz_id'] = str(quiz.uid)
-    request.session['quiz_mode'] = "Study Mode"
+    request.session['quiz_mode'] = "Readiness"
     request.session['question_ids'] = ','.join(question_ids)
 
     # Redirect to the same view to display the quiz
@@ -620,6 +620,13 @@ def retake_quiz(request):
 
 
 def success_screen(request):
+    request.session.pop('quiz_id', None)
+    request.session.pop('quiz_mode', None)
+    request.session.pop('question_ids', None)
+    request.session.pop('current_question_uid', None)
+    request.session.pop('correct_answer', None)
+    request.session.pop('selected_answer', None)
+    request.session.pop('answer_acknowledged', None)
 
     return render(request, 'dashboard/success.html')
 
