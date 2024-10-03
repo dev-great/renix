@@ -64,6 +64,7 @@
                                   correct
                               {% else %}
                                   {% if answer.is_correct %}
+                                  
                                       correct
                                   {% else %}
                                       white
@@ -77,13 +78,24 @@
                                   disabled
                               {% endif %}
                               {% endif %} />
-                              {{ answer.answer }}
+                              {% if not answer.is_correct and study_mode %}
+                                  {% if answer.uid == selected_answer.uid and selected_answer %}
+                                      {% if not selected_answer.is_correct %}
+                                        <del>{{ answer.answer }}</del> 
+                                        {{ answer.reason }}  
+                                      {% endif %}
+                                  {% else %}
+                                      {{ answer.answer }}  
+                                  {% endif %}
+                              {% else %}
+                                {{ answer.answer }}  
+                              {% endif %}
                           </li>
                       </ul>
                   {% endfor %}
               </div>
           {% endfor %}
-          <button type="submit" class="btn btn-outline-primary mt-3">Submit</button>
+          <button type="submit" class="btn btn-outline-primary mt-3">Next</button>
       {% else %}
           <p>No questions found for this quiz.</p>
       {% endif %}
