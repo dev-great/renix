@@ -111,6 +111,8 @@ class StudyTopicModel(BaseModel):
 class StudyModel(BaseModel):
     topic = models.ForeignKey(
         StudyTopicModel, on_delete=models.CASCADE, related_name='topics')
+    category = models.ForeignKey(
+        StudyCategoryModel, on_delete=models.CASCADE,null=True, blank=True, related_name='topic_category')
     title = models.CharField(max_length=200)
     is_video = models.BooleanField(default=False)
     video_uri = models.CharField(max_length=200, null=True, blank=True)
