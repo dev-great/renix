@@ -4,38 +4,82 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <title>Renix Academy</title>
-    <link rel="stylesheet" href=" {% static 'vendors/iconfonts/font-awesome/css/all.min.css' %}" />
-    <link rel="stylesheet" href="{% static 'vendors/css/vendor.bundle.base.css' %}" />
-    <link rel="stylesheet" href="{% static 'vendors/css/vendor.bundle.addons.css' %}" />
-    <link rel="stylesheet" href=".{% static 'css/style.css' %}" />
-    <link rel="shortcut icon" href=".{% static 'images/favicon.png' %}" />
+    <title>Renix Academy - 500 Server Error</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background-color: #ff8400; /* Primary color */
+        color: #fff;
+      }
+      .error-page {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+      }
+      .error-content {
+        text-align: center;
+        background: #343a40; /* Dark background */
+        padding: 60px;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      .error-content h1 {
+        font-size: 100px;
+        margin: 0;
+      }
+      .error-content h2 {
+        font-size: 36px;
+        margin: 10px 0;
+      }
+      .error-content h3 {
+        font-size: 20px;
+        margin: 20px 0;
+        font-weight: 300;
+      }
+      .error-content a {
+        color: #17a2b8; /* Link color */
+        text-decoration: none;
+        font-weight: 500;
+      }
+      .error-content a:hover {
+        text-decoration: underline;
+      }
+      .copyright {
+        font-size: 14px;
+        margin-top: 20px;
+      }
+    </style>
   </head>
 
-  <body>
-    <div class="container-scroller">
-      <div class="container-fluid page-body-wrapper full-page-wrapper">
-        <div class="content-wrapper d-flex align-items-center text-center error-page bg-primary">
+    <body>
+    <div class="container-fluid page-body-wrapper full-page-wrapper">
+      <div class="content-wrapper d-flex align-items-center justify-content-center error-page">
+        <div class="error-content">
           <div class="row flex-grow">
-            <div class="col-lg-7 mx-auto text-white">
+            <div class="col-lg-12 mx-auto">
               <div class="row align-items-center d-flex flex-row">
-                <div class="col-lg-6 text-lg-right pr-lg-4">
+                <div class="col-lg-12">
                   <h1 class="display-1 mb-0">500</h1>
                 </div>
-                <div class="col-lg-6 error-page-divider text-lg-left pl-lg-4">
+              </div>
+              <div class="row mt-4">
+                <div class="col-12">
                   <h2>SORRY!</h2>
                   <h3 class="font-weight-light">Internal server error!</h3>
                 </div>
               </div>
               <div class="row mt-5">
-                <div class="col-12 text-center mt-xl-2">
-                  <a class="text-white font-weight-medium" href="index-2.html">Back to home</a>
+                <div class="col-12">
+                  <a class="btn" href="{% url 'quiz:index' %}">Go Back</a>
                 </div>
               </div>
               <div class="row mt-5">
-                <div class="col-12 mt-xl-2">
-                  <p class="text-white font-weight-medium text-center">
-                    Copyright &copy; 2024 All rights reserved.
+                <div class="col-12">
+                  <p class="copyright">
+                    &copy; 2024 Renix Academy. All rights reserved.
                   </p>
                 </div>
               </div>
@@ -44,12 +88,5 @@
         </div>
       </div>
     </div>
-    <script src="{% static 'vendors/js/vendor.bundle.base.js' %}"></script>
-    <script src=" {% static 'vendors/js/vendor.bundle.addons.js' %}"></script>
-    <script src=" {% static 'js/off-canvas.js' %}"></script>
-    <script src=" {% static 'js/hoverable-collapse.js' %}"></script>
-    <script src=" {% static 'js/misc.js' %}"></script>
-    <script src=" {% static 'js/settings.js' %}"></script>
-    <script src=" {% static 'js/todolist.js' %}"></script>
   </body>
 </html>

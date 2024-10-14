@@ -719,12 +719,14 @@ def quizTopics(request):
     user_subscription = UserSubscription.objects.filter(
         user=request.user).first()
     if user_subscription:
-        topics = StudyTopicModel.objects.filter(
-            category__name=category_text).order_by('-created_at')
-        print(topics)
+        result = StudyModel.objects.filter(category__name=category_text)
+    else:
+        result = []
+
+    print(result)
 
     context = {
-        'data_context': topics,
+        'data_context': result,
     }
     return render(request, 'dashboard/quiz_topics.html', context)
 
@@ -733,9 +735,7 @@ def study_detail(request):
     id = request.GET.get('id')
     print(f"Received ID: {id}")
 
-    topic = get_object_or_404(StudyTopicModel, uid=id)
-
-    post = StudyModel.objects.filter(topic=topic).first()
+    post = StudyModel.objects.filter(uid=id).first()
     if not post:
         return render(request, '404.html')
 
@@ -751,10 +751,11 @@ def study_topics(request):
     if category_id is None:
         return render(request, 'error.html', {'error': 'No category ID provided.'})
     category = get_object_or_404(StudyCategoryModel, uid=category_id)
-    topics = StudyTopicModel.objects.filter(category=category)
+    topic = StudyTopicModel.objects.filter(category=category).first()
+    result = StudyModel.objects.filter(topic=topic)
 
     context = {
-        'data_context': topics,
+        'data_context': result,
     }
     return render(request, 'dashboard/study_topics.html', context)
 

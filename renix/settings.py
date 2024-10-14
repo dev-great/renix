@@ -7,7 +7,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = "django-insecure-c&dw_%j38vlhnkm%$aa9e942l%f@  "
 
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['www.renixacademy.online', 'renixacademy.online', '127.0.0.1']
 SITE_ID = 1

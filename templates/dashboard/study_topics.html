@@ -22,7 +22,6 @@
               <thead>
                 <tr>
                   <th>Index</th>
-                  <th>Course</th>
                   <th>Topic</th>
                   <th></th>
                 </tr>
@@ -31,9 +30,8 @@
                 {% for context in data_context %}
                 <tr>
                   <td>{{ forloop.counter }}</td>
-                  <td>{{context.category.name}}</td>
 
-                  <td class="limited-width">{{context.title}}</td> 
+                  <td class="limited-width">{{context.title}}</td>
                   <td>
                     <a
                       href="{% url 'quiz:study_detail' %}?id={{context.uid}}"
