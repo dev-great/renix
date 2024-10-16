@@ -19,13 +19,32 @@
     <div class="page-header">
       <h3 class="page-title">Quiz On {{ category|title }}</h3>
 
+      
+
     <div class="timer">
       {% if quiz_mode == "Exam Mode" %}
-  <div>Time Left: <span id="countdown"></span></div>
-  {% else %}
-  <div>Time Elapsed: <span id="countup"></span></div>
-  {% endif %}
-    </div>
+      <div>Time Left: <span id="countdown"></span></div>
+      {% elif quiz_mode == "Study Mode" %}
+      <div>Time Elapsed: <span id="countup"></span></div>
+      {% else %}
+      
+      <div>Time Left: <span id="countdown"></span></div>
+      {% endif %}
+      <br>
+      {% if quiz_mode == "Exam Mode"  or quiz_mode == "Study Mode" %}
+      <button id="pauseButton" style="background:none; border:none; cursor:pointer; padding-right:20px">
+        <i class="fas fa-pause "></i> <!-- Pause icon -->
+      </button>
+      
+      <button id="resumeButton" style="background:none; border:none; cursor:pointer; padding-right:20px">
+        <i class="fas fa-play "></i> <!-- Resume (Play) icon -->
+      </button>
+      
+      <button id="stopButton" style="background:none; border:none; cursor:pointer;">
+        <i class="fas fa-stop"></i> <!-- Stop icon -->
+      </button>
+      {% endif %}
+        </div>
     
 
     </div>
@@ -79,7 +98,7 @@
                                   
                               {% endif %}
                               {% endif %} />
-                              {% if not answer.is_correct and study_mode %}
+                              {% if not answer.is_correct %}
                                 {% if selected_answer %}
 
                                   {% if answer.uid == selected_answer.uid  %}
@@ -95,7 +114,7 @@
                                   {{ answer.answer }} 
                                 {% endif %} 
 
-                                {% elif  answer.is_correct and study_mode %}
+                                {% elif  answer.is_correct %}
                                 {% if selected_answer %}
                                 {{ answer.answer }}  <br>
                                 {{ answer.reason }} 
@@ -123,12 +142,67 @@
     {% if quiz_mode == "Exam Mode" %}
     var countdownElement = document.getElementById('countdown');
     var savedTimeLeft = localStorage.getItem('timeLeft');
-    var timeLeft = savedTimeLeft ? parseInt(savedTimeLeft, 10) : 3600; // 10 minutes for example
+    var timeLeft = savedTimeLeft ? parseInt(savedTimeLeft, 10) : 10800; // 180 minutes (3 hours)
+    var countdownTimer; // Declare countdownTimer for global access
+    var isPaused = false; // To track if the timer is paused
+  
+    function startCountdown() {
+      countdownTimer = setInterval(function() {
+        var hours = Math.floor(timeLeft / 3600); // Calculate hours
+        var minutes = Math.floor((timeLeft % 3600) / 60); // Calculate minutes after hours
+        var seconds = timeLeft % 60;
+        countdownElement.textContent = hours + ":" + (minutes < 10 ? "0" + minutes : minutes) + ":" + (seconds < 10 ? "0" + seconds : seconds);
+        timeLeft--;
+        localStorage.setItem('timeLeft', timeLeft); // Save the remaining time
+  
+        if (timeLeft < 0) {
+          clearInterval(countdownTimer);
+          localStorage.removeItem('timeLeft'); // Clear the saved time
+          alert('Time is up!');
+          document.forms[0].submit(); 
+        }
+      }, 1000);
+    }
+
+    function pauseCountdown() {
+      if (!isPaused) {
+        clearInterval(countdownTimer); // Pause the timer
+        isPaused = true;
+      }
+    }
+
+    function resumeCountdown() {
+      if (isPaused) {
+        startCountdown(); // Resume the timer
+        isPaused = false;
+      }
+    }
+
+    function stopCountdown() {
+      clearInterval(countdownTimer); // Stop the timer
+      localStorage.removeItem('timeLeft'); // Clear the saved time
+      countdownElement.textContent = "Stopped"; // Set display to 'Stopped'
+      document.forms[0].submit();
+      window.location.href = '/enrolled_courses/';
+    }
+
+    startCountdown();
+  
+    document.getElementById('pauseButton').addEventListener('click', pauseCountdown);
+    document.getElementById('resumeButton').addEventListener('click', resumeCountdown);
+    document.getElementById('stopButton').addEventListener('click', stopCountdown);
+
+    {% elif quiz_mode == "Readiness" %}
+    var countdownElement = document.getElementById('countdown');
+    var savedTimeLeft = localStorage.getItem('timeLeft');
+    var timeLeft = savedTimeLeft ? parseInt(savedTimeLeft, 10) : 10800; // 180 minutes (3 hours)
   
     var countdownTimer = setInterval(function() {
-      var minutes = Math.floor(timeLeft / 60);
+      var hours = Math.floor(timeLeft / 3600); // Calculate hours
+      var minutes = Math.floor((timeLeft % 3600) / 60); // Calculate remaining minutes after hours
       var seconds = timeLeft % 60;
-      countdownElement.textContent = minutes + ":" + (seconds < 10 ? "0" + seconds : seconds);
+      countdownElement.textContent = hours + ":" + (minutes < 10 ? "0" + minutes : minutes) + ":" + (seconds < 10 ? "0" + seconds : seconds);
+      
       timeLeft--;
       localStorage.setItem('timeLeft', timeLeft); // Save the remaining time
   
@@ -139,21 +213,56 @@
         document.forms[0].submit(); // auto-submit form when time is up
       }
     }, 1000);
+
   
     {% else %}
     var countupElement = document.getElementById('countup');
     var savedTimeElapsed = localStorage.getItem('timeElapsed');
     var timeElapsed = savedTimeElapsed ? parseInt(savedTimeElapsed, 10) : 0;
-  
-    var countupTimer = setInterval(function() {
-      var minutes = Math.floor(timeElapsed / 60);
-      var seconds = timeElapsed % 60;
-      countupElement.textContent = minutes + ":" + (seconds < 10 ? "0" + seconds : seconds);
-      timeElapsed++;
-      localStorage.setItem('timeElapsed', timeElapsed); // Save the elapsed time
-    }, 1000);
-  
+    var countupTimer; // Declare countupTimer for global access
+    var isPaused = false; // To track if the timer is paused
+
+    function startCountup() {
+      countupTimer = setInterval(function() {
+        var minutes = Math.floor(timeElapsed / 60); // Calculate minutes
+        var seconds = timeElapsed % 60; // Calculate seconds
+        countupElement.textContent = minutes + ":" + (seconds < 10 ? "0" + seconds : seconds);
+        timeElapsed++;
+        localStorage.setItem('timeElapsed', timeElapsed); // Save the elapsed time
+      }, 1000);
+    }
+
+    function pauseCountup() {
+      if (!isPaused) {
+        clearInterval(countupTimer); // Pause the timer
+        isPaused = true;
+      }
+    }
+
+    function resumeCountup() {
+      if (isPaused) {
+        startCountup(); // Resume the timer
+        isPaused = false;
+      }
+    }
+
+    function stopCountup() {
+      clearInterval(countupTimer); // Stop the timer
+      localStorage.removeItem('timeElapsed'); // Clear the saved elapsed time
+      countupElement.textContent = "Stopped"; // Set display to 'Stopped'
+      window.location.href = '/enrolled_courses/'; // Redirect to the desired page
+    }
+
+    // Start the countup timer on page load
+    startCountup();
+
+    // Attach event listeners for pause, resume, and stop buttons
+    document.getElementById('pauseButton').addEventListener('click', pauseCountup);
+    document.getElementById('resumeButton').addEventListener('click', resumeCountup);
+    document.getElementById('stopButton').addEventListener('click', stopCountup);
+
     {% endif %}
+
   });
 
   
