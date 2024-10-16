@@ -251,6 +251,8 @@ def quiz_start(request):
         page_obj = paginator.page(paginator.num_pages)
 
     if request.method == 'POST':
+        if 'stop_button' in request.POST: 
+            return redirect('success_page')  
         question = page_obj.object_list[0]
         answer_id = request.POST.get(f'answer_{question.uid}')
 
@@ -285,7 +287,7 @@ def quiz_start(request):
                     'quiz': quiz,
                     'quiz_mode': quiz_mode,
                     'question_ids': ','.join(question_ids),
-                    'time_left': request.session.get('time_left', 3600),
+                    'time_left': request.session.get('time_left', 10800),
                     'correct_answer': correct_answer,
                     'selected_answer': answer,
                     'answer_acknowledged': True,
