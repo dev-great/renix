@@ -43,12 +43,21 @@
             </tbody>
           </table>
 <br>
-<br>
-          <div class="template-demo" style="text-align: center">
-            <a class="nav-link" href="{% url 'quiz:index' %}">
-              <span class="btn btn-primary">Proceed to home</span>
-            </a>
-          </div>
+<br><div class="container">
+  <div class="row justify-content-center">
+    <div class="col-auto">
+      <a class="nav-link" href="{% url 'quiz:enrolled_courses' %}">
+        <button class="btn btn-primary">Check answers</button>
+      </a>
+    </div>
+    <div class="col-auto">
+      <a class="nav-link" href="{% url 'quiz:index' %}">
+        <button class="btn btn-primary">Proceed to home</button>
+      </a>
+    </div>
+  </div>
+</div>
+
         </div>
       </div>
     </div>
