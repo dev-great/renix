@@ -22,7 +22,7 @@
     <div class="timer">
       {% if quiz_mode == "Exam Mode" %}
   <div>Time Left: <span id="countdown"></span></div>
-  {% elif quiz_mode == "Study Mode" %}
+  {% else %}
   <div>Time Elapsed: <span id="countup"></span></div>
   {% endif %}
     </div>
@@ -76,19 +76,34 @@
                                   disabled
                               {% elif answer.uid == correct_answer.uid and selected_answer %}
                                   disabled
+                                  
                               {% endif %}
                               {% endif %} />
                               {% if not answer.is_correct and study_mode %}
-                                  {% if answer.uid == selected_answer.uid and selected_answer %}
-                                      {% if not selected_answer.is_correct %}
-                                        <del>{{ answer.answer }}</del> 
-                                        {{ answer.reason }}  
-                                      {% endif %}
+                                {% if selected_answer %}
+
+                                  {% if answer.uid == selected_answer.uid  %}
+                                    {% if not selected_answer.is_correct %}
+                                      <del>{{ answer.answer }}</del>  <br>
+                                      {{ answer.reason }} 
+                                    {% endif %} 
                                   {% else %}
-                                      {{ answer.answer }}  
-                                  {% endif %}
+                                    {{ answer.answer }}  <br>
+                                    {{ answer.reason }} 
+                                  {% endif %} 
+                                {% else %}
+                                  {{ answer.answer }} 
+                                {% endif %} 
+
+                                {% elif  answer.is_correct and study_mode %}
+                                {% if selected_answer %}
+                                {{ answer.answer }}  <br>
+                                {{ answer.reason }} 
+                                {% else %}
+                                  {{ answer.answer }} 
+                                {% endif %} 
                               {% else %}
-                                {{ answer.answer }}  
+                                {{ answer.answer }} 
                               {% endif %}
                           </li>
                       </ul>
@@ -125,7 +140,7 @@
       }
     }, 1000);
   
-    {% elif quiz_mode == "Study Mode" %}
+    {% else %}
     var countupElement = document.getElementById('countup');
     var savedTimeElapsed = localStorage.getItem('timeElapsed');
     var timeElapsed = savedTimeElapsed ? parseInt(savedTimeElapsed, 10) : 0;

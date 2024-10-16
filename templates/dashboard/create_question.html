@@ -15,20 +15,41 @@
         </p>
         <h4 class="card-title">Subjects</h4>
         <form  id="questionForm" class="forms-sample" method="POST" action="{% url 'quiz:quiz_create' %}">
-          {% csrf_token %}
-          <div class="row">
-            <div class="col-md-4">
-              <div class="form-group">
-               
-          {{ form.as_p }}
-          <p>Set max allowed per block</p>
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="{{ form.topics.id_for_label }}">Topics</label>
+                <div class="row">
+                    {% for i in form.topics %}
+                        <div class="col-4">
+                            <div class="form-check">
+                                {{ i.tag }} {{ i.choice_label }}
+                            </div>
+                        </div>
+                        {% if forloop.counter|divisibleby:3 %}
+                            </div><div class="row">
+                        {% endif %}
+                    {% endfor %}
+                </div>
             </div>
-           
+        
+            <div class="form-group">
+                <label for="{{ form.quiz_mode.id_for_label }}">Quiz Mode</label>
+                {{ form.quiz_mode }}
+            </div>
+        
+            <div class="form-group">
+              <label for="{{ form.num_questions.id_for_label }}">Number of Questions</label>
+              {{ form.num_questions }}
+              {% if form.num_questions.errors %}
+                  <div class="text-danger">
+                      {{ form.num_questions.errors }}
+                  </div>
+              {% endif %}
           </div>
-          <button type="submit" class="btn btn-primary btn-lg btn-block">
-            Generate Test 
-          </button>
+        
+            <button type="submit" class="btn btn-primary">Generate Quiz</button>
         </form>
+        
       </div>
     </div>
   </div>
