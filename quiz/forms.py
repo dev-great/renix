@@ -1,4 +1,5 @@
 from django import forms
+from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 
 
@@ -62,4 +63,22 @@ class QuizForm(forms.Form):
         self.fields['num_questions'].widget.attrs.update(
             {'class': 'form-control'}
         )
-        # self.fields['quiz_mode'].widget.attrs.update({'class': 'form-select'})
+
+    def clean_num_questions(self):
+        """
+        Custom validation for 'num_questions' field based on quiz_mode.
+        """
+        num_questions = self.cleaned_data.get('num_questions')
+        quiz_mode = self.cleaned_data.get('quiz_mode')
+
+        if quiz_mode == "Exam Mode" and num_questions > 300:
+            raise ValidationError(
+                f"In 'Exam Mode', the maximum number of questions is 300. You entered {num_questions}."
+            )
+        elif quiz_mode == "Study Mode" and num_questions > 100:
+            raise ValidationError(
+                f"In 'Study Mode', the maximum number of questions is 100. You entered {num_questions}."
+            )
+
+        return num_questions
+

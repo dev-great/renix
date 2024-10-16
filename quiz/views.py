@@ -177,15 +177,36 @@ def quiz_create(request):
                 return redirect('quiz:quiz_start')
 
     else:
-        user_subscription = UserSubscription.objects.filter(
-            user=request.user).first()
+        user_subscription = UserSubscription.objects.filter(user=request.user).first()
         topics_choices = []
 
         if user_subscription:
-            topics_choices = sorted(
-                (topic.title, topic.title)
-                for topic in StudyTopicModel.objects.filter(plan__name=user_subscription.plan)
-            )
+            topics_with_counts = []
+
+            # Get topics based on user's subscription plan
+            topics = StudyTopicModel.objects.filter(plan__name=user_subscription.plan)
+
+            for topic in topics:
+                # Get total number of questions for this topic
+                total_questions = Question.objects.filter(category__title=topic.title).count()
+
+                # Get all quizzes the user has taken
+                user_quizzes = Quiz.objects.filter(user=request.user)
+
+                # Get all answered questions for the topic by the user
+                answered_questions = GivenQuizQuestions.objects.filter(
+                    quiz__in=user_quizzes,
+                    question__category__title=topic.title
+                ).values_list('question', flat=True).distinct()
+
+                # Calculate unanswered questions
+                unanswered_questions_count = total_questions - answered_questions.count()
+
+                # Only include topics that have unanswered questions
+                if unanswered_questions_count >= 0:
+                    topics_with_counts.append((topic.title, f'{topic.title} ({unanswered_questions_count}/300)'))
+
+            topics_choices = sorted(topics_with_counts)
 
         form = QuizForm(topics_choices=topics_choices)
 
