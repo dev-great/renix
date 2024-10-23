@@ -52,7 +52,7 @@ class QuizForm(forms.Form):
         initial="Study Mode",
         widget=forms.Select(attrs={'class': 'form-select'})
     )
-    num_questions = forms.IntegerField(min_value=1, max_value=10000)
+    num_questions = forms.IntegerField(min_value=1, max_value=300)
 
     def __init__(self, *args, **kwargs):
         topics_choices = kwargs.pop('topics_choices', [])
@@ -71,9 +71,9 @@ class QuizForm(forms.Form):
         num_questions = self.cleaned_data.get('num_questions')
         quiz_mode = self.cleaned_data.get('quiz_mode')
 
-        if quiz_mode == "Exam Mode" and num_questions > 300:
+        if quiz_mode == "Exam Mode" and num_questions > 250:
             raise ValidationError(
-                f"In 'Exam Mode', the maximum number of questions is 300. You entered {num_questions}."
+                f"In 'Exam Mode', the maximum number of questions is 250. You entered {num_questions}."
             )
         elif quiz_mode == "Study Mode" and num_questions > 100:
             raise ValidationError(

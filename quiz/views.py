@@ -251,8 +251,8 @@ def quiz_start(request):
         page_obj = paginator.page(paginator.num_pages)
 
     if request.method == 'POST':
-        if 'stop_button' in request.POST: 
-            return redirect('success_page')  
+        if 'stop_button' in request.POST:
+            return redirect('success_page')
         question = page_obj.object_list[0]
         answer_id = request.POST.get(f'answer_{question.uid}')
 

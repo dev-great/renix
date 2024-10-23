@@ -19,7 +19,7 @@
     <div class="page-header">
       <h3 class="page-title">Quiz On {{ category|title }}</h3>
 
-      
+
 
     <div class="timer">
       {% if quiz_mode == "Exam Mode" %}
@@ -27,25 +27,25 @@
       {% elif quiz_mode == "Study Mode" %}
       <div>Time Elapsed: <span id="countup"></span></div>
       {% else %}
-      
+
       <div>Time Left: <span id="countdown"></span></div>
       {% endif %}
       <br>
       {% if quiz_mode == "Exam Mode"  or quiz_mode == "Study Mode" %}
-      <button id="pauseButton" style="background:none; border:none; cursor:pointer; padding-right:20px">
+      <button id="pauseButton" title="Pause Timer" style="background:none; border:none; cursor:pointer; padding-right:20px">
         <i class="fas fa-pause "></i> <!-- Pause icon -->
       </button>
-      
-      <button id="resumeButton" style="background:none; border:none; cursor:pointer; padding-right:20px">
+
+      <button id="resumeButton" title="Resume Timer" style="background:none; border:none; cursor:pointer; padding-right:20px">
         <i class="fas fa-play "></i> <!-- Resume (Play) icon -->
       </button>
-      
-      <button id="stopButton" style="background:none; border:none; cursor:pointer;">
+
+      <button id="stopButton" title="Stop Timer" style="background:none; border:none; cursor:pointer;">
         <i class="fas fa-stop"></i> <!-- Stop icon -->
       </button>
       {% endif %}
         </div>
-    
+
 
     </div>
   </div>
@@ -67,7 +67,7 @@
                   <span id="{{ page_obj.number }}" class="questionP">{{ page_obj.number }}. {{ question.question }}</span>
                   <span>{{ question.mark }} Marks</span>
               </div>
-  
+
               <div class="form-check">
                   {% for answer in question.answers.all %}
                       <ul class="list-group">
@@ -83,7 +83,7 @@
                                   correct
                               {% else %}
                                   {% if answer.is_correct %}
-                                  
+
                                       correct
                                   {% else %}
                                       white
@@ -95,7 +95,7 @@
                                   disabled
                               {% elif answer.uid == correct_answer.uid and selected_answer %}
                                   disabled
-                                  
+
                               {% endif %}
                               {% endif %} />
                               {% if not answer.is_correct %}
@@ -104,25 +104,25 @@
                                   {% if answer.uid == selected_answer.uid  %}
                                     {% if not selected_answer.is_correct %}
                                       <del>{{ answer.answer }}</del>  <br>
-                                      {{ answer.reason }} 
-                                    {% endif %} 
+                                      {{ answer.reason }}
+                                    {% endif %}
                                   {% else %}
                                     {{ answer.answer }}  <br>
-                                    {{ answer.reason }} 
-                                  {% endif %} 
+                                    {{ answer.reason }}
+                                  {% endif %}
                                 {% else %}
-                                  {{ answer.answer }} 
-                                {% endif %} 
+                                  {{ answer.answer }}
+                                {% endif %}
 
                                 {% elif  answer.is_correct %}
                                 {% if selected_answer %}
                                 {{ answer.answer }}  <br>
-                                {{ answer.reason }} 
+                                {{ answer.reason }}
                                 {% else %}
-                                  {{ answer.answer }} 
-                                {% endif %} 
+                                  {{ answer.answer }}
+                                {% endif %}
                               {% else %}
-                                {{ answer.answer }} 
+                                {{ answer.answer }}
                               {% endif %}
                           </li>
                       </ul>
@@ -145,7 +145,7 @@
     var timeLeft = savedTimeLeft ? parseInt(savedTimeLeft, 10) : 10800; // 180 minutes (3 hours)
     var countdownTimer; // Declare countdownTimer for global access
     var isPaused = false; // To track if the timer is paused
-  
+
     function startCountdown() {
       countdownTimer = setInterval(function() {
         var hours = Math.floor(timeLeft / 3600); // Calculate hours
@@ -154,12 +154,12 @@
         countdownElement.textContent = hours + ":" + (minutes < 10 ? "0" + minutes : minutes) + ":" + (seconds < 10 ? "0" + seconds : seconds);
         timeLeft--;
         localStorage.setItem('timeLeft', timeLeft); // Save the remaining time
-  
+
         if (timeLeft < 0) {
           clearInterval(countdownTimer);
           localStorage.removeItem('timeLeft'); // Clear the saved time
           alert('Time is up!');
-          document.forms[0].submit(); 
+          document.forms[0].submit();
         }
       }, 1000);
     }
@@ -187,7 +187,7 @@
     }
 
     startCountdown();
-  
+
     document.getElementById('pauseButton').addEventListener('click', pauseCountdown);
     document.getElementById('resumeButton').addEventListener('click', resumeCountdown);
     document.getElementById('stopButton').addEventListener('click', stopCountdown);
@@ -196,16 +196,16 @@
     var countdownElement = document.getElementById('countdown');
     var savedTimeLeft = localStorage.getItem('timeLeft');
     var timeLeft = savedTimeLeft ? parseInt(savedTimeLeft, 10) : 10800; // 180 minutes (3 hours)
-  
+
     var countdownTimer = setInterval(function() {
       var hours = Math.floor(timeLeft / 3600); // Calculate hours
       var minutes = Math.floor((timeLeft % 3600) / 60); // Calculate remaining minutes after hours
       var seconds = timeLeft % 60;
       countdownElement.textContent = hours + ":" + (minutes < 10 ? "0" + minutes : minutes) + ":" + (seconds < 10 ? "0" + seconds : seconds);
-      
+
       timeLeft--;
       localStorage.setItem('timeLeft', timeLeft); // Save the remaining time
-  
+
       if (timeLeft < 0) {
         clearInterval(countdownTimer);
         localStorage.removeItem('timeLeft'); // Clear the saved time
@@ -214,7 +214,7 @@
       }
     }, 1000);
 
-  
+
     {% else %}
     var countupElement = document.getElementById('countup');
     var savedTimeElapsed = localStorage.getItem('timeElapsed');
@@ -265,6 +265,6 @@
 
   });
 
-  
+
 </script>
 {% endblock body %}
