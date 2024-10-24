@@ -1,5 +1,5 @@
 # renix/urls.py
-from django.urls import path, register_converter
+from django.urls import path, register_converter,re_path
 from . import views
 from uuid import UUID
 
@@ -27,7 +27,7 @@ urlpatterns = [
     path('quiz/create/', views.quiz_create, name='quiz_create'),
     path('quiz/start/', views.quiz_start, name='quiz_start'),
     path('quiz/retake/', views.retake_quiz, name='retake_quiz'),
-    path('create-subscription/<int:days>/<str:plan>/',
+    re_path(r'^create-subscription/(?P<days>\d+)/(?P<plan>.+)/$',
          views.create_subscription,
          name='create_subscription'),
 
