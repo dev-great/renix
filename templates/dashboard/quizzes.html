@@ -6,6 +6,7 @@
 
    
   </div>
+  {% if context.plan == "College/Sch. of Nursing Entrance" %}
     <ul>
       <li>This is the idea sample of questions you are likely to be confronted with during your Post UTME/Nursing School<br>entrance examination, covering all areas of this practice app and they are structured to test how prepared you are to take your exam.</li>
       <li>Total questions in each assessment are 250 and it will last 180 minutes.</li>
@@ -15,6 +16,17 @@
       <li>The algorithm will analysis your results and give you the probability of you passing this exam with your level of<br>preparedness</li>
       <li>You can decide to end the practice halfway and the system will rank your performance with respect to total questions</li>
     </ul>
+    {% else %}
+    <ul>
+      <li>Total questions in each assessment are 250 and it will last 180 minutes.</li>
+      <li>Once you start, you have 7 days to complete this test, or the questions will expire</li>
+      <li>You will need to have your own calculator to work on the calculations.</li>
+      <li>The algorithm will analysis your results and give you the probability of you passing this exam with your level <br>of preparedness</li>
+      <li>You can decide to end the practice halfway and the system will rank your performance with respect to total questions </li>
+      <li>At the end of the assessment your results will be ranked according to how you perform compared to other candidate who <br>have taken this assessment</li>
+      <li>Do not take pictures/records these questions</li>
+     </ul>
+    {% endif %}
      
    
    
@@ -24,16 +36,16 @@
        
         <div class="card-body">
           <h5 class="card-title">
-            {% if context.plan ==  "College_Entrance" %}
+            {% if context.plan ==  "College/Sch. of Nursing Entrance" %}
             Post UTME/School of Nursing<br>Entrance Examination  Self-Assessment 1
-        {% elif context.plan == "Final_Year_Student_RN" %}
-            Final Year Nursing Students<br>Self-Assessment 1
-        {% elif context.plan == "Prequalify_Hospital_Final_RN" %}
-            Prequalifying/Hospital Final Nursing<br> Students Self-Assessment 1
-        {% elif context.plan == "NMCNN_Final_Year_RM" %}
-            Final Year Nursing Students<br>Self-Assessment 1
-        {% elif context.plan == "Hospital_Final_NMCN" %}
-            Prequalifying/Hospital Final Nursing<br>Students Self-Assessment 1
+        {% elif context.plan == "Prequalifying/Hospital Final  for RN" %}
+        Prequalifying/Hospital Final Nursing<br> Students Self-Assessment 1
+        {% elif context.plan == 'Prequalifying/Hospital Final  for RM' %}
+            Prequalifying/Hospital Final Midwifery<br> Students Self-Assessment 1
+        {% elif context.plan == "NMCN Final Year Midwifery Student (RM)" %}
+            Final Year Midwifery Students<br>Self-Assessment 1
+        {% elif context.plan == "NMCN Final Year Nursing Student(RN)" %}
+        Final Year Nursing Students<br>Self-Assessment 1
         {% endif %}
           </h5>
          
@@ -58,16 +70,16 @@
        
         <div class="card-body">
           <h5 class="card-title">
-        {% if context.plan ==  "College_Entrance" %}
+        {% if context.plan ==  "College/Sch. of Nursing Entrance" %}
             Post UTME/School of Nursing<br>Entrance Examination  Self-Assessment 2
-        {% elif context.plan == "Final_Year_Student_RN" %}
-            Final Year Nursing Students<br>Self-Assessment 2
-        {% elif context.plan == "Prequalify_Hospital_Final_RN" %}
-            Prequalifying/Hospital Final Nursing<br> Students Self-Assessment 2
-        {% elif context.plan == "NMCNN_Final_Year_RM" %}
-            Final Year Nursing Students<br>Self-Assessment 2
-        {% elif context.plan == "Hospital_Final_NMCN" %}
-            Prequalifying/Hospital Final Nursing<br>Students Self-Assessment 2
+        {% elif context.plan == "Prequalifying/Hospital Final  for RN" %}
+        Prequalifying/Hospital Final Nursing<br> Students Self-Assessment 2
+        {% elif context.plan == 'Prequalifying/Hospital Final  for RM' %}
+            Prequalifying/Hospital Final Midwifery<br> Students Self-Assessment 2
+        {% elif context.plan == "NMCN Final Year Midwifery Student (RM)" %}
+            Final Year Midwifery Students<br>Self-Assessment 2
+        {% elif context.plan == "NMCN Final Year Nursing Student(RN)" %}
+        Final Year Nursing Students<br>Self-Assessment 2
         {% endif %}
          
         </div>
@@ -90,16 +102,16 @@
        
         <div class="card-body">
           <h5 class="card-title">
-            {% if context.plan ==  "College_Entrance" %}
+            {% if context.plan ==  "College/Sch. of Nursing Entrance" %}
             Post UTME/School of Nursing<br>Entrance Examination  Self-Assessment 3
-        {% elif context.plan == "Final_Year_Student_RN" %}
-            Final Year Nursing Students<br>Self-Assessment 3
-        {% elif context.plan == "Prequalify_Hospital_Final_RN" %}
-            Prequalifying/Hospital Final Nursing<br> Students Self-Assessment 3
-        {% elif context.plan == "NMCNN_Final_Year_RM" %}
-            Final Year Nursing Students<br>Self-Assessment 3
-        {% elif context.plan == "Hospital_Final_NMCN" %}
-            Prequalifying/Hospital Final Nursing<br>Students Self-Assessment 3
+        {% elif context.plan == "Prequalifying/Hospital Final  for RN" %}
+        Prequalifying/Hospital Final Nursing<br> Students Self-Assessment 3
+        {% elif context.plan == 'Prequalifying/Hospital Final  for RM' %}
+            Prequalifying/Hospital Final Midwifery<br> Students Self-Assessment 3
+        {% elif context.plan == "NMCN Final Year Midwifery Student (RM)" %}
+            Final Year Midwifery Students<br>Self-Assessment 3
+        {% elif context.plan == "NMCN Final Year Nursing Student(RN)" %}
+        Final Year Nursing Students<br>Self-Assessment 3
         {% endif %}
           </h5>
          
