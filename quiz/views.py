@@ -799,7 +799,8 @@ def subscription(request):
 @login_required
 def create_subscription(request, days, plan):
     # Example subscription period: 1 month
-    end_date = timezone.now() + timedelta(days=days)
+    end_date = timezone.now() + timedelta(days=int(days))
+    plan = plan.replace("_", " ")
 
     try:
         # Check if the user already has a subscription
@@ -827,7 +828,7 @@ def create_subscription(request, days, plan):
         request.has_active_subscription = True
 
     except Exception as e:
-        # Handle any exceptions and render an error page if needed
+        print(e)
         return render(request, 'dashboard/error.html', {'error': str(e)})
 
     return render(request, 'dashboard/myprofile.html')
