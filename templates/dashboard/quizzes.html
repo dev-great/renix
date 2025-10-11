@@ -4,12 +4,12 @@
   <div class="page-header">
     <h3 class="page-title">READINESS ASSESSMENT</h3>
 
-   
+
   </div>
   {% if context.plan == "College/Sch. of Nursing Entrance" %}
     <ul>
       <li>This is the idea sample of questions you are likely to be confronted with during your Post UTME/Nursing School<br>entrance examination, covering all areas of this practice app and they are structured to test how prepared you are to take your exam.</li>
-      <li>Total questions in each assessment are 250 and it will last 180 minutes.</li>
+      <li>Total questions in each assessment are 100 and it will last 120 minutes.</li>
       <li>Once you start you cannot pause the assessment</li>
       <li>You will need to have your own calculator to work on the calculations.</li>
       <li>At the end of the assessment your results will be reviewed and ranked according to how you perform compared to<br>other candidate who have taken this assessment</li>
@@ -27,13 +27,13 @@
       <li>Do not take pictures/records these questions</li>
      </ul>
     {% endif %}
-     
-   
-   
+
+
+
   <div class="card-columns">
     <form action="" class=" ">
       <div class="card">
-       
+
         <div class="card-body">
           <h5 class="card-title">
             {% if context.plan ==  "College/Sch. of Nursing Entrance" %}
@@ -48,26 +48,37 @@
         Final Year Nursing Students<br>Self-Assessment 1
         {% endif %}
           </h5>
-         
+
         </div>
         <ul class="list-group list-group-flush">
           <li class="list-group-item">
-            250 Questions
-          </li>
+            {% if context.plan ==  "College/Sch. of Nursing Entrance" %}
+                100 Questions
+            {% else %}
+              250 Questions
+            {% endif %}
 
-          <li class="list-group-item">180 Minites</li>
+          </li>
+         <li class="list-group-item">
+                    {% if context.plan ==  "College/Sch. of Nursing Entrance" %}
+                    120 Minites
+                    {% else %}
+                    180 Minites
+            {% endif %}</li>
+
+
         </ul>
         <div class="card-body">
           <a href="{% url 'quiz:quiz_readiness' %}"
           class="btn btn-primary btn-block">
-          Start button here 
+          Start button here
         </a>
-         
+
         </div>
       </div>
 
       <div class="card">
-       
+
         <div class="card-body">
           <h5 class="card-title">
         {% if context.plan ==  "College/Sch. of Nursing Entrance" %}
@@ -81,25 +92,39 @@
         {% elif context.plan == "NMCN Final Year Nursing Student(RN)" %}
         Final Year Nursing Students<br>Self-Assessment 2
         {% endif %}
-         
+
         </div>
-        <ul class="list-group list-group-flush">
+         <ul class="list-group list-group-flush">
           <li class="list-group-item">
-            250 Questions
+            {% if context.plan ==  "College/Sch. of Nursing Entrance" %}
+                100 Questions
+            {% else %}
+              250 Questions
+            {% endif %}
+
           </li>
 
-          <li class="list-group-item">180 Minites</li>
+                <li class="list-group-item">
+                    {% if context.plan ==  "College/Sch. of Nursing Entrance" %}
+                    120 Minites
+                    {% else %}
+                    180 Minites
+            {% endif %}</li>
+
+
+
+
         </ul>
         <div class="card-body">
           <a href="{% url 'quiz:quiz_readiness' %}"
           class="btn btn-primary btn-block">
-          Start button here 
+          Start button here
         </a>
         </div>
       </div>
 
       <div class="card">
-       
+
         <div class="card-body">
           <h5 class="card-title">
             {% if context.plan ==  "College/Sch. of Nursing Entrance" %}
@@ -114,19 +139,30 @@
         Final Year Nursing Students<br>Self-Assessment 3
         {% endif %}
           </h5>
-         
-        </div>
-        <ul class="list-group list-group-flush">
-          <li class="list-group-item">
-            250 Questions
-          </li>
 
-          <li class="list-group-item">180 Minites</li>
+        </div>
+         <ul class="list-group list-group-flush">
+          <li class="list-group-item">
+            {% if context.plan ==  "College/Sch. of Nursing Entrance" %}
+                100 Questions
+            {% else %}
+              250 Questions
+            {% endif %}
+
+          </li>
+         <li class="list-group-item">
+                    {% if context.plan ==  "College/Sch. of Nursing Entrance" %}
+                    120 Minites
+                    {% else %}
+                    180 Minites
+            {% endif %}</li>
+
+
         </ul>
         <div class="card-body">
           <a href="{% url 'quiz:quiz_readiness' %}"
           class="btn btn-primary btn-block">
-          Start button here 
+          Start button here
         </a>
         </div>
       </div>

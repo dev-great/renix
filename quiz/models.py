@@ -2,11 +2,13 @@ from ckeditor.fields import RichTextField
 from django.db import models
 from uuid import uuid4
 from random import shuffle
-from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils import timezone
 from datetime import timedelta
+from django.contrib.auth import get_user_model
+User = get_user_model()
+
 # Base Class
 
 TOPIC_CHOICES = (
@@ -126,7 +128,7 @@ class Question(BaseModel):
     category = models.ForeignKey(
         StudyTopicModel, on_delete=models.CASCADE, related_name='questions')
     topic = models.CharField(max_length=100, choices=TOPIC_CHOICES)
-    question = models.TextField()
+    question = RichTextField()
     mark = models.IntegerField(default=5)
     isReadiness = models.BooleanField(default=False)
 
@@ -141,21 +143,23 @@ class Question(BaseModel):
         ]
 
     class Meta:
-        ordering = ['uid']
+        ordering = ['-created_at']
+
 
 
 class Answer(BaseModel):
     question = models.ForeignKey(
         Question, on_delete=models.CASCADE, related_name='answers')
-    answer = models.TextField()
-    reason = models.TextField(null=True, blank=True)
+    answer = RichTextField()
+    reason = RichTextField()
     is_correct = models.BooleanField(default=False)
 
     def __str__(self) -> str:
         return f'{self.question} Ans-{self.answer} is correct-{self.is_correct}'
 
     class Meta:
-        ordering = ['uid']
+        ordering = ['-created_at']
+
 
 
 class GivenQuizQuestions(BaseModel):
@@ -213,3 +217,10 @@ class Quiz(BaseModel):
             'total_wrong': total_wrong,
             'all_questions': all_questions.count()
         }
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    school_name = models.CharField(max_length=255, blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.user.username}'s Profile"

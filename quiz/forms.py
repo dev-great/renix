@@ -1,6 +1,9 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
+from .models import UserProfile
+
+
 
 
 class ProfileUpdateForm(forms.ModelForm):
@@ -21,11 +24,16 @@ class ProfileUpdateForm(forms.ModelForm):
         widget=forms.EmailInput(
             attrs={'class': 'form-control', 'placeholder': 'Enter Email Address'})
     )
+    school_name = forms.CharField(
+        label='School Name',
+        max_length=255,
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter Your School Name'})
+    )
 
     class Meta:
-        model = User  # Specify the model class
-        # Fields to include in the form
-        fields = ['first_name', 'last_name', 'email']
+        model = UserProfile
+        fields = ['school_name']
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user')
@@ -33,6 +41,9 @@ class ProfileUpdateForm(forms.ModelForm):
         self.fields['first_name'].initial = user.first_name
         self.fields['last_name'].initial = user.last_name
         self.fields['email'].initial = user.email
+        if hasattr(user, 'profile'):
+            self.fields['school_name'].initial = user.profile.school_name
+
 
 
 class QuizForm(forms.Form):
@@ -52,7 +63,7 @@ class QuizForm(forms.Form):
         initial="Study Mode",
         widget=forms.Select(attrs={'class': 'form-select'})
     )
-    num_questions = forms.IntegerField(min_value=1, max_value=300)
+    num_questions = forms.IntegerField(min_value=1, max_value=250)
 
     def __init__(self, *args, **kwargs):
         topics_choices = kwargs.pop('topics_choices', [])

@@ -10,6 +10,16 @@ SECRET_KEY = "django-insecure-c&dw_%j38vlhnkm%$aa9e942l%f@  "
 DEBUG = True
 
 ALLOWED_HOSTS = ['www.renixacademy.online', 'renixacademy.online', '127.0.0.1']
+
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_HSTS_SECONDS = 31536000
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+
+
 SITE_ID = 1
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -53,6 +63,8 @@ CKEDITOR_IMAGE_BACKEND = "pillow"
 CKEDITOR_CONFIGS = {
     'default': {
         'toolbar': 'full',
+        'extraPlugins': 'mathjax',
+        'mathJaxLib': 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js',
         'height': 300,
         'width': 800,
     },
@@ -102,8 +114,12 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
+        "OPTIONS": {
+            "timeout": 30,
+        },
     }
 }
+
 
 
 # Password validation

@@ -14,7 +14,7 @@
         <br />
         <br />
         <p>
-          <strong>{{ forloop.counter }}. {{ item.question.question }}</strong>
+          <strong>{{ forloop.counter }}. {{ item.question.question|safe }}</strong>
         </p>
         <ul>
           {% for answer in item.answers %}
@@ -26,7 +26,7 @@
                 {% if answer.is_correct %}
                     background-color: lightgreen;
                 {% else %}
-                    background-color: #f94449;
+                    background-color: #FFA4A4;
                 {% endif %}
             {% elif answer.is_correct %}
                 background-color: lightgreen;
@@ -34,8 +34,8 @@
                 background-color: white;
             {% endif %}"
           >
-            {{ answer.answer }} <br>
-            <strong>Reason:</strong> {{ answer.reason }} 
+            {{ answer.answer|safe }} <br>
+            <strong>Reason:</strong> {{ answer.reason|safe }}
           </li>
           {% endfor %}
         </ul>

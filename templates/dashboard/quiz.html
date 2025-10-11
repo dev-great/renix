@@ -64,14 +64,14 @@
       {% if page_obj %}
           {% for question in page_obj.object_list %}
               <div class="fw-bold text-center fs-5 d-flex justify-content-between p-2">
-                  <span id="{{ page_obj.number }}" class="questionP">{{ page_obj.number }}. {{ question.question }}</span>
+                  <span id="{{ page_obj.number }}" class="questionP" style="text-transform: none !important;">{{ page_obj.number }}. {{ question.question|safe }}</span>
                   <span>{{ question.mark }} Marks</span>
               </div>
 
               <div class="form-check">
                   {% for answer in question.answers.all %}
-                      <ul class="list-group">
-                          <li class="list-group-item answer
+                      <ul class="list-group" style="text-transform: none !important;">
+                          <li style="text-transform: none !important;" class="list-group-item answer
                            {% if study_mode %}
                               {% if answer.uid == selected_answer.uid and selected_answer %}
                                   {% if not selected_answer.is_correct %}
@@ -103,26 +103,26 @@
 
                                   {% if answer.uid == selected_answer.uid  %}
                                     {% if not selected_answer.is_correct %}
-                                      <del>{{ answer.answer }}</del>  <br>
-                                      {{ answer.reason }}
+                                      <del>{{ answer.answer|safe }}</del>  <br>
+                                      {{ answer.reason|safe }}
                                     {% endif %}
                                   {% else %}
-                                    {{ answer.answer }}  <br>
-                                    {{ answer.reason }}
+                                    {{ answer.answer|safe }}  <br>
+                                    {{ answer.reason|safe }}
                                   {% endif %}
                                 {% else %}
-                                  {{ answer.answer }}
+                                  {{ answer.answer|safe }}
                                 {% endif %}
 
                                 {% elif  answer.is_correct %}
                                 {% if selected_answer %}
-                                {{ answer.answer }}  <br>
-                                {{ answer.reason }}
+                                {{ answer.answer|safe }}  <br>
+                                {{ answer.reason|safe }}
                                 {% else %}
-                                  {{ answer.answer }}
+                                  {{ answer.answer|safe }}
                                 {% endif %}
                               {% else %}
-                                {{ answer.answer }}
+                                {{ answer.answer|safe }}
                               {% endif %}
                           </li>
                       </ul>
@@ -142,7 +142,12 @@
     {% if quiz_mode == "Exam Mode" %}
     var countdownElement = document.getElementById('countdown');
     var savedTimeLeft = localStorage.getItem('timeLeft');
-    var timeLeft = savedTimeLeft ? parseInt(savedTimeLeft, 10) : 10800; // 180 minutes (3 hours)
+
+    {% if current_plan == 'College/Sch. of Nursing Entrance' %}
+      timeLeft = savedTimeLeft ? parseInt(savedTimeLeft, 10) : 7200; // 120 minutes
+    {% else %}
+      timeLeft = savedTimeLeft ? parseInt(savedTimeLeft, 10) : 10800; // 180 minutes (3 hours)
+    {% endif %}
     var countdownTimer; // Declare countdownTimer for global access
     var isPaused = false; // To track if the timer is paused
 

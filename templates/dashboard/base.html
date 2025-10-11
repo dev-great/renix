@@ -118,7 +118,7 @@
         <i class="fa fa-clock menu-icon"></i>
         <form method="POST" action="{% url 'quiz:quizzes' %}">
           {% csrf_token %}
-          <button type="submit"  style="padding-left: 0;" class="btn btn-link menu-title">Readiness assessment </button> 
+          <button type="submit"  style="padding-left: 0;" class="btn btn-link menu-title">Readiness assessment </button>
         </form>
       </a>
     </li>
@@ -245,6 +245,7 @@
   <!--End of Tawk.to Script-->
     <script src="{% static 'vendors/js/vendor.bundle.base.js' %}"></script>
     <script src="{% static 'vendors/js/vendor.bundle.addons.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="https://js.paystack.co/v2/inline.js"></script>
     <script src="{% static 'js/off-canvas.js' %}"></script>
     <script src="{% static 'js/hoverable-collapse.js' %}"></script>

@@ -17,23 +17,23 @@
                 <label for="{{ form.topics.id_for_label }}">Topics</label>
                 <div class="row">
                     {% for i in form.topics %}
-                        <div class="col-4">
+                        <div class="col-6">
                             <div class="form-check">
                                 {{ i.tag }} {{ i.choice_label }}
                             </div>
                         </div>
-                        {% if forloop.counter|divisibleby:3 %}
+                        {% if forloop.counter|divisibleby:2 %}
                             </div><div class="row">
                         {% endif %}
                     {% endfor %}
                 </div>
             </div>
-        
+
             <div class="form-group">
                 <label for="{{ form.quiz_mode.id_for_label }}">Quiz Mode</label>
                 {{ form.quiz_mode }}
             </div>
-        
+
             <div class="form-group">
               <label for="{{ form.num_questions.id_for_label }}">Number of Questions</label>
               {{ form.num_questions }}
@@ -43,15 +43,15 @@
                   </div>
               {% endif %}
           </div>
-        
+
             <button type="submit" class="btn btn-primary">Generate Quiz</button>
         </form>
-        
+
       </div>
     </div>
   </div>
 </div>
- 
+
 <script>
   // JavaScript function to handle form submission with selected checkboxes
   function submitForm() {

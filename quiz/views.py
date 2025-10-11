@@ -16,6 +16,7 @@ from urllib.parse import quote
 from django.contrib.auth.forms import UserChangeForm
 import uuid
 
+
 # Create your views here.
 
 
@@ -210,7 +211,7 @@ def quiz_create(request):
 
         form = QuizForm(topics_choices=topics_choices)
 
-    return render(request, 'dashboard/create_question.html', {'form': form})
+    return render(request, 'dashboard/create_question.html', {'form': form,'current_plan': user_subscription.plan if user_subscription else None})
 
 
 def quiz_start(request):
@@ -220,6 +221,7 @@ def quiz_start(request):
     print(quiz_mode)
     question_ids = request.session.get('question_ids')
     print(question_ids)
+    user_subscription = UserSubscription.objects.filter(user=request.user).first()
 
     if not all([quiz_id, quiz_mode, question_ids]):
         return redirect('quiz:quiz_create')
@@ -282,12 +284,20 @@ def quiz_start(request):
 
                 request.session['answer_acknowledged'] = True
 
+                print(f"Subscription plan {{user_subscription.plan}}")
+
+                if user_subscription.plan == 'College/Sch. of Nursing Entrance':
+                    time_left = request.session.get('time_left', 7200)
+                else:
+                    time_left = request.session.get('time_left', 10800)
+
                 return render(request, 'dashboard/quiz.html', {
                     'page_obj': page_obj,
                     'quiz': quiz,
                     'quiz_mode': quiz_mode,
+                    'current_plan': user_subscription.plan,
                     'question_ids': ','.join(question_ids),
-                    'time_left': request.session.get('time_left', 10800),
+                    'time_left': time_left,
                     'correct_answer': correct_answer,
                     'selected_answer': answer,
                     'answer_acknowledged': True,
@@ -425,6 +435,7 @@ def quiz_start(request):
         'quiz_mode': quiz_mode,
         'question_ids': ','.join(question_ids),
         'time_left': request.session.get('time_left', 3600),
+        'current_plan': user_subscription.plan,
         'correct_answer': correct_answer,
         'answered_question': current_question_uid,
         'answer_acknowledged': answer_acknowledged,
@@ -450,8 +461,11 @@ def readiness_quiz_start(request):
 
         # Extract the titles of the topics
         topic_titles = topics.values_list('title', flat=True)
-        questions = Question.objects.filter(isReadiness=True,
-                                            category__title__in=topic_titles).order_by('?')[:250]
+        if plan_name == "College/Sch. of Nursing Entrance":
+            questions = Question.objects.filter(isReadiness=True,category__title__in=topic_titles).order_by('?')[:100]
+        else:
+            questions = Question.objects.filter(isReadiness=True,category__title__in=topic_titles).order_by('?')[:250]
+
         print(topics)
         print(questions)
         # Shuffle questions
@@ -701,21 +715,29 @@ def loadAttendedQuestionData(request, uid):
 
 @login_required
 def myprofile(request):
-    try:
-        profile = request.user
-    except profile.DoesNotExist:
-        profile = None
+    user = request.user
+
+    # Check if the user already has a profile
+    profile, created = UserProfile.objects.get_or_create(user=user)
 
     if request.method == 'POST':
-        profile_form = ProfileUpdateForm(request.POST, user=request.user)
+        profile_form = ProfileUpdateForm(request.POST, user=user, instance=profile)
+
         if profile_form.is_valid():
             profile_form.save()
-            # profile.user = request.user
-            # profile.save()
+
+            user.first_name = profile_form.cleaned_data['first_name']
+            user.last_name = profile_form.cleaned_data['last_name']
+            user.email = profile_form.cleaned_data['email']
+            user.save()
+
+            profile.school_name = profile_form.cleaned_data['school_name']
+            profile.save()
+
             messages.success(request, 'Your profile has been updated!')
-            return redirect('myprofile')
+            return redirect('quiz:myprofile')
     else:
-        profile_form = ProfileUpdateForm(user=request.user)
+        profile_form = ProfileUpdateForm(user=user, instance=profile)
 
     context = {'profile_form': profile_form}
     return render(request, 'dashboard/myprofile.html', context)
