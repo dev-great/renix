@@ -18,13 +18,13 @@
     </ul>
     {% else %}
     <ul>
-      <li>Total questions in each assessment are 250 and it will last 180 minutes.</li>
-      <li>Once you start, you have 7 days to complete this test, or the questions will expire</li>
-      <li>You will need to have your own calculator to work on the calculations.</li>
-      <li>The algorithm will analysis your results and give you the probability of you passing this exam with your level <br>of preparedness</li>
-      <li>You can decide to end the practice halfway and the system will rank your performance with respect to total questions </li>
-      <li>At the end of the assessment your results will be ranked according to how you perform compared to other candidate who <br>have taken this assessment</li>
-      <li>Do not take pictures/records these questions</li>
+      <li>Each assessment contains 250 questions and lasts 180 minutes.</li>
+      <li>Once you start, you will have 7 days to complete the test, after which the questions will expire.</li>
+      <li>You must use your own calculator for calculations.</li>
+      <li>The algorithm will analyze your results and estimate your probability of passing the exam based on your level <br>of preparedness</li>
+      <li>You may end the practice at any point; the system will still rank your performance relative to the total number of questions. </li>
+      <li>At the end of the assessment, your results will be ranked against other candidates who have taken this test.</li>
+      <li>Do not take pictures or record these questions.</li>
      </ul>
     {% endif %}
 
@@ -70,7 +70,7 @@
         </ul>
         <div class="card-body">
           <a href="{% url 'quiz:quiz_readiness' %}"
-          class="btn btn-primary btn-block">
+          class="btn btn-primary btn-block btn-start" data-assessment="1">
           Start button here
         </a>
 
@@ -117,7 +117,7 @@
         </ul>
         <div class="card-body">
           <a href="{% url 'quiz:quiz_readiness' %}"
-          class="btn btn-primary btn-block">
+          class="btn btn-primary btn-block btn-start" data-assessment="2">
           Start button here
         </a>
         </div>
@@ -161,7 +161,7 @@
         </ul>
         <div class="card-body">
           <a href="{% url 'quiz:quiz_readiness' %}"
-          class="btn btn-primary btn-block">
+          class="btn btn-primary btn-block btn-start" data-assessment="3">
           Start button here
         </a>
         </div>
@@ -169,5 +169,25 @@
     </form>
   </div>
 </div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const buttons = document.querySelectorAll(".btn-start");
+
+    buttons.forEach((button) => {
+      button.addEventListener("click", function (e) {
+        e.preventDefault();
+
+        // Identify which assessment is being started
+        const assessment = this.getAttribute("data-assessment");
+        localStorage.setItem("readiness_assessment", assessment);
+
+        // Redirect to quiz readiness page
+        window.location.href = this.getAttribute("href");
+      });
+    });
+  });
+</script>
+
 
 {%endblock body %}

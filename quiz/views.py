@@ -205,7 +205,7 @@ def quiz_create(request):
 
                 # Only include topics that have unanswered questions
                 if unanswered_questions_count >= 0:
-                    topics_with_counts.append((topic.title, f'{topic.title} ({unanswered_questions_count}/300)'))
+                    topics_with_counts.append((topic.title, f'{topic.title} ({unanswered_questions_count}/{unanswered_questions_count})'))
 
             topics_choices = sorted(topics_with_counts)
 
@@ -817,6 +817,11 @@ def subscription(request):
     }
     return render(request, 'dashboard/subscription.html', context)
 
+@login_required
+def subscription_success(request):
+    
+    return render(request, 'dashboard/subscription_success.html',)
+
 
 @login_required
 def create_subscription(request, days, plan):
@@ -853,7 +858,7 @@ def create_subscription(request, days, plan):
         print(e)
         return render(request, 'dashboard/error.html', {'error': str(e)})
 
-    return render(request, 'dashboard/myprofile.html')
+    return render(request, 'dashboard/subscription_success.html')
 
 
 @login_required

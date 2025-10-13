@@ -1,4 +1,4 @@
-{% extends 'dashboard/base.html' %} {% load static %}  {% block body %}
+{% extends 'dashboard/base.html' %} {% load static %} {% block body %}
 
 <div class="content-wrapper">
   <div class="page-header">
@@ -29,30 +29,16 @@
                     <tr>
                       <td>WD-{{ quiz.uid|truncatechars:8 }}</td>
                       <td>{{quiz.created_at}}</td>
-                      <td>{% if quiz.exam_mode %}
-                        Exam Mode
-                    {% else %}
-                        Study Mode
-                    {% endif %}
-                  </td>
+                      <td>{% if quiz.exam_mode %} Exam Mode {% else %} Study Mode {% endif %}</td>
+                      <td>{% if quiz.given_question. %} Single {% else %} Multiple {% endif %}</td>
                       <td>
-                        {% if quiz.given_question. %}
-                          Single
-                        {% else %}
-                        Multiple
-                        {% endif %}
-                        </td>
-                      <td>
-                        <label class="badge ">{{ quiz.marks }}/{{ quiz.total_marks }}</label>
+                        <label class="badge">{{ quiz.marks }}/{{ quiz.total_marks }}</label>
                       </td>
                       <td class="text-right">
-                        <a
-                        href="{% url 'quiz:quiz_questions' %}?quiz_id={{ quiz.uid }}" class="btn btn-light">
-                          <i class="fa fa-eye text-primary"></i> View
-                      </a>
-                        <a href="{% url 'quiz:retake_quiz' %}?quiz_id={{ quiz.uid }}" class="btn btn-light">
-                          <i class="fa fa-play text-success"></i> Re-take
-                        </a>
+                        <a href="{% url 'quiz:quiz_questions' %}?quiz_id={{ quiz.uid }}" class="btn btn-light"> <i class="fa fa-eye text-primary"></i> View </a>
+                        {% if quiz.exam_mode %}
+                        <a href="{% url 'quiz:retake_quiz' %}?quiz_id={{ quiz.uid }}" class="btn btn-light"> <i class="fa fa-play text-success"></i> Re-take </a>
+                        {% endif %}
                         <!-- <a class="btn btn-light" href="">
                           <i class="fa fa-bolt text-primary"></i> Analytics
                         </a> -->
@@ -60,7 +46,7 @@
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="6">No enrolled courses found.</td>
+                      <td colspan="6">No enrolled courses found.</td>
                     </tr>
                     {% endfor %}
                   </tbody>

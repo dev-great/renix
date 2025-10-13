@@ -7,46 +7,36 @@
     <div class="card">
       <div class="card-body">
         <h4 class="card-title">Renix Testing Experience</h4>
-        <p class="card-description col-md-8">
-          Renix academy Platform provide insight to your performance, rank your preparedness, and areas requiring improvement.
-        </p>
+        <p class="card-description col-md-8">Renix academy Platform provide insight into your performance and rank your preparedness and areas requiring improvement.</p>
         <h4 class="card-title">Subjects</h4>
-        <form  id="questionForm" class="forms-sample" method="POST" action="{% url 'quiz:quiz_create' %}">
-            {% csrf_token %}
-            <div class="form-group">
-                <label for="{{ form.topics.id_for_label }}">Topics</label>
-                <div class="row">
-                    {% for i in form.topics %}
-                        <div class="col-6">
-                            <div class="form-check">
-                                {{ i.tag }} {{ i.choice_label }}
-                            </div>
-                        </div>
-                        {% if forloop.counter|divisibleby:2 %}
-                            </div><div class="row">
-                        {% endif %}
-                    {% endfor %}
-                </div>
+        <form id="questionForm" class="forms-sample" method="POST" action="{% url 'quiz:quiz_create' %}">
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="{{ form.topics.id_for_label }}">Topics</label>
+            <div class="row">
+              {% for i in form.topics %}
+              <div class="col-6">
+                <div class="form-check">{{ i.tag }} {{ i.choice_label }}</div>
+              </div>
+              {% if forloop.counter|divisibleby:2 %}
             </div>
-
-            <div class="form-group">
-                <label for="{{ form.quiz_mode.id_for_label }}">Quiz Mode</label>
-                {{ form.quiz_mode }}
-            </div>
-
-            <div class="form-group">
-              <label for="{{ form.num_questions.id_for_label }}">Number of Questions</label>
-              {{ form.num_questions }}
-              {% if form.num_questions.errors %}
-                  <div class="text-danger">
-                      {{ form.num_questions.errors }}
-                  </div>
-              {% endif %}
+            <div class="row">{% endif %} {% endfor %}</div>
           </div>
 
-            <button type="submit" class="btn btn-primary">Generate Quiz</button>
-        </form>
+          <div class="form-group">
+            <label for="{{ form.quiz_mode.id_for_label }}">Quiz Mode</label>
+            {{ form.quiz_mode }}
+          </div>
 
+          <div class="form-group">
+            <label for="{{ form.num_questions.id_for_label }}">Number of Questions</label>
+            {{ form.num_questions }} {% if form.num_questions.errors %}
+            <div class="text-danger">{{ form.num_questions.errors }}</div>
+            {% endif %}
+          </div>
+
+          <button type="submit" class="btn btn-primary">Generate Quiz</button>
+        </form>
       </div>
     </div>
   </div>
@@ -57,48 +47,46 @@
   function submitForm() {
     // Collect selected topics
     let selectedTopics = [];
-    document.querySelectorAll('input[type="checkbox"]:checked').forEach(function(checkbox) {
+    document.querySelectorAll('input[type="checkbox"]:checked').forEach(function (checkbox) {
       selectedTopics.push(checkbox.value);
     });
 
     // Set topics input value
-    document.getElementById('topicsInput').value = selectedTopics.join(',');
+    document.getElementById("topicsInput").value = selectedTopics.join(",");
 
     // Set exam_mode input value (if needed)
     // Example assumes there's a checkbox or toggle for exam mode
-    let examModeCheckbox = document.getElementById('examModeCheckbox');
+    let examModeCheckbox = document.getElementById("examModeCheckbox");
     if (examModeCheckbox.checked) {
-      document.getElementById('examModeInput').value = 'true';
+      document.getElementById("examModeInput").value = "true";
     } else {
-      document.getElementById('examModeInput').value = 'false';
+      document.getElementById("examModeInput").value = "false";
     }
 
     // Set question_limit input value (if needed)
     // Example assumes there's an input field for question limit
-    let questionLimitInput = document.getElementById('exampleInputUsername2');
+    let questionLimitInput = document.getElementById("exampleInputUsername2");
     if (questionLimitInput.value) {
-      document.getElementById('questionLimitInput').value = questionLimitInput.value;
+      document.getElementById("questionLimitInput").value = questionLimitInput.value;
     }
 
     // Submit the form
-    document.getElementById('questionForm').submit();
+    document.getElementById("questionForm").submit();
   }
 
   // "Select All" functionality
-  document.addEventListener("DOMContentLoaded", function() {
+  document.addEventListener("DOMContentLoaded", function () {
     const selectAllCheckbox = document.querySelector('input[value="ALL"]'); // Assuming 'ALL' is the value of the "Select All" checkbox
     const topicCheckboxes = document.querySelectorAll('input[name="topics"]'); // Assuming 'topics' is the name for the checkboxes
 
     // When "Select All" is checked or unchecked, toggle all checkboxes
-    selectAllCheckbox.addEventListener('change', function() {
+    selectAllCheckbox.addEventListener("change", function () {
       const isChecked = selectAllCheckbox.checked;
-      topicCheckboxes.forEach(function(checkbox) {
+      topicCheckboxes.forEach(function (checkbox) {
         checkbox.checked = isChecked;
       });
     });
   });
-
 </script>
-
 
 {%endblock body %}

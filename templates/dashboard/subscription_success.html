@@ -1,0 +1,118 @@
+{% extends 'dashboard/base.html' %} {% load static %} {% block body %}
+<style>
+  /* Full viewport height wrapper */
+  .success-wrapper {
+    display: flex;
+    flex-direction: column; /* allow space for footer */
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh; /* full viewport height */
+    padding-bottom: 60px; /* reserve space for footer */
+    box-sizing: border-box;
+  }
+
+  /* Card styling */
+  .success-card {
+    background: #e6ffed; /* light green */
+    border-radius: 15px;
+    padding: 40px 30px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    width: 100%;
+    max-width: 700px;
+    flex-shrink: 0; /* prevent shrinking */
+  }
+
+  /* Checkmark animation */
+  .checkmark-circle {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: #28a745;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto 20px;
+    position: relative;
+    animation: popIn 0.5s ease forwards;
+  }
+
+  .checkmark {
+    width: 50px;
+    height: 25px;
+    border-left: 5px solid white;
+    border-bottom: 5px solid white;
+    transform: rotate(-45deg);
+    opacity: 0;
+    animation: check 0.5s 0.5s forwards;
+  }
+
+  @keyframes popIn {
+    0% {
+      transform: scale(0);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  @keyframes check {
+    0% {
+      opacity: 0;
+      transform: rotate(-45deg) scale(0);
+    }
+    100% {
+      opacity: 1;
+      transform: rotate(-45deg) scale(1);
+    }
+  }
+
+  .success-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #155724;
+    margin-bottom: 10px;
+  }
+
+  .success-message {
+    font-size: 16px;
+    color: #155724;
+    margin-bottom: 30px;
+  }
+
+  .btn-home {
+    font-size: 18px;
+    padding: 10px 30px;
+    border-radius: 50px;
+  }
+
+  /* Footer stays at the bottom */
+  footer {
+    margin-top: auto; /* pushes footer to bottom */
+  }
+</style>
+
+<div class="success-wrapper">
+  <div class="success-card">
+    <div class="checkmark-circle">
+      <div class="checkmark"></div>
+    </div>
+    <div class="success-title">Subscription Successful!</div>
+    <div class="success-message">
+      Congratulations! Your subscription has been activated successfully. 🎉
+    </div>
+    <a href="{% url 'quiz:index' %}">
+      <button class="btn btn-success btn-home">Go to Home</button>
+    </a>
+  </div>
+
+  <!-- optional footer placeholder if your base.html has a footer -->
+  {% block footer %}{% endblock %}
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    localStorage.removeItem("subscriptionStatus");
+  });
+</script>
+{% endblock %}
