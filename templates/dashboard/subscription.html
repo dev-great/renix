@@ -8,8 +8,8 @@
       <div class="card">
         <div class="card-body">
           <div class="container text-center pt-5">
-            <h4 class="mb-3 mt-5">Start up your Quiz Practice today</h4>
-            <p class="w-75 mx-auto mb-5">Choose a plan that suits you the best. If you are not fully satisfied, we offer 30-day money-back guarantee no questions asked!!</p>
+            <h4 class="mb-3 mt-5">Start up your Quiz Practice today {{current_plan}}</h4>
+            <p class="w-75 mx-auto mb-5"></p>
 
             <div class="row pricing-table">
               {% comment %}
@@ -41,7 +41,7 @@
                   </div>
                   <ul class="list-unstyled plan-features"></ul>
                   <div class="wrapper">
-                    {% if current_plan == 'Prequalifying/Hospital Final for RN'%}
+                    {% if current_plan|lower|cut:" " == 'prequalifying/hospitalfinalforrn' %}
                     <p class="text-success">Current Plan</p>
                     {% else %}
                     <button class="common_btn btn btn-success btn-block" onclick="payWithPaystack(30,'Prequalifying/Hospital Final  for RN'); return false;">Pay</button>
@@ -59,7 +59,7 @@
                   </div>
                   <ul class="list-unstyled plan-features"></ul>
                   <div class="wrapper">
-                    {% if current_plan == 'Prequalifying/Hospital Final for RM' %}
+                    {% if current_plan|lower|cut:" " == 'prequalifying/hospitalfinalforrm' %}
                     <p class="text-success">Current Plan</p>
                     {% else %}
                     <button class="common_btn btn btn-success btn-block" onclick="payWithPaystack(30,'Prequalifying/Hospital Final  for RM' ); return false;">Pay</button>
@@ -77,7 +77,7 @@
                   </div>
                   <ul class="list-unstyled plan-features"></ul>
                   <div class="wrapper">
-                    {% if current_plan == 'NMCN Final Year Midwifery Student (RM)' %}
+                    {% if current_plan|lower|cut:" " == 'nmcnfinalyearmidwiferystudent(rm)' %}
                     <p class="text-success">Current Plan</p>
                     {% else %}
                     <button class="common_btn btn btn-success btn-block" onclick="payWithPaystack(30, 'NMCN Final Year Midwifery Student (RM)'); return false;">Pay</button>
@@ -98,7 +98,7 @@
                   </div>
                   <ul class="list-unstyled plan-features"></ul>
                   <div class="wrapper">
-                    {% if current_plan == 'NMCN Final Year Nursing Student(RN)' %}
+                    {% if current_plan|lower|cut:" " == 'nmcnfinalyearnursingstudent(rn)' %}
                     <p class="text-success">Current Plan</p>
                     {% else %}
                     <button class="common_btn btn btn-success btn-block" onclick="payWithPaystack(30,'NMCN Final Year Nursing Student(RN)'); return false;">Pay</button>

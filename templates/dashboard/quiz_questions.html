@@ -2,9 +2,7 @@
 <div class="content-wrapper">
   <div class="content-wrapper">
     <div class="page-header">
-      <h3 class="page-title">
-        {{ quiz.topic.category.name }} - Questions and Answers
-      </h3>
+      <h3 class="page-title">{{ quiz.topic.category.name }} - Questions and Answers</h3>
     </div>
   </div>
   <div class="col-md-8 mx-auto">
@@ -34,8 +32,10 @@
                 background-color: white;
             {% endif %}"
           >
-            {{ answer.answer|safe }} <br>
-            <strong>Reason:</strong> {{ answer.reason|safe }}
+            <span style="background: none !important; background-color: transparent !important; display: inline-block">
+              {{ answer.answer|safe }} <br />
+              <strong>Reason:</strong> {{ answer.reason|safe }}
+            </span>
           </li>
           {% endfor %}
         </ul>
