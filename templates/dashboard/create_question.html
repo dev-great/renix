@@ -8,6 +8,10 @@
       <div class="card-body">
         <h4 class="card-title">Renix Testing Experience</h4>
         <p class="card-description col-md-8">Renix academy Platform provide insight into your performance and ranks your preparedness and areas requiring improvement.</p>
+        {% if messages %} {% for message in messages %}
+        <div class="alert alert-warning mt-3">{{ message }}</div>
+        {% endfor %} {% endif %}
+
         <h4 class="card-title">Subjects</h4>
         <form id="questionForm" class="forms-sample" method="POST" action="{% url 'quiz:quiz_create' %}">
           {% csrf_token %}

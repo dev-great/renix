@@ -152,30 +152,52 @@ def quiz_create(request):
                 selected_topics = [
                     topic for topic, _ in form.fields['topics'].choices if topic != QuizForm.ALL_TOPICS_OPTION]
 
-            if selected_topics:
-                questions = Question.objects.filter(isReadiness=False,
-                                                    category__title__in=selected_topics
-                                                    ).distinct()[:question_limit]
+            # Get total unanswered questions for selected topics
+            total_unanswered = 0
+            for topic_title in selected_topics:
+                total_questions = Question.objects.filter(category__title=topic_title).count()
+                user_quizzes = Quiz.objects.filter(user=request.user)
+                answered_questions = GivenQuizQuestions.objects.filter(
+                    quiz__in=user_quizzes,
+                    question__category__title=topic_title
+                ).values_list('question', flat=True).distinct()
 
-                if not questions.exists():
-                    return HttpResponse("No questions found for selected topics.")
+                unanswered_questions_count = total_questions - answered_questions.count()
+                total_unanswered += unanswered_questions_count
 
-                total_marks = sum(question.mark for question in questions)
-
-                exam_mode = True if quiz_mode == "Exam Mode" else False
-
-                quiz = Quiz.objects.create(
-                    user=request.user,
-                    total_marks=total_marks, marks=0, exam_mode=exam_mode,
+            # 🔍 Validation: check if the user selected more than available unanswered questions
+            if question_limit > total_unanswered:
+                messages.error(
+                    request,
+                    f"You selected {question_limit} questions, but only {total_unanswered} unanswered questions are available."
                 )
-                question_ids = [str(q.uid)
-                                for q in questions]
+                return redirect('quiz:quiz_create')
 
-                request.session['quiz_id'] = str(quiz.uid)
-                request.session['quiz_mode'] = quiz_mode
-                request.session['question_ids'] = ','.join(question_ids)
+            # Continue as before if validation passes
+            questions = Question.objects.filter(
+                isReadiness=False,
+                category__title__in=selected_topics
+            ).distinct()[:question_limit]
 
-                return redirect('quiz:quiz_start')
+            if not questions.exists():
+                return HttpResponse("No questions found for selected topics.")
+
+            total_marks = sum(question.mark for question in questions)
+
+            exam_mode = True if quiz_mode == "Exam Mode" else False
+
+            quiz = Quiz.objects.create(
+                user=request.user,
+                total_marks=total_marks, marks=0, exam_mode=exam_mode,
+            )
+            question_ids = [str(q.uid)
+                            for q in questions]
+
+            request.session['quiz_id'] = str(quiz.uid)
+            request.session['quiz_mode'] = quiz_mode
+            request.session['question_ids'] = ','.join(question_ids)
+
+            return redirect('quiz:quiz_start')
 
     else:
         user_subscription = UserSubscription.objects.filter(user=request.user).first()

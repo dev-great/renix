@@ -45,7 +45,7 @@ class ProfileUpdateForm(forms.ModelForm):
             self.fields['school_name'].initial = user.profile.school_name
 
 
-
+ 
 class QuizForm(forms.Form):
     EXAM_MODE_CHOICES = [
         ("Study Mode", "Study Mode"),
