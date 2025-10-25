@@ -49,5 +49,8 @@ urlpatterns = [
     path('quiz_detail/', views.start_quiz, name='quiz_detail'),
     path('help/', views.help, name='help'),
     path('quizzes/', views.quizzes, name='quizzes'),
-    path('text_analitics', views.text_analitics, name='text_analitics')
+    path('text_analitics', views.text_analitics, name='text_analitics'),
+    path('practice', views.practice, name='practice'),
+    path('trial-study-mode/', views.trial_study_mode, name='trial_study_mode'),
+
 ]

@@ -1,4 +1,14 @@
 {% extends 'dashboard/base.html' %} {% load static %} {% block body %}
+<style>
+  .answerList * {
+    background: transparent !important;
+    background-color: transparent !important;
+  }
+  .quiz-content * {
+    background: transparent !important;
+    background-color: transparent !important;
+  }
+</style>
 <div class="content-wrapper">
   <div class="content-wrapper">
     <div class="page-header">
@@ -12,7 +22,7 @@
         <br />
         <br />
         <p>
-          <strong>{{ forloop.counter }}. {{ item.question.question|safe }}</strong>
+          <strong class="quiz-content">{{ forloop.counter }}. {{ item.question.question|safe }}</strong>
         </p>
         <ul>
           {% for answer in item.answers %}
@@ -44,4 +54,5 @@
     </ul>
   </div>
 </div>
+
 {% endblock %}

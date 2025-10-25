@@ -37,7 +37,7 @@
                   <div class="text-center pricing-card-head">
                     <h3 class="text-success">Prequalifying/Hospital Final for RN</h3>
                     <p>Paid plan</p>
-                    <h1 class="font-weight-normal mb-4">₦5,000</h1>
+                    <h1 class="font-weight-normal mb-4">₦4,500</h1>
                   </div>
                   <ul class="list-unstyled plan-features"></ul>
                   <div class="wrapper">
@@ -55,7 +55,7 @@
                   <div class="text-center pricing-card-head">
                     <h3 class="text-success">Prequalifying/Hospital Final for RM</h3>
                     <p>Paid plan</p>
-                    <h1 class="font-weight-normal mb-4">₦5,000</h1>
+                    <h1 class="font-weight-normal mb-4">₦4,500</h1>
                   </div>
                   <ul class="list-unstyled plan-features"></ul>
                   <div class="wrapper">
@@ -73,7 +73,7 @@
                   <div class="text-center pricing-card-head">
                     <h3 class="text-success">NMCN Final Year Midwifery Student (RM)</h3>
                     <p>Paid plan</p>
-                    <h1 class="font-weight-normal mb-4">₦5,000</h1>
+                    <h1 class="font-weight-normal mb-4">₦15,000</h1>
                   </div>
                   <ul class="list-unstyled plan-features"></ul>
                   <div class="wrapper">
@@ -94,7 +94,7 @@
                   <div class="text-center pricing-card-head">
                     <h3 class="text-success">NMCN Final Year Nursing Student(RN)</h3>
                     <p>Paid plan</p>
-                    <h1 class="font-weight-normal mb-4">₦5,000</h1>
+                    <h1 class="font-weight-normal mb-4">₦15,000</h1>
                   </div>
                   <ul class="list-unstyled plan-features"></ul>
                   <div class="wrapper">
@@ -127,7 +127,21 @@
       return;
     }
 
-    var amount = days === 30 ? "500000" : "1250000";
+    const planPrices = {
+      "Prequalifying/Hospital Final  for RN": 4500,
+      "Prequalifying/Hospital Final  for RM": 4500,
+      "NMCN Final Year Midwifery Student (RM)": 15000,
+      "NMCN Final Year Nursing Student(RN)": 15000,
+    };
+
+    const price = planPrices[plan];
+    if (!price) {
+      console.error("Price not found for plan:", plan);
+      return;
+    }
+
+    // Convert Naira to Kobo
+    const amount = price * 100;
 
     const paystack = new PaystackPop();
     paystack.newTransaction({

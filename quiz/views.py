@@ -243,14 +243,16 @@ def quiz_start(request):
     print(quiz_mode)
     question_ids = request.session.get('question_ids')
     print(question_ids)
+    user_profile, created = UserProfile.objects.get_or_create(user=request.user)
     user_subscription = UserSubscription.objects.filter(user=request.user).first()
 
+    # --- Handle missing quiz session data ---
     if not all([quiz_id, quiz_mode, question_ids]):
         return redirect('quiz:quiz_create')
 
+    # --- Convert question IDs to valid UUIDs ---
     question_ids_list = question_ids.split(',')
     valid_uuids = []
-
     for qid in question_ids_list:
         try:
             valid_uuid = uuid.UUID(qid)
@@ -264,9 +266,16 @@ def quiz_start(request):
     quiz = Quiz.objects.get(uid=quiz_id)
     questions = Question.objects.filter(uid__in=valid_uuids)
 
+    # --- Handle first-time users ---
+    if not GivenQuizQuestions.objects.filter(quiz__user=request.user).exists():
+        # You can customize this to show a welcome modal or onboarding page
+        request.session['first_time_user'] = True
+    else:
+        request.session['first_time_user'] = False
+
+    # --- Pagination setup ---
     paginator = Paginator(questions, 1)
     page_number = request.GET.get('page', 1)
-
     try:
         page_obj = paginator.page(page_number)
     except PageNotAnInteger:
@@ -274,29 +283,37 @@ def quiz_start(request):
     except EmptyPage:
         page_obj = paginator.page(paginator.num_pages)
 
+    # --- Handle form submissions ---
     if request.method == 'POST':
+        # Stop quiz early
         if 'stop_button' in request.POST:
             return redirect('success_page')
+
         question = page_obj.object_list[0]
         answer_id = request.POST.get(f'answer_{question.uid}')
 
         if answer_id:
             answer = get_object_or_404(Answer, uid=answer_id)
 
+            # Record or update given question
             given_question, created = GivenQuizQuestions.objects.get_or_create(
                 quiz=quiz,
-                question=question, defaults={'answer': answer}
+                question=question,
+                defaults={'answer': answer}
             )
             if not created:
                 given_question.answer = answer
                 given_question.save()
 
+            # Update quiz marks
             if answer.is_correct:
                 quiz.marks += question.mark
                 quiz.save()
 
             quiz.given_question.add(given_question)
             quiz.save()
+
+            # --- Study Mode Handling ---
             if quiz_mode == "Study Mode":
                 request.session['current_question_uid'] = str(question.uid)
                 correct_answer = Answer.objects.filter(
@@ -308,7 +325,9 @@ def quiz_start(request):
 
                 print(f"Subscription plan {{user_subscription.plan}}")
 
-                if user_subscription.plan == 'College/Sch. of Nursing Entrance':
+                plan_name = user_subscription.plan if user_subscription else "Free Plan"
+
+                if plan_name == 'College/Sch. of Nursing Entrance':
                     time_left = request.session.get('time_left', 7200)
                 else:
                     time_left = request.session.get('time_left', 10800)
@@ -317,7 +336,7 @@ def quiz_start(request):
                     'page_obj': page_obj,
                     'quiz': quiz,
                     'quiz_mode': quiz_mode,
-                    'current_plan': user_subscription.plan,
+                    'current_plan': user_subscription.plan if user_subscription else "Free Plan",
                     'question_ids': ','.join(question_ids),
                     'time_left': time_left,
                     'correct_answer': correct_answer,
@@ -457,7 +476,7 @@ def quiz_start(request):
         'quiz_mode': quiz_mode,
         'question_ids': ','.join(question_ids),
         'time_left': request.session.get('time_left', 3600),
-        'current_plan': user_subscription.plan,
+        'current_plan': user_subscription.plan if user_subscription else "Free Plan",
         'correct_answer': correct_answer,
         'answered_question': current_question_uid,
         'answer_acknowledged': answer_acknowledged,
@@ -515,133 +534,6 @@ def readiness_quiz_start(request):
 
     # Redirect to the same view to display the quiz
     return redirect('quiz:quiz_start')
-    # else:
-    #     # Handling the initial load or quiz display
-    #     quiz_id = request.session.get('quiz_id')
-    #     question_ids = request.session.get('question_ids')
-    #     print(quiz_id)
-    #     print(question_ids)
-    #     if not all([quiz_id, question_ids]):
-    #         raise Http404("No quiz session found. Please start a new quiz.")
-
-    #     # Convert question_ids from session data
-    #     question_ids_list = question_ids.split(',')
-    #     valid_uuids = []
-
-    #     for qid in question_ids_list:
-    #         try:
-    #             valid_uuid = uuid.UUID(qid)
-    #             valid_uuids.append(valid_uuid)
-    #         except ValueError:
-    #             continue  # Skip invalid UUIDs
-
-    #     if not valid_uuids:
-    #         return HttpResponse("No valid questions found for this quiz.")
-
-    #     # Get the Quiz object
-    #     try:
-    #         quiz = Quiz.objects.get(uid=quiz_id)
-    #     except Quiz.DoesNotExist:
-    #         return HttpResponse("Quiz not found.")
-
-    #     questions = Question.objects.filter(uid__in=question_ids_list)
-
-    #     # Set up pagination
-    #     paginator = Paginator(questions, 1)  # Show one question per page
-    #     page_number = request.GET.get('page', 1)
-
-    #     try:
-    #         page_obj = paginator.page(page_number)
-    #     except PageNotAnInteger:
-    #         page_obj = paginator.page(1)
-    #     except EmptyPage:
-    #         page_obj = paginator.page(paginator.num_pages)
-
-    #     if request.method == 'POST':
-    #         question = page_obj.object_list[0]
-    #         answer_id = request.POST.get(f'answer_{question.uid}')
-
-    #         if answer_id:
-    #             try:
-    #                 answer = get_object_or_404(Answer, uid=answer_id)
-    #             except Answer.DoesNotExist:
-    #                 return HttpResponse("Answer not found.")
-
-    #             # Update the quiz marks if the answer is correct
-    #             if answer.is_correct:
-    #                 quiz.marks += question.mark
-    #                 quiz.save()
-
-    #         # Redirect to the next question
-    #         next_page_number = page_obj.next_page_number() if page_obj.has_next() else None
-    #         if next_page_number:
-    #             return redirect(f'/quiz/view/?page={next_page_number}')
-    #         else:
-
-    #             current_user = request.user
-
-    #             # Ensure user is logged in
-    #             if not current_user.is_authenticated:
-    #                 return redirect('login')
-
-    #             # Retrieve all quizzes associated with the current user
-    #             user_quizzes = Quiz.objects.filter(user=current_user)
-
-    #             # Calculate total score and attempts
-    #             current_user_attempts = user_quizzes.count()
-    #             current_user_total_score = user_quizzes.aggregate(
-    #                 total_score=Sum('marks'))['total_score'] or 0
-
-    #             # Retrieve the top 5 users based on total quiz attempts and scores
-    #             top_users = User.objects.annotate(
-    #                 attempts=Count('quiz'),
-    #                 total_score=Sum('quiz__marks')
-    #             ).order_by('-total_score', '-attempts')[:5]
-
-    #             # Prepare leaderboard and include current user
-    #             leaderboard = list(top_users.values(
-    #                 'username', 'total_score', 'attempts'))
-
-    #             current_user_dict = {
-    #                 'username': current_user.username,
-    #                 'total_score': current_user_total_score,
-    #                 'attempts': current_user_attempts,
-    #                 'is_current_user': True
-    #             }
-
-    #             # Check if current user is already in the top_users
-    #             if current_user_dict['username'] not in [user['username'] for user in leaderboard]:
-    #                 # Add current user to leaderboard
-    #                 leaderboard.append(current_user_dict)
-
-    #             # Handle None values by replacing them with default values
-    #             for user in leaderboard:
-    #                 user['total_score'] = user.get('total_score', 0) or 0
-    #                 user['attempts'] = user.get('attempts', 0) or 0
-
-    #             # Sort leaderboard to ensure correct order
-    #             leaderboard = sorted(
-    #                 leaderboard, key=lambda x: (-x['total_score'], -x['attempts']))
-
-    #             # Ensure leaderboard shows only top 5 users and the current user if they are not in the top 5
-    #             if len(leaderboard) > 5:
-    #                 leaderboard = leaderboard[:5]
-
-    #             # Render success page with leaderboard
-    #             return render(request, 'dashboard/success.html', {
-    #                 'leaderboard': leaderboard,
-    #                 'current_user': current_user,
-    #                 'clear_storage': True,
-    #                 'total_score': quiz.marks,
-    #                 'total_points': quiz.total_marks
-    #             })
-
-    #     context = {
-    #         'page_obj': page_obj,
-    #         'quiz': quiz,
-    #         'question_ids': ','.join(question_ids),
-    #     }
-    #     return render(request, 'dashboard/quiz.html', context)
 
 
 @login_required
@@ -978,3 +870,59 @@ def help(request):
 
 def text_analitics(request):
     return render(request, 'dashboard/text_analitics.html')
+
+def practice(request):
+    return render(request, 'dashboard/practice_test.html')
+
+
+def trial_study_mode(request):
+    user = request.user
+    existing_quiz = Quiz.objects.filter(user=user, exam_mode=False).first()
+    all_questions = list(Question.objects.all())
+
+    # Ensure the user is authenticated
+    if not user.is_authenticated:
+        return render(request, "dashboard/message.html", {
+            "title": "Login Required",
+            "message": "Please log in to take your free trial quiz.",
+            "button_text": "Login Now",
+            "button_url": reverse("login")
+        })
+
+    if existing_quiz:
+        return render(request, "dashboard/message.html", {
+            "title": "Trial Quiz Already Taken",
+            "message": "You’ve already used your free trial. Subscribe to unlock more quizzes.",
+            "button_text": "Back to Dashboard",
+            "button_url": "subscription/"
+        })
+
+    if len(all_questions) < 50:
+        return render(request, "dashboard/message.html", {
+            "title": "Not Enough Questions",
+            "message": "We’re preparing more questions. Please check back later!",
+            "button_text": "Back to Dashboard",
+            "button_url": reverse("dashboard")
+        })
+
+    questions = random.sample(all_questions, 50)
+
+    # ✅ Create quiz in study mode
+    try:
+        quiz = Quiz.objects.create(
+            user=user,
+            exam_mode=False,  # Study mode
+            total_marks=sum(q.mark for q in questions),
+            marks=0,  # Starting mark
+        )
+    except Exception as e:
+        return HttpResponse(f"Error creating quiz: {e}")
+
+    # Store question UIDs in session
+    question_ids = [str(q.uid) for q in questions]
+    request.session['quiz_id'] = str(quiz.uid)
+    request.session['quiz_mode'] = "Study Mode"
+    request.session['question_ids'] = ','.join(question_ids)
+
+    # ✅ Redirect to the quiz start page
+    return redirect('quiz:quiz_start')

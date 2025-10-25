@@ -1,0 +1,45 @@
+{% extends 'dashboard/base.html' %} {% load static %} {% block body %}
+<div class="content-wrapper">
+  <div class="page-header">
+    <h3 class="page-title">Start Trial Quiz</h3>
+  </div>
+
+  <div class="row justify-content-center">
+    <div class="col-lg-8 col-md-10 col-sm-12 grid-margin">
+      <div class="card shadow-sm border-0">
+        <div class="card-body py-5 px-4">
+          <h4 class="card-title mb-3 text-center">Welcome to Your Free Trial Quiz</h4>
+
+          <p class="text-muted mb-4">Experience how our practice system works before subscribing. You’ll get <strong>50 random questions</strong> selected from different topics to test your readiness.</p>
+
+          <div class="mb-4">
+            <h5 class="fw-bold mb-3">Here’s what you’ll get:</h5>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">
+                <i class="mdi mdi-check-circle-outline text-success me-3"></i>
+                50 mixed questions from various study categories
+              </li>
+              <li class="list-group-item">
+                <i class="mdi mdi-check-circle-outline text-success me-2"></i>
+                Instant feedback after completion
+              </li>
+              <li class="list-group-item">
+                <i class="mdi mdi-check-circle-outline text-success me-2"></i>
+                Access more tests and features when you upgrade your plan
+              </li>
+            </ul>
+          </div>
+
+          <div class="alert alert-info text-center mt-4">🎓 Take this test to get a feel of how the full subscription works.</div>
+
+          <div class="text-center mt-5">
+            <a href="{% url 'quiz:trial_study_mode' %}" class="btn btn-primary btn-lg px-5 py-3">Start My Trial Test </a>
+          </div>
+
+          <p class="text-center text-muted mt-4 mb-0" style="font-size: 0.9rem">Ready to unlock more? <a href="{% url 'quiz:subscription' %}">View Subscription Plans</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock body %}
