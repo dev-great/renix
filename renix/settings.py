@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "authentication",
     "quiz",
+    'django_crontab',
     'ckeditor',
     'ckeditor_uploader',
     'allauth',
@@ -37,6 +38,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
 ]
+
 
 SOCIALACCOUNT_PROVIDERS = {
     "google": {
@@ -146,7 +148,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = 'Africa/Lagos'
 
 USE_I18N = True
 
@@ -165,6 +167,10 @@ STATICFILES_DIRS = [
 ]
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
+
+CRONJOBS = [
+    ('0 0 * * *', 'quiz.models.deactivate_expired_subscriptions'),  # runs daily at midnight
+]
 
 
 # Default primary key field type

@@ -67,9 +67,22 @@ class UserSubscription(models.Model):
 
 @receiver(post_save, sender=UserSubscription)
 def check_subscription_expiry(sender, instance, **kwargs):
-    if instance.is_expired():
+    if instance.subscription_end_date and timezone.now() > instance.subscription_end_date:
         instance.is_active = False
-        instance.save()
+    else:
+        instance.is_active = True
+        
+def deactivate_expired_subscriptions():
+    """
+    Deactivate all subscriptions that have passed their end date.
+    You can connect this to a daily cron job or Celery beat task.
+    """
+    now = timezone.now()
+    expired = UserSubscription.objects.filter(
+        subscription_end_date__lt=now, is_active=True
+    )
+    count = expired.update(is_active=False)
+    return count
 
 
 class Category(BaseModel):
