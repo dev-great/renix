@@ -8,6 +8,10 @@
     background: transparent !important;
     background-color: transparent !important;
   }
+  .strikethrough {
+    text-decoration: line-through;
+    opacity: 0.8;
+  }
 </style>
 <div class="content-wrapper">
   <div class="content-wrapper">
@@ -39,11 +43,12 @@
             {% elif answer.is_correct %}
                 background-color: lightgreen;
             {% else %}
-                background-color: white;
+                background-color: #e0dafeff;
             {% endif %}"
           >
             <span style="background: none !important; background-color: transparent !important; display: inline-block">
-              {{ answer.answer|safe }} <br />
+              <span class="{% if answer.uid == item.selected_answer.uid and not answer.is_correct %} strikethrough {% endif %}"> {{ answer.answer|safe }} <br /></span>
+
               <strong>Reason:</strong> {{ answer.reason|safe }}
             </span>
           </li>

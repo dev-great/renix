@@ -15,9 +15,26 @@ from django.db.models import Q
 from urllib.parse import quote
 from django.contrib.auth.forms import UserChangeForm
 import uuid
+import random
 
+def get_random_questions(is_readiness, topic_titles, question_limit):
+    """
+    Efficiently returns a random set of questions without using .order_by('?').
+    Works well even with large datasets.
+    """
+    # Fetch only UIDs (since Question uses 'uid' as the primary identifier)
+    question_uids = list(
+        Question.objects.filter(
+            isReadiness=is_readiness,
+            category__title__in=topic_titles
+        ).values_list('uid', flat=True)
+    )
 
-# Create your views here.
+    # Randomly pick up to the requested limit
+    sampled_uids = random.sample(question_uids, min(len(question_uids), question_limit))
+
+    # Return queryset using the sampled UIDs
+    return Question.objects.filter(uid__in=sampled_uids)
 
 
 @login_required
@@ -174,10 +191,7 @@ def quiz_create(request):
                 return redirect('quiz:quiz_create')
 
             # Continue as before if validation passes
-            questions = Question.objects.filter(
-                isReadiness=False,
-                category__title__in=selected_topics
-            ).distinct()[:question_limit]
+            questions = get_random_questions(False, selected_topics, question_limit)
 
             if not questions.exists():
                 return HttpResponse("No questions found for selected topics.")
@@ -503,9 +517,9 @@ def readiness_quiz_start(request):
         # Extract the titles of the topics
         topic_titles = topics.values_list('title', flat=True)
         if plan_name == "College/Sch. of Nursing Entrance":
-            questions = Question.objects.filter(isReadiness=True,category__title__in=topic_titles).order_by('?')[:100]
+            questions = get_random_questions(True, topic_titles, 100)
         else:
-            questions = Question.objects.filter(isReadiness=True,category__title__in=topic_titles).order_by('?')[:250]
+            questions = get_random_questions(True, topic_titles, 250)
 
         print(topics)
         print(questions)
@@ -808,7 +822,7 @@ def quiz_questions(request):
         'quiz': quiz,
         'questions': questions,
     }
-    print(context)  # Debug statement
+  
     return render(request, 'dashboard/quiz_questions.html', context)
 
 
