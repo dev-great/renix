@@ -11,24 +11,53 @@ from django.contrib.auth.models import User
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.db.models import Q
+from django.db.models import Count, Q
 from urllib.parse import quote
 from django.contrib.auth.forms import UserChangeForm
 import uuid
 import random
 
-def get_random_questions(is_readiness, topic_titles, question_limit):
+def get_random_questions(is_readiness, topic_titles, question_limit, user=None, exclude_subscription_start=None):
     """
-    Efficiently returns a random set of questions without using .order_by('?').
+    Efficiently returns a random set of UNANSWERED questions without using .order_by('?').
     Works well even with large datasets.
+    
+    Args:
+        is_readiness: Boolean for readiness quiz
+        topic_titles: List of topic titles to filter by
+        question_limit: Number of questions to return
+        user: User object to exclude already answered questions (optional)
+        exclude_subscription_start: Datetime to exclude questions answered after this date (optional)
     """
-    # Fetch only UIDs (since Question uses 'uid' as the primary identifier)
+    # Fetch only UIDs that match the criteria
     question_uids = list(
         Question.objects.filter(
             isReadiness=is_readiness,
             category__title__in=topic_titles
         ).values_list('uid', flat=True)
     )
+
+    # If user is provided, exclude questions they've already answered in this subscription
+    if user and exclude_subscription_start:
+        answered_uids = set(
+            GivenQuizQuestions.objects.filter(
+                quiz__user=user,
+                created_at__gte=exclude_subscription_start,
+                question__category__title__in=topic_titles
+            ).values_list('question__uid', flat=True).distinct()
+        )
+        # Remove answered questions from the pool
+        question_uids = [uid for uid in question_uids if uid not in answered_uids]
+    
+    elif user:
+        # If no subscription date provided, exclude all answered questions by this user
+        answered_uids = set(
+            GivenQuizQuestions.objects.filter(
+                quiz__user=user,
+                question__category__title__in=topic_titles
+            ).values_list('question__uid', flat=True).distinct()
+        )
+        question_uids = [uid for uid in question_uids if uid not in answered_uids]
 
     # Randomly pick up to the requested limit
     sampled_uids = random.sample(question_uids, min(len(question_uids), question_limit))
@@ -171,15 +200,21 @@ def quiz_create(request):
 
             # Get total unanswered questions for selected topics
             total_unanswered = 0
+            subscription_start = user_subscription.subscription_start_date if user_subscription else None
             for topic_title in selected_topics:
                 total_questions = Question.objects.filter(category__title=topic_title).count()
-                user_quizzes = Quiz.objects.filter(user=request.user)
-                answered_questions = GivenQuizQuestions.objects.filter(
-                    quiz__in=user_quizzes,
-                    question__category__title=topic_title
-                ).values_list('question', flat=True).distinct()
+                
+                # Get answered questions from the CURRENT subscription period (by date and time)
+                if subscription_start:
+                    answered_question_ids = GivenQuizQuestions.objects.filter(
+                        quiz__user=request.user,
+                        created_at__gte=subscription_start,
+                        question__category__title=topic_title
+                    ).values_list('question_id', flat=True).distinct()
+                else:
+                    answered_question_ids = []
 
-                unanswered_questions_count = total_questions - answered_questions.count()
+                unanswered_questions_count = total_questions - len(set(answered_question_ids))
                 total_unanswered += unanswered_questions_count
 
             # 🔍 Validation: check if the user selected more than available unanswered questions
@@ -191,7 +226,13 @@ def quiz_create(request):
                 return redirect('quiz:quiz_create')
 
             # Continue as before if validation passes
-            questions = get_random_questions(False, selected_topics, question_limit)
+            questions = get_random_questions(
+                is_readiness=False, 
+                topic_titles=selected_topics, 
+                question_limit=question_limit,
+                user=request.user,
+                exclude_subscription_start=subscription_start
+               )
 
             if not questions.exists():
                 return HttpResponse("No questions found for selected topics.")
@@ -219,6 +260,7 @@ def quiz_create(request):
 
         if user_subscription:
             topics_with_counts = []
+            subscription_start = user_subscription.subscription_start_date
 
             # Get topics based on user's subscription plan
             topics = StudyTopicModel.objects.filter(plan__name=user_subscription.plan)
@@ -231,17 +273,18 @@ def quiz_create(request):
                 user_quizzes = Quiz.objects.filter(user=request.user)
 
                 # Get all answered questions for the topic by the user
-                answered_questions = GivenQuizQuestions.objects.filter(
-                    quiz__in=user_quizzes,
+                answered_question_ids = GivenQuizQuestions.objects.filter(
+                    quiz__user=request.user,
+                    created_at__gte=subscription_start,
                     question__category__title=topic.title
                 ).values_list('question', flat=True).distinct()
 
                 # Calculate unanswered questions
-                unanswered_questions_count = total_questions - answered_questions.count()
+                unanswered_questions_count = total_questions - len(set(answered_question_ids))
 
                 # Only include topics that have unanswered questions
                 if unanswered_questions_count >= 0:
-                    topics_with_counts.append((topic.title, f'{topic.title} ({unanswered_questions_count}/{unanswered_questions_count})'))
+                    topics_with_counts.append((topic.title, f'{topic.title} ({unanswered_questions_count}/{total_questions})'))
 
             topics_choices = sorted(topics_with_counts)
 
@@ -516,10 +559,21 @@ def readiness_quiz_start(request):
 
         # Extract the titles of the topics
         topic_titles = topics.values_list('title', flat=True)
+        
+        # Determine question limit based on plan
         if plan_name == "College/Sch. of Nursing Entrance":
-            questions = get_random_questions(True, topic_titles, 100)
+            question_limit = 100
         else:
-            questions = get_random_questions(True, topic_titles, 250)
+            question_limit = 250
+
+        # Get random unanswered questions, excluding those already answered in current subscription
+        questions = get_random_questions(
+            is_readiness=True, 
+            topic_titles=topic_titles, 
+            question_limit=question_limit,
+            user=request.user,
+            exclude_subscription_start=user_subscription.subscription_start_date
+        )
 
         print(topics)
         print(questions)
