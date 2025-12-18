@@ -15,6 +15,17 @@
     display: block; /* remove inline spacing */
     margin: 8px 0; /* optional spacing around image */
   }
+
+  /* Add these to fix whitespace issues */
+  .answerList span {
+    display: inline-block;
+    width: 100%;
+  }
+
+  .answer * {
+    background: none !important;
+    background-color: transparent !important;
+  }
 </style>
 {% endif %}
 <div class="content-wrapper">
@@ -64,7 +75,7 @@
       {% csrf_token %} {% if page_obj %} {% for question in page_obj.object_list %}
       <div style="display: flex; align-items: flex-start; gap: 12px; padding: 12px 8px">
         <div style="min-width: 44px; font-weight: 700; text-align: left; color: #333">{{ page_obj.number }}.</div>
-        <div class="questionP" style="text-transform: none; flex: 1; text-align: left; color: #222">{{ question.question|safe|safe }}</div>
+        <div class="questionP" style="text-transform: none !important flex: 1; text-align: left; color: #222">{{ question.question|safe|safe }}</div>
         <script>
           document.querySelectorAll(".questionP img").forEach((img) => {
             img.style.maxWidth = "100%";
@@ -76,7 +87,11 @@
       <div class="form-check">
         {% for answer in question.answers.all %}
         <ul class="list-group" style="text-transform: none !important">
-          <li style="text-transform: none !important" class="list-group-item answer {% if study_mode %} {% if answer.uid == selected_answer.uid and selected_answer %} {% if not selected_answer.is_correct %} incorrect {% else %} correct {% endif %} {% elif answer.uid == correct_answer.uid %} correct {% else %} {% if answer.is_correct %} correct {% else %} white {% endif %} {% endif %} {% endif %} list-group-item-action list-group-item-primary mt-3 answerList" style="padding-left: 2rem">
+          <li
+            style="text-transform: none !important"
+            class="list-group-item answer {% if study_mode %} {% if answer.uid == selected_answer.uid and selected_answer %} {% if not selected_answer.is_correct %} incorrect {% else %} correct {% endif %} {% elif answer.uid == correct_answer.uid %} correct {% else %} {% if answer.is_correct %} correct {% else %} white {% endif %} {% endif %} {% endif %} list-group-item-action list-group-item-primary mt-3 answerList"
+            style="padding-left: 2rem text-transform: none !important"
+          >
             <span style="background: none !important">
               <style>
                 /* 👇 This targets only nested elements inside .answer, not the list itself */
