@@ -2,6 +2,7 @@
 {% load static %}
  {% block body %}
 {% load custom_filters %}
+{% if study_mode %}
 <style>
   .answer.correct {
     background-color: lightgreen;
@@ -132,7 +133,7 @@
                 }
               </style>
               <input class="form-check-input me-1" type="radio" name="answer_{{ question.uid }}" value="{{ answer.uid }}" {% if study_mode %} {% if answer.uid == selected_answer.uid %} disabled {% elif answer.uid == correct_answer.uid and selected_answer %} disabled {% endif %} {%endif %} /> 
-               <span class="rich-answer" style="margin-left:0;padding-left:0 "> 
+                <span class="rich-answer" style="margin-left:0;padding-left:0 "> 
                 {% if not answer.is_correct %} {% if selected_answer %} {% if answer.uid == selected_answer.uid %} {% if not selected_answer.is_correct %}
 
               <del>{{ answer.answer|strip_margin_left|safe }}</del> <br />
