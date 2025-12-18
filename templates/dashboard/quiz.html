@@ -121,7 +121,9 @@
                   text-transform: none !important;
                 }
               </style>
-              <input class="form-check-input me-1" type="radio" name="answer_{{ question.uid }}" value="{{ answer.uid }}" {% if study_mode %} {% if answer.uid == selected_answer.uid %} disabled {% elif answer.uid == correct_answer.uid and selected_answer %} disabled {% endif %} {%endif %} />  <span> {% if not answer.is_correct %} {% if selected_answer %} {% if answer.uid == selected_answer.uid %} {% if not selected_answer.is_correct %}
+              <input class="form-check-input me-1" type="radio" name="answer_{{ question.uid }}" value="{{ answer.uid }}" {% if study_mode %} {% if answer.uid == selected_answer.uid %} disabled {% elif answer.uid == correct_answer.uid and selected_answer %} disabled {% endif %} {%endif %} /> 
+               <span style="margin-left:0;padding-left:0"> 
+                {% if not answer.is_correct %} {% if selected_answer %} {% if answer.uid == selected_answer.uid %} {% if not selected_answer.is_correct %}
 
               <del>{{ answer.answer|safe }}</del> <br />
 
