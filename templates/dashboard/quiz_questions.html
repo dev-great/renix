@@ -30,6 +30,10 @@
     margin: 0;
     padding: 0;
   }
+  .rich-answer * {
+    font-family: inherit !important;
+    margin-bottom: 0 !important;
+  }
 </style>
 <div class="content-wrapper">
   <div class="content-wrapper">
@@ -64,10 +68,10 @@
                 background-color: #e0dafeff;
             {% endif %}"
           >
-            <span style="background: none !important; background-color: transparent !important; display: inline-block; text-transform: none !important; font-size: 14px">
-              <span class="{% if answer.uid == item.selected_answer.uid and not answer.is_correct %} strikethrough {% endif %}" style="font-family: inherit !important"> {{ answer.answer|strip_empty_blocks|safe }}</span>
-
-              <strong>Reason:</strong> {{ answer.reason|strip_empty_blocks|safe }}
+            <span style="background: none !important; background-color: transparent !important; display: inline-block; text-transform: none !important; font-size: 14px !important">
+              <span class="{% if answer.uid == item.selected_answer.uid and not answer.is_correct %} strikethrough {% endif %}" style="font-family: inherit !important text-transform: none !important; font-size: 14px !important"> {{ answer.answer|strip_empty_blocks|safe }}</span>
+              <br />
+              <strong style="font-family: inherit !important text-transform: none !important; font-size: 14px !important">Reason:</strong> {{ answer.reason|strip_empty_blocks|safe }}
             </span>
           </li>
           {% endfor %}
