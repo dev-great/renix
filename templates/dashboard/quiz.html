@@ -73,9 +73,9 @@
     </div>
     <form method="post" class="mt-4 p-4 text-capitalize form-control box_shadow">
       {% csrf_token %} {% if page_obj %} {% for question in page_obj.object_list %}
-      <div style="display: flex; align-items: flex-start; gap: 12px; padding: 12px 8px">
+      <div style="display: flex; align-items: flex-start; gap: 8px; padding: 12px 8px">
         <div style="min-width: 44px; font-weight: 700; text-align: left; color: #333">{{ page_obj.number }}.</div>
-        <div class="questionP" style="text-transform: none !important flex: 1; text-align: left; color: #222">{{ question.question|safe|safe }}</div>
+        <div class="questionP" style="flex: 1; text-transform: none !important color: #222">{{ question.question|safe|safe }}</div>
         <script>
           document.querySelectorAll(".questionP img").forEach((img) => {
             img.style.maxWidth = "100%";
