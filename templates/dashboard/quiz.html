@@ -132,7 +132,7 @@
           <li <li class="list-group-item answer {% if study_mode and selected_answer %} {% if answer.uid == selected_answer.uid %} {% if selected_answer.is_correct %} correct {% else %} incorrect {% endif %} {% elif answer.is_correct %} correct {% endif %} {% endif %} list-group-item-action list-group-item-primary mt-3 answerList" style="padding-left: 2rem text-transform: none !important">
             <div style="display: flex; align-items: flex-start; gap: 10px">
               <div style="min-width: 20px; padding-top: 2px"><input class="form-check-input me-1" type="radio" name="answer_{{ question.uid }}" value="{{ answer.uid }}" {% if study_mode %} {% if answer.uid == selected_answer.uid %} disabled {% elif answer.uid == correct_answer.uid and selected_answer %} disabled {% endif %} {%endif %} /></div>
-              <span class="rich-answer" style="margin-left: 2px; padding-left: 0">
+              <span class="rich-answer" style="margin-left: 2px; padding-left: 0 font-size: 12pt; font-family: 'Times New Roman', serif">
                 {% if not answer.is_correct %} {% if selected_answer %} {% if answer.uid == selected_answer.uid %} {% if not selected_answer.is_correct %}
 
                 <del style="font-size: 12pt; text-transform: none !important; font-family: 'Times New Roman', serif">{{ answer.answer|strip_empty_blocks|safe }}</del>
