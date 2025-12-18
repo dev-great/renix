@@ -1,4 +1,4 @@
-{% extends 'dashboard/base.html' %} {% load static %} {% block body %}
+{% extends 'dashboard/base.html' %} {% load static %} {% block body %} {% load custom_filters %}
 <style>
   .answerList * {
     font-family: inherit !important;
@@ -65,9 +65,9 @@
             {% endif %}"
           >
             <span style="background: none !important; background-color: transparent !important; display: inline-block; text-transform: none !important; font-size: 14px">
-              <span class="{% if answer.uid == item.selected_answer.uid and not answer.is_correct %} strikethrough {% endif %}" style="font-family: inherit !important"> {{ answer.answer|safe }} <br /></span>
+              <span class="{% if answer.uid == item.selected_answer.uid and not answer.is_correct %} strikethrough {% endif %}" style="font-family: inherit !important"> {{ answer.answer|strip_empty_blocks|safe }}</span>
 
-              <strong>Reason:</strong> {{ answer.reason|safe }}
+              <strong>Reason:</strong> {{ answer.reason|strip_empty_blocks|safe }}
             </span>
           </li>
           {% endfor %}
