@@ -3,8 +3,36 @@ from django import template
 from django.utils.html import strip_tags
 from django.utils import timezone
 from quiz.models import UserSubscription
+import re
+from django.utils.safestring import mark_safe
 
 register = template.Library()
+
+@register.filter
+def strip_margin_left(value):
+    """
+    Removes inline margin-left and padding-left styles from rich text HTML
+    """
+    if not value:
+        return value
+
+    # Remove margin-left: XXpx; or margin-left: XXpx !important;
+    cleaned = re.sub(
+        r'margin-left\s*:\s*\d+px\s*!?important?\s*;?',
+        '',
+        value,
+        flags=re.IGNORECASE
+    )
+
+    # Remove padding-left as well (optional but recommended)
+    cleaned = re.sub(
+        r'padding-left\s*:\s*\d+px\s*!?important?\s*;?',
+        '',
+        cleaned,
+        flags=re.IGNORECASE
+    )
+
+    return mark_safe(cleaned)
 
 
 @register.filter
