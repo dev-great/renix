@@ -64,7 +64,7 @@
                 background-color: #e0dafeff;
             {% endif %}"
           >
-            <span style="background: none !important; background-color: transparent !important; display: inline-block; text-transform: none !important">
+            <span style="background: none !important; background-color: transparent !important; display: inline-block; text-transform: none !important; font-size: 12px">
               <span class="{% if answer.uid == item.selected_answer.uid and not answer.is_correct %} strikethrough {% endif %}" style="font-family: inherit !important"> {{ answer.answer|safe }} <br /></span>
 
               <strong>Reason:</strong> {{ answer.reason|safe }}
