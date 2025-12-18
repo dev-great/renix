@@ -15,6 +15,18 @@
     text-transform: none !important;
     opacity: 0.8;
   }
+
+  .quiz-content p,
+  .quiz-content span,
+  .quiz-content strong,
+  .quiz-content em,
+  .quiz-content ul,
+  .quiz-content ol,
+  .quiz-content li {
+    font-family: inherit !important;
+    margin: 0;
+    padding: 0;
+  }
 </style>
 <div class="content-wrapper">
   <div class="content-wrapper">
@@ -49,7 +61,7 @@
                 background-color: #e0dafeff;
             {% endif %}"
           >
-            <span style="background: none !important; background-color: transparent !important; display: inline-block; text-transform: none !important; font-family: 'Times New Roman', serif">
+            <span style="background: none !important; background-color: transparent !important; display: inline-block; text-transform: none !important">
               <span class="{% if answer.uid == item.selected_answer.uid and not answer.is_correct %} strikethrough {% endif %}"> {{ answer.answer|safe }} <br /></span>
 
               <strong>Reason:</strong> {{ answer.reason|safe }}
