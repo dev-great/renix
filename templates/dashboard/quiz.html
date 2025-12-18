@@ -136,11 +136,11 @@
               <span class="rich-answer" style="margin-left: 2px; padding-left: 0">
                 {% if not answer.is_correct %} {% if selected_answer %} {% if answer.uid == selected_answer.uid %} {% if not selected_answer.is_correct %}
 
-                <del>{{ answer.answer|strip_margin_left|safe }}</del>
+                <del>{{ answer.answer|strip_empty_blocks|safe }}</del>
 
-                {{ answer.reason|safe }} {% endif %} {% else %} {{ answer.answer|strip_margin_left|safe }} <br />
-                {{ answer.reason|safe }} {% endif %} {% else %} {{ answer.answer|strip_margin_left|safe }} {% endif %} {% elif answer.is_correct %} {% if selected_answer %} {{ answer.answer|strip_margin_left|safe }} <br />
-                {{ answer.reason|safe }} {% else %} {{ answer.answer|strip_margin_left|safe }} {% endif %} {% else %} {{ answer.answer|strip_margin_left|safe }} {% endif %}
+                {{ answer.reason|safe }} {% endif %} {% else %} {{ answer.answer|strip_empty_blocks|safe }} <br />
+                {{ answer.reason|safe }} {% endif %} {% else %} {{ answer.answer|strip_empty_blocks|safe }} {% endif %} {% elif answer.is_correct %} {% if selected_answer %} {{ answer.answer|strip_empty_blocks|safe }} <br />
+                {{ answer.reason|safe }} {% else %} {{ answer.answer|strip_empty_blocks|safe }} {% endif %} {% else %} {{ answer.answer|strip_empty_blocks|safe }} {% endif %}
               </span>
             </div>
           </li>

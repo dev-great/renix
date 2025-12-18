@@ -34,6 +34,12 @@ def strip_margin_left(value):
 
     return mark_safe(cleaned)
 
+@register.filter
+def strip_empty_blocks(value):
+    return mark_safe(
+        re.sub(r'<(p|div)>\s*(<br\s*/?>|\s|&nbsp;)*\s*</\1>', '', value, flags=re.I)
+    )
+
 
 @register.filter
 def remove_images(value):
