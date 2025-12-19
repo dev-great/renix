@@ -36,16 +36,26 @@
 
   /* Add these to fix whitespace issues */
 
-  .content-wrapper *,
-  form *,
-  .questionP *,
-  .answer *,
-  .rich-answer *,
-  .answerList * {
+  /* Force everything to inherit from parent/body EXCEPT icons */
+  .content-wrapper *:not(i):not(.fa):not(.fas):not(.far):not(.fab),
+  form *:not(i):not(.fa):not(.fas):not(.far):not(.fab),
+  .questionP *:not(i):not(.fa):not(.fas):not(.far):not(.fab),
+  .answer *:not(i):not(.fa):not(.fas):not(.far):not(.fab),
+  .rich-answer *:not(i):not(.fa):not(.fas):not(.far):not(.fab),
+  .answerList *:not(i):not(.fa):not(.fas):not(.far):not(.fab) {
     font-family: inherit !important;
     font-size: inherit !important;
     text-transform: none !important;
     line-height: inherit !important;
+  }
+
+  /* Preserve Font Awesome icons */
+  i.fas,
+  i.far,
+  i.fab,
+  i.fa {
+    font-family: "Font Awesome 5 Free" !important;
+    font-size: 1rem !important;
   }
 
   .answerList span,
