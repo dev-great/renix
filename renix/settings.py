@@ -194,3 +194,7 @@ AUTHENTICATION_BACKENDS = {
     "django.contrib.auth.backends.ModelBackend",
     "allauth.account.auth_backends.AuthenticationBackend"
 }
+
+MAILCHIMP_API_KEY = "14869c724d845864c7c1b0119d362e6d-us7"
+MAILCHIMP_SERVER_PREFIX = "us7"  # e.g. us21
+MAILCHIMP_AUDIENCE_ID = "9755ab8bc7"
