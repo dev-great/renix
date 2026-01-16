@@ -1,7 +1,12 @@
 
 import os
 from pathlib import Path
+from dotenv import load_dotenv
 from django.contrib.messages import constants as messages
+
+# Load the .env file
+load_dotenv()
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -189,6 +194,6 @@ AUTHENTICATION_BACKENDS = {
     "allauth.account.auth_backends.AuthenticationBackend"
 }
 
-MAILCHIMP_API_KEY = "14869c724d845864c7c1b0119d362e6d-us7"
-MAILCHIMP_SERVER_PREFIX = "us7"  # e.g. us21
-MAILCHIMP_AUDIENCE_ID = "9755ab8bc7"
+MAILCHIMP_API_KEY = os.getenv('MAILCHIMP_API_KEY')
+MAILCHIMP_SERVER_PREFIX = os.getenv('MAILCHIMP_SERVER_PREFIX')
+MAILCHIMP_AUDIENCE_ID = os.getenv('MAILCHIMP_AUDIENCE_ID')

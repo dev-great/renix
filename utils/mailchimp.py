@@ -12,7 +12,7 @@ def add_user_to_mailchimp(email, first_name="", last_name="", tags=None):
 
     data = {
         "email_address": email,
-        "status": "subscribed",  # or "pending" for double opt-in
+        "status": "subscribed", 
         "merge_fields": {
             "FNAME": first_name,
             "LNAME": last_name,
