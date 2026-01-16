@@ -30,7 +30,6 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "authentication",
     "quiz",
-    'django_crontab',
     'ckeditor',
     'ckeditor_uploader',
     'allauth',
@@ -167,11 +166,6 @@ STATICFILES_DIRS = [
 ]
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
-
-CRONJOBS = [
-    ('0 0 * * *', 'quiz.models.deactivate_expired_subscriptions'),  # runs daily at midnight
-]
-
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field

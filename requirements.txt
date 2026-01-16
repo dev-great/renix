@@ -6,7 +6,6 @@ cryptography==42.0.8
 Django==4.2.25
 django-allauth==0.63.3
 django-ckeditor==6.7.1
-django-crontab==0.7.1
 django-decouple==2.1
 django-extensions==3.2.3
 django-js-asset==2.2.0
