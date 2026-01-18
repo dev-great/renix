@@ -12,6 +12,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = "django-insecure-c&dw_%j38vlhnkm%$aa9e942l%f@  "
 
+# settings.py
+CSP_SCRIPT_SRC = (
+    "'self'",
+    'https://js.paystack.co',
+    'https://cdn.jsdelivr.net',  # or wherever your scripts are hosted
+    # Don't include query parameters in CSP directives
+)
+
+# For the fingerprint script, use:
+CSP_SCRIPT_SRC += (
+    'https://renixacademy.online/v2.22/fingerprint',  # Without query params
+)
+
 DEBUG = True
 
 ALLOWED_HOSTS = ['www.renixacademy.online', 'renixacademy.online', '127.0.0.1']

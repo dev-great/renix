@@ -25,7 +25,15 @@
                     {% if current_plan == 'College/Sch. of Nursing Entrance' %}
                     <p class="text-success">Current Plan</p>
                     {% else %}
-                    <button class="common_btn btn btn-success btn-block" onclick="payWithPaystack(30, 'College\/Sch._of_Nursing_Entrance'); return false;">Pay</button>
+                    <button
+                      class="common_btn btn btn-success btn-block"
+                      onclick="
+                        payWithPaystack(30, 'College\/Sch._of_Nursing_Entrance');
+                        return false;
+                      "
+                    >
+                      Pay
+                    </button>
                     <p class="mt-3 mb-0 plan-cost text-success">or purchase now</p>
                     {% endif %}
                   </div>
@@ -37,14 +45,22 @@
                   <div class="text-center pricing-card-head">
                     <h3 class="text-success">Prequalifying/Hospital Final for RN</h3>
                     <p>Paid plan</p>
-                    <h1 class="font-weight-normal mb-4">₦4,500</h1>
+                    <h1 class="font-weight-normal mb-4">₦2,500</h1>
                   </div>
                   <ul class="list-unstyled plan-features"></ul>
                   <div class="wrapper">
                     {% if current_plan|lower|cut:" " == 'prequalifying/hospitalfinalforrn' %}
                     <p class="text-success">Current Plan</p>
                     {% else %}
-                    <button class="common_btn btn btn-success btn-block" onclick="payWithPaystack(30,'Prequalifying/Hospital Final  for RN'); return false;">Pay</button>
+                    <button
+                      class="common_btn btn btn-success btn-block"
+                      onclick="
+                        payWithPaystack(30, 'Prequalifying/Hospital Final  for RN');
+                        return false;
+                      "
+                    >
+                      Pay
+                    </button>
                     <p class="mt-3 mb-0 plan-cost text-success">or purchase now</p>
                     {% endif %}
                   </div>
@@ -55,14 +71,22 @@
                   <div class="text-center pricing-card-head">
                     <h3 class="text-success">Prequalifying/Hospital Final for RM</h3>
                     <p>Paid plan</p>
-                    <h1 class="font-weight-normal mb-4">₦4,500</h1>
+                    <h1 class="font-weight-normal mb-4">₦2,500</h1>
                   </div>
                   <ul class="list-unstyled plan-features"></ul>
                   <div class="wrapper">
                     {% if current_plan|lower|cut:" " == 'prequalifying/hospitalfinalforrm' %}
                     <p class="text-success">Current Plan</p>
                     {% else %}
-                    <button class="common_btn btn btn-success btn-block" onclick="payWithPaystack(30,'Prequalifying/Hospital Final  for RM' ); return false;">Pay</button>
+                    <button
+                      class="common_btn btn btn-success btn-block"
+                      onclick="
+                        payWithPaystack(30, 'Prequalifying/Hospital Final  for RM');
+                        return false;
+                      "
+                    >
+                      Pay
+                    </button>
                     <p class="mt-3 mb-0 plan-cost text-success">or purchase now</p>
                     {% endif %}
                   </div>
@@ -73,14 +97,22 @@
                   <div class="text-center pricing-card-head">
                     <h3 class="text-success">NMCN Final Year Midwifery Student (RM)</h3>
                     <p>Paid plan</p>
-                    <h1 class="font-weight-normal mb-4">₦15,000</h1>
+                    <h1 class="font-weight-normal mb-4">₦3,000</h1>
                   </div>
                   <ul class="list-unstyled plan-features"></ul>
                   <div class="wrapper">
                     {% if current_plan|lower|cut:" " == 'nmcnfinalyearmidwiferystudent(rm)' %}
                     <p class="text-success">Current Plan</p>
                     {% else %}
-                    <button class="common_btn btn btn-success btn-block" onclick="payWithPaystack(30, 'NMCN Final Year Midwifery Student (RM)'); return false;">Pay</button>
+                    <button
+                      class="common_btn btn btn-success btn-block"
+                      onclick="
+                        payWithPaystack(30, 'NMCN Final Year Midwifery Student (RM)');
+                        return false;
+                      "
+                    >
+                      Pay
+                    </button>
                     <p class="mt-3 mb-0 plan-cost text-success">or purchase now</p>
                     {% endif %}
                   </div>
@@ -94,14 +126,22 @@
                   <div class="text-center pricing-card-head">
                     <h3 class="text-success">NMCN Final Year Nursing Student(RN)</h3>
                     <p>Paid plan</p>
-                    <h1 class="font-weight-normal mb-4">₦15,000</h1>
+                    <h1 class="font-weight-normal mb-4">₦3,000</h1>
                   </div>
                   <ul class="list-unstyled plan-features"></ul>
                   <div class="wrapper">
                     {% if current_plan|lower|cut:" " == 'nmcnfinalyearnursingstudent(rn)' %}
                     <p class="text-success">Current Plan</p>
                     {% else %}
-                    <button class="common_btn btn btn-success btn-block" onclick="payWithPaystack(30,'NMCN Final Year Nursing Student(RN)'); return false;">Pay</button>
+                    <button
+                      class="common_btn btn btn-success btn-block"
+                      onclick="
+                        payWithPaystack(30, 'NMCN Final Year Nursing Student(RN)');
+                        return false;
+                      "
+                    >
+                      Pay
+                    </button>
                     <p class="mt-3 mb-0 plan-cost text-success">or purchase now</p>
                     {% endif %}
                   </div>
@@ -128,10 +168,10 @@
     }
 
     const planPrices = {
-      "Prequalifying/Hospital Final  for RN": 4500,
-      "Prequalifying/Hospital Final  for RM": 4500,
-      "NMCN Final Year Midwifery Student (RM)": 15000,
-      "NMCN Final Year Nursing Student(RN)": 15000,
+      "Prequalifying/Hospital Final  for RN": 2500,
+      "Prequalifying/Hospital Final  for RM": 2500,
+      "NMCN Final Year Midwifery Student (RM)": 3000,
+      "NMCN Final Year Nursing Student(RN)": 3000,
     };
 
     const price = planPrices[plan];
@@ -149,6 +189,8 @@
       email: email,
       amount: amount,
       currency: "NGN",
+      ref: "ref_" + Math.floor(Math.random() * 1000000000 + 1),
+      //plan: planName,
 
       onSuccess: (transaction) => {
         console.log("Paystack response:", transaction);
