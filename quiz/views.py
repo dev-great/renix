@@ -70,7 +70,11 @@ def get_random_questions(is_readiness, topic_titles, question_limit, user=None, 
 def index(request):
     user = request.user
 
-    # List of attempted quizzes
+    # Get the user's current active subscription
+    user_subscription = UserSubscription.objects.filter(
+        user=user, is_active=True).first()
+
+    # List of attempted quizzes (last 5)
     attempted_quizzes = Quiz.objects.filter(
         user=user, given_question__isnull=False).distinct().order_by('-end_time')[:5] or None
 
@@ -85,27 +89,73 @@ def index(request):
     # Get the latest Category added
     latest_category = Category.objects.order_by('-created_at').first() or None
 
-    # Number of courses, enrolled courses, and completed courses
+    # Number of total courses available
     total_courses = Category.objects.count() or 0
-    enrolled_courses = Quiz.objects.filter(user=user).count() or 0
-    completed_courses = Quiz.objects.filter(
-        user=user, end_time__isnull=False).count() or 0
-    quizzes = Quiz.objects.filter(user=request.user) or []
-
+    
     # Initialize totals
     total_questions = 0
     total_answered = 0
     total_correct = 0
     total_wrong = 0
+    enrolled_courses = 0
 
-    for quiz in quizzes:
-        data = quiz.get_total_answered_questions_across_all_categories()
-        total_questions += data.get('all_questions', 0)
-        total_answered += data.get('total_answered', 0)
-        total_correct += data.get('total_correct', 0)
-        total_wrong += data.get('total_wrong', 0)
+    # If user has an active subscription, calculate stats based on that subscription
+    if user_subscription:
+        # Get topics from the user's current subscription plan
+        topics = StudyTopicModel.objects.filter(plan__name=user_subscription.plan)
+        topic_titles = list(topics.values_list('title', flat=True))
 
+        if topic_titles:
+            # Count total questions available in user's subscription topics
+            total_questions = Question.objects.filter(
+                category__title__in=topic_titles
+            ).count() or 0
+
+            # Count answered questions ONLY from current subscription period
+            subscription_start = user_subscription.subscription_start_date
+            answered_questions = GivenQuizQuestions.objects.filter(
+                quiz__user=user,
+                created_at__gte=subscription_start,
+                question__category__title__in=topic_titles
+            ).values_list('question_id', flat=True).distinct()
+            
+            total_answered = len(set(answered_questions))
+
+            # Count correct answers from current subscription
+            total_correct = GivenQuizQuestions.objects.filter(
+                quiz__user=user,
+                created_at__gte=subscription_start,
+                question__category__title__in=topic_titles,
+                answer__is_correct=True
+            ).count() or 0
+
+            # Count incorrect answers from current subscription
+            total_wrong = GivenQuizQuestions.objects.filter(
+                quiz__user=user,
+                created_at__gte=subscription_start,
+                question__category__title__in=topic_titles,
+                answer__is_correct=False
+            ).count() or 0
+
+            # Count quizzes taken during current subscription
+            enrolled_courses = Quiz.objects.filter(
+                user=user,
+                created_at__gte=subscription_start
+            ).distinct().count() or 0
+    else:
+        # If no active subscription, show no progress
+        total_questions = 0
+        total_answered = 0
+        total_correct = 0
+        total_wrong = 0
+        enrolled_courses = 0
+
+    # Calculate remaining unanswered questions
     total_remaining = total_questions - total_answered
+
+    # Get completed courses (quizzes with end_time)
+    completed_courses = Quiz.objects.filter(
+        user=user, end_time__isnull=False).count() or 0
 
     context = {
         'attempted_quizzes': attempted_quizzes,
@@ -120,7 +170,7 @@ def index(request):
         'completed_courses': completed_courses,
         'total_correct': total_correct,
         'total_wrong': total_wrong,
-
+        'current_plan': user_subscription.plan if user_subscription else None,
     }
 
     return render(request, 'dashboard/index.html', context)
