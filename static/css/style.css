@@ -117,6 +117,13 @@
 /* === Import template variables === */
 /*-------------------------------------------------------------------*/
 /* === SCSS Compass Functions === */
+
+@font-face {
+  font-family: "PT Sans";
+  src: url("https://www.renixacademy.online/static/fonts/PT_Sans/PTSans-Bold.woff2") format("woff2");
+  /* Ensure the file extension is .woff2, not .html */
+}
+
 @-moz-keyframes flash {
   0% {
     opacity: 1;
@@ -10470,7 +10477,9 @@ pre code {
   background-clip: padding-box;
   border: 1px solid #ced4da;
   border-radius: 2px;
-  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  transition:
+    border-color 0.15s ease-in-out,
+    box-shadow 0.15s ease-in-out;
 }
 
 @media screen and (prefers-reduced-motion: reduce) {
@@ -11035,7 +11044,9 @@ select.form-control-lg:not([size]):not([multiple]),
 
 .was-validated .custom-control-input:valid:focus ~ .custom-control-label::before,
 .custom-control-input.is-valid:focus ~ .custom-control-label::before {
-  box-shadow: 0 0 0 1px #fff, 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+  box-shadow:
+    0 0 0 1px #fff,
+    0 0 0 0.2rem rgba(40, 167, 69, 0.25);
 }
 
 .was-validated .custom-file-input:valid ~ .custom-file-label,
@@ -11256,7 +11267,9 @@ select.form-control-lg:not([size]):not([multiple]),
 
 .was-validated .custom-control-input:invalid:focus ~ .custom-control-label::before,
 .custom-control-input.is-invalid:focus ~ .custom-control-label::before {
-  box-shadow: 0 0 0 1px #fff, 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+  box-shadow:
+    0 0 0 1px #fff,
+    0 0 0 0.2rem rgba(220, 53, 69, 0.25);
 }
 
 .was-validated .custom-file-input:invalid ~ .custom-file-label,
@@ -11374,7 +11387,11 @@ select.form-control-lg:not([size]):not([multiple]),
   font-size: 1rem;
   line-height: 1;
   border-radius: 0.25rem;
-  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  transition:
+    color 0.15s ease-in-out,
+    background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out,
+    box-shadow 0.15s ease-in-out;
 }
 
 @media screen and (prefers-reduced-motion: reduce) {
@@ -14483,7 +14500,9 @@ input[type="button"].btn-block {
 }
 
 .custom-control-input:focus ~ .custom-control-label::before {
-  box-shadow: 0 0 0 1px #fff, 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  box-shadow:
+    0 0 0 1px #fff,
+    0 0 0 0.2rem rgba(0, 123, 255, 0.25);
 }
 
 .custom-control-input:active ~ .custom-control-label::before {
@@ -14592,7 +14611,9 @@ input[type="button"].btn-block {
 .custom-select:focus {
   border-color: #80bdff;
   outline: 0;
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.075), 0 0 5px rgba(128, 189, 255, 0.5);
+  box-shadow:
+    inset 0 1px 2px rgba(0, 0, 0, 0.075),
+    0 0 5px rgba(128, 189, 255, 0.5);
 }
 
 .custom-select:focus::-ms-value {
@@ -14719,7 +14740,9 @@ input[type="button"].btn-block {
 
 .custom-range::-webkit-slider-thumb:focus {
   outline: none;
-  box-shadow: 0 0 0 1px #fff, 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  box-shadow:
+    0 0 0 1px #fff,
+    0 0 0 0.2rem rgba(0, 123, 255, 0.25);
 }
 
 .custom-range::-webkit-slider-thumb:active {
@@ -14747,7 +14770,9 @@ input[type="button"].btn-block {
 
 .custom-range::-moz-range-thumb:focus {
   outline: none;
-  box-shadow: 0 0 0 1px #fff, 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  box-shadow:
+    0 0 0 1px #fff,
+    0 0 0 0.2rem rgba(0, 123, 255, 0.25);
 }
 
 .custom-range::-moz-range-thumb:active {
@@ -14775,7 +14800,9 @@ input[type="button"].btn-block {
 
 .custom-range::-ms-thumb:focus {
   outline: none;
-  box-shadow: 0 0 0 1px #fff, 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  box-shadow:
+    0 0 0 1px #fff,
+    0 0 0 0.2rem rgba(0, 123, 255, 0.25);
 }
 
 .custom-range::-ms-thumb:active {
@@ -16167,7 +16194,6 @@ input[type="button"].btn-block {
   color: #1e173a;
   background-color: #c8c4d7;
 }
-
 
 .list-group-item-primary.list-group-item-action.active {
   color: #ffffff;
@@ -20342,7 +20368,11 @@ input:focus {
 @font-face {
   font-family: "PTsans";
   src: url("../fonts/PT_Sans/PTSans-Regular.eot");
-  src: url("../fonts/PT_Sans/PTSans-Regulard41d.eot?#iefix") format("embedded-opentype"), url("../fonts/PT_Sans/PTSans-Regular.woff2") format("woff2"), url("../fonts/PT_Sans/PTSans-Regular.woff") format("woff"), url("../fonts/PT_Sans/PTSans-Regular.ttf") format("truetype");
+  src:
+    url("../fonts/PT_Sans/PTSans-Regulard41d.eot?#iefix") format("embedded-opentype"),
+    url("../fonts/PT_Sans/PTSans-Regular.woff2") format("woff2"),
+    url("../fonts/PT_Sans/PTSans-Regular.woff") format("woff"),
+    url("../fonts/PT_Sans/PTSans-Regular.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
 }
@@ -20350,7 +20380,11 @@ input:focus {
 @font-face {
   font-family: "PTsans";
   src: url("../fonts/PT_Sans/PTSans-Bold.eot");
-  src: url("../fonts/PT_Sans/PTSans-Boldd41d.eot?#iefix") format("embedded-opentype"), url("../fonts/PT_Sans/PTSans-Bold.html") format("woff2"), url("../fonts/PT_Sans/PTSans-Bold.woff") format("woff"), url("../fonts/PT_Sans/PTSans-Bold.ttf") format("truetype");
+  src:
+    url("../fonts/PT_Sans/PTSans-Boldd41d.eot?#iefix") format("embedded-opentype"),
+    url("../fonts/PT_Sans/PTSans-Bold.html") format("woff2"),
+    url("../fonts/PT_Sans/PTSans-Bold.woff") format("woff"),
+    url("../fonts/PT_Sans/PTSans-Bold.ttf") format("truetype");
   font-weight: bold;
   font-style: normal;
 }
@@ -20364,10 +20398,18 @@ input:focus {
   padding: 0;
   width: 255px;
   z-index: 11;
-  transition: width 0.25s ease, background 0.25s ease;
-  -webkit-transition: width 0.25s ease, background 0.25s ease;
-  -moz-transition: width 0.25s ease, background 0.25s ease;
-  -ms-transition: width 0.25s ease, background 0.25s ease;
+  transition:
+    width 0.25s ease,
+    background 0.25s ease;
+  -webkit-transition:
+    width 0.25s ease,
+    background 0.25s ease;
+  -moz-transition:
+    width 0.25s ease,
+    background 0.25s ease;
+  -ms-transition:
+    width 0.25s ease,
+    background 0.25s ease;
 }
 
 .sidebar .nav {
@@ -20819,10 +20861,18 @@ input:focus {
 
 .navbar.default-layout-navbar .navbar-brand-wrapper {
   background: #ffffff;
-  transition: width 0.25s ease, background 0.25s ease;
-  -webkit-transition: width 0.25s ease, background 0.25s ease;
-  -moz-transition: width 0.25s ease, background 0.25s ease;
-  -ms-transition: width 0.25s ease, background 0.25s ease;
+  transition:
+    width 0.25s ease,
+    background 0.25s ease;
+  -webkit-transition:
+    width 0.25s ease,
+    background 0.25s ease;
+  -moz-transition:
+    width 0.25s ease,
+    background 0.25s ease;
+  -ms-transition:
+    width 0.25s ease,
+    background 0.25s ease;
   width: 255px;
   height: 70px;
 }
@@ -20872,10 +20922,18 @@ input:focus {
 
 .navbar.default-layout-navbar .navbar-menu-wrapper {
   background: #ffffff;
-  transition: width 0.25s ease, background 0.25s ease;
-  -webkit-transition: width 0.25s ease, background 0.25s ease;
-  -moz-transition: width 0.25s ease, background 0.25s ease;
-  -ms-transition: width 0.25s ease, background 0.25s ease;
+  transition:
+    width 0.25s ease,
+    background 0.25s ease;
+  -webkit-transition:
+    width 0.25s ease,
+    background 0.25s ease;
+  -moz-transition:
+    width 0.25s ease,
+    background 0.25s ease;
+  -ms-transition:
+    width 0.25s ease,
+    background 0.25s ease;
   padding-left: 15px;
   padding-right: 15px;
   width: calc(100% - 255px);
@@ -21842,7 +21900,9 @@ html {
 }
 
 .main-panel {
-  transition: width 0.25s ease, margin 0.25s ease;
+  transition:
+    width 0.25s ease,
+    margin 0.25s ease;
   width: calc(100% - 255px);
   min-height: calc(100vh - 70px);
   display: -webkit-flex;
@@ -25945,8 +26005,12 @@ select.border-dark.tt-hint {
   background: #04b76b;
   -webkit-transform-origin: 50% 250%;
   transform-origin: 50% 250%;
-  -webkit-animation: rota 1.13s linear infinite, opa 3.67s ease-in-out infinite alternate;
-  animation: rota 1.13s linear infinite, opa 3.67s ease-in-out infinite alternate;
+  -webkit-animation:
+    rota 1.13s linear infinite,
+    opa 3.67s ease-in-out infinite alternate;
+  animation:
+    rota 1.13s linear infinite,
+    opa 3.67s ease-in-out infinite alternate;
 }
 
 #pgloading .bokeh li:nth-child(2) {
@@ -25956,8 +26020,12 @@ select.border-dark.tt-hint {
   background: #ff5e6d;
   -webkit-transform-origin: -150% 50%;
   transform-origin: -150% 50%;
-  -webkit-animation: rota 1.86s linear infinite, opa 4.29s ease-in-out infinite alternate;
-  animation: rota 1.86s linear infinite, opa 4.29s ease-in-out infinite alternate;
+  -webkit-animation:
+    rota 1.86s linear infinite,
+    opa 4.29s ease-in-out infinite alternate;
+  animation:
+    rota 1.86s linear infinite,
+    opa 4.29s ease-in-out infinite alternate;
 }
 
 #pgloading .bokeh li:nth-child(3) {
@@ -25967,8 +26035,12 @@ select.border-dark.tt-hint {
   background: #f5a623;
   -webkit-transform-origin: 50% -150%;
   transform-origin: 50% -150%;
-  -webkit-animation: rota 1.45s linear infinite, opa 5.12s ease-in-out infinite alternate;
-  animation: rota 1.45s linear infinite, opa 5.12s ease-in-out infinite alternate;
+  -webkit-animation:
+    rota 1.45s linear infinite,
+    opa 5.12s ease-in-out infinite alternate;
+  animation:
+    rota 1.45s linear infinite,
+    opa 5.12s ease-in-out infinite alternate;
 }
 
 #pgloading .bokeh li:nth-child(4) {
@@ -25978,8 +26050,12 @@ select.border-dark.tt-hint {
   background: #392c70;
   -webkit-transform-origin: 250% 50%;
   transform-origin: 250% 50%;
-  -webkit-animation: rota 1.72s linear infinite, opa 5.25s ease-in-out infinite alternate;
-  animation: rota 1.72s linear infinite, opa 5.25s ease-in-out infinite alternate;
+  -webkit-animation:
+    rota 1.72s linear infinite,
+    opa 5.25s ease-in-out infinite alternate;
+  animation:
+    rota 1.72s linear infinite,
+    opa 5.25s ease-in-out infinite alternate;
 }
 
 @-webkit-keyframes rota {
@@ -26150,7 +26226,12 @@ select.border-dark.tt-hint {
   width: 15px;
   height: 15px;
   border-radius: 15px;
-  box-shadow: 0px 0px 10px #392c70, 0px 0px 20px #392c70, 0px 0px 30px #392c70, 0px 0px 50px #392c70, 0px 0px 60px #392c70;
+  box-shadow:
+    0px 0px 10px #392c70,
+    0px 0px 20px #392c70,
+    0px 0px 30px #392c70,
+    0px 0px 50px #392c70,
+    0px 0px 60px #392c70;
   z-index: 1;
   background-color: #392c70;
   animation: bigball 1s infinite linear;
@@ -26228,7 +26309,15 @@ select.border-dark.tt-hint {
   background: #f5a623;
   color: #f5a623;
   margin: 80px auto;
-  box-shadow: 15px 15px 0 0, -15px -15px 0 0, 15px -15px 0 0, -15px 15px 0 0, 0 15px 0 0, 15px 0 0 0, -15px 0 0 0, 0 -15px 0 0;
+  box-shadow:
+    15px 15px 0 0,
+    -15px -15px 0 0,
+    15px -15px 0 0,
+    -15px 15px 0 0,
+    0 15px 0 0,
+    15px 0 0 0,
+    -15px 0 0 0,
+    0 -15px 0 0;
   animation: anim 2s linear infinite;
 }
 
@@ -26237,10 +26326,26 @@ select.border-dark.tt-hint {
     -webkit-filter: hue-rotate(0deg);
   }
   50% {
-    box-shadow: 20px 20px 0 0, -20px -20px 0 0, 20px -20px 0 0, -20px 20px 0 0, 0 10px 0 0, 10px 0 0 0, -10px 0 0 0, 0 -10px 0 0;
+    box-shadow:
+      20px 20px 0 0,
+      -20px -20px 0 0,
+      20px -20px 0 0,
+      -20px 20px 0 0,
+      0 10px 0 0,
+      10px 0 0 0,
+      -10px 0 0 0,
+      0 -10px 0 0;
   }
   75% {
-    box-shadow: 20px 20px 0 0, -20px -20px 0 0, 20px -20px 0 0, -20px 20px 0 0, 0 10px 0 0, 10px 0 0 0, -10px 0 0 0, 0 -10px 0 0;
+    box-shadow:
+      20px 20px 0 0,
+      -20px -20px 0 0,
+      20px -20px 0 0,
+      -20px 20px 0 0,
+      0 10px 0 0,
+      10px 0 0 0,
+      -10px 0 0 0,
+      0 -10px 0 0;
   }
   100% {
     transform: rotate(360deg);
@@ -27974,8 +28079,12 @@ dl li {
 .portfolio-grid figure.effect-text-in p {
   text-transform: none;
   opacity: 0;
-  -webkit-transition: opacity 0.35s, -webkit-transform 0.35s;
-  transition: opacity 0.35s, transform 0.35s;
+  -webkit-transition:
+    opacity 0.35s,
+    -webkit-transform 0.35s;
+  transition:
+    opacity 0.35s,
+    transform 0.35s;
   -webkit-transform: translate3d(0, 50px, 0);
   transform: translate3d(0, 50px, 0);
 }
@@ -31906,7 +32015,9 @@ div.tagsinput span.tag a {
   background: rgba(0, 0, 0, 0.8);
   width: 100px;
   margin-left: -50px;
-  -webkit-transition: 0.1s left, 0.1s top;
+  -webkit-transition:
+    0.1s left,
+    0.1s top;
 }
 
 .wysi-editor .wrap {
