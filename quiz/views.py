@@ -838,61 +838,113 @@ def study_topics(request):
 
 
 @login_required
-def subscription(request):
-
-    user_subscription = UserSubscription.objects.filter(
-        user=request.user, is_active=True).first()
-
-    context = {
-        'data_context': user_subscription,
-        'current_plan': user_subscription.plan if user_subscription else None
-    }
-    return render(request, 'dashboard/subscription.html', context)
-
-@login_required
 def subscription_success(request):
     
     return render(request, 'dashboard/subscription_success.html',)
 
-
+# views.py
 @login_required
 def create_subscription(request, days, plan):
-    # Example subscription period: 1 month
-    end_date = timezone.now() + timedelta(days=int(days))
-    plan = plan.replace("_", " ")
-
+    plan = plan.replace("--", "/").replace("_", " ") 
+    
     try:
         # Check if the user already has a subscription
-        subscription = UserSubscription.objects.filter(
-            user=request.user).first()
-
-        # If a subscription exists and the plans do not match, delete the old subscription
+        subscription = UserSubscription.objects.filter(user=request.user).first()
+        
+        # Check if user has EVER used a trial (regardless of plan)
+        has_used_trial = False
+        if subscription and subscription.has_used_trial:
+            has_used_trial = True
+        
+        # Determine if this is a trial or paid subscription
+        # Trial is ONLY available if they've never used ANY trial before
+        is_trial = (days == '15' and not has_used_trial)
+        
+        # Calculate end date
+        end_date = timezone.now() + timedelta(days=int(days))
+        
+        # If subscription exists and plan is different, delete old one
         if subscription and subscription.plan != plan:
+            # Preserve the trial usage status
+            old_has_used_trial = subscription.has_used_trial
             subscription.delete()
-            subscription = None  # We'll create a new one below
-
-        # If no subscription exists or it was deleted, create a new one
+            subscription = None
+        else:
+            old_has_used_trial = subscription.has_used_trial if subscription else False
+        
+        # Create or update subscription
         if not subscription:
             subscription = UserSubscription.objects.create(
                 user=request.user,
                 plan=plan,
-                subscription_end_date=end_date
+                subscription_end_date=end_date,
+                is_trial=is_trial,
+                has_used_trial=is_trial or old_has_used_trial  # Mark as used if starting trial
             )
         else:
-            # Update the existing subscription if the plans match
             subscription.subscription_end_date = end_date
+            subscription.plan = plan
+            subscription.is_trial = is_trial
+            
+            # Mark trial as used if this is a trial
+            if is_trial:
+                subscription.has_used_trial = True
+            
             subscription.save()
-
-        # Mark the user as having an active subscription
+        
         request.has_active_subscription = True
-
+        
+        # Show different success messages for trial vs paid
+        context = {
+            'is_trial': is_trial,
+            'plan_name': plan,
+            'days': days
+        }
+        
+        return render(request, 'dashboard/subscription_success.html', context)
+        
     except Exception as e:
         print(e)
         return render(request, 'dashboard/error.html', {'error': str(e)})
 
-    return render(request, 'dashboard/subscription_success.html')
+
+@login_required
+def start_free_trial(request, plan):
+    """Start a 15-day free trial - ONLY ONCE EVER"""
+    plan = plan.replace("--", "/").replace("_", " ") 
+    
+    try:
+        subscription = UserSubscription.objects.filter(user=request.user).first()
+        
+        # Check if user has EVER used a trial
+        if subscription and subscription.has_used_trial:
+            messages.error(request, "You've already used your one-time free trial. Please subscribe to continue.")
+            return redirect('quiz:subscription')
+        
+        # Create 15-day trial subscription
+        return create_subscription(request, days='15', plan=plan)
+        
+    except Exception as e:
+        return render(request, 'dashboard/error.html', {'error': str(e)})
 
 
+@login_required
+def subscription(request):
+    user_subscription = UserSubscription.objects.filter(
+        user=request.user, is_active=True).first()
+
+    # Check if user has ever used their trial
+    has_used_trial = False
+    if user_subscription:
+        has_used_trial = user_subscription.has_used_trial
+    
+    context = {
+        'data_context': user_subscription,
+        'current_plan': user_subscription.plan if user_subscription else None,
+        'has_used_trial': has_used_trial,  # Pass this to template
+    }
+    return render(request, 'dashboard/subscription.html', context)
+    
 @login_required
 def settings(request):
     return render(request, 'dashboard/settings.html',)

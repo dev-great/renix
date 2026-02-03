@@ -30,6 +30,7 @@ urlpatterns = [
     re_path(r'^create-subscription/(?P<days>\d+)/(?P<plan>.+)/$',
          views.create_subscription,
          name='create_subscription'),
+    path('trial/<str:plan>/', views.start_free_trial, name='start_free_trial'),
 
     path('signIn/', views.sign_in, name='sign_in'),
     path('signOut/', views.logout_view, name='sign_out'),

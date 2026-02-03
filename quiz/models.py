@@ -52,6 +52,8 @@ class UserSubscription(models.Model):
     subscription_start_date = models.DateTimeField(default=timezone.now)
     subscription_end_date = models.DateTimeField()
     is_active = models.BooleanField(default=True)
+    is_trial = models.BooleanField(default=False)
+    has_used_trial = models.BooleanField(default=False)
 
     def is_expired(self):
         return timezone.now() > self.subscription_end_date
@@ -62,7 +64,8 @@ class UserSubscription(models.Model):
         return (self.subscription_end_date - timezone.now()).days
 
     def __str__(self):
-        return f'{self.user.username} Subscription'
+        trial_text = " (Trial)" if self.is_trial else ""
+        return f'{self.user.username} Subscription{trial_text}'
 
 
 @receiver(post_save, sender=UserSubscription)
